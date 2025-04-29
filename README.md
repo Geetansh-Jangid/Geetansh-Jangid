@@ -23,8 +23,9 @@ $ whoami
 Each repository is a **parallel universe**. Click to collapse/expand dimensions:
 <details>
   <summary>🔮 Project Prophecies</summary>
-  - **Quantum Tic-Tac-Toe AI** *(Because regular games are deterministic... boooooring)*  
+  - **Quantum Tic-Tac-Toe AI** *(Because regular games are deterministic... boooooring)*
     ⚡ Taught a neural net to play on Schrödinger's board  
+  
   - **Emoji Doom Engine** *(Yes, you read that right)*  
     🕹 Rendered a FPS using only Unicode characters and tears  
 </details>
