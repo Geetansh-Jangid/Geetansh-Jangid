@@ -1,4 +1,4 @@
-# 🌌 The Codex of [Your Name Here]
+# 🌌 The Codex of Geetansh Jangid
 
 > *"A map to buried treasure, a log of cosmic voyages, and a grimoire of bugs slain."*
 
