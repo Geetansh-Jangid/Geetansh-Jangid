@@ -2,29 +2,17 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
 
+* {
+    box-sizing: border-box; /* Apply border-box universally */
+}
+
 body {
   background-color: black;
   margin: 0;
-/*  font-family: 'Space Mono', monospace;*/
   color: white;
-  overflow-x: hidden;
-}
-
-.page {
-  min-height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
-body {
   font-family: 'Orbitron', sans-serif;
+  overflow-x: hidden; /* Keep this! */
+  width: 100%; /* Explicitly set body width */
 }
 
 /* Terminal cursor styles */
@@ -70,10 +58,25 @@ body {
   }
 }
 
-
-
 #home {
-  overflow: hidden;
+  overflow: hidden; /* Prevents content inside #home from overflowing horizontally */
+  /* Keep existing #home styles below */
+  position: relative; /* Make sure position is relative if not already set for absolute children */
+}
+
+/* Optional: Safer width definition for all pages */
+.page {
+  min-height: 100vh;
+  /* width: 100vw; */ /* Consider changing this */
+  width: 100%;     /* To this */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-x: hidden; /* Add overflow-x hidden to all pages as a fallback */
 }
 
 @keyframes rotate {
