@@ -153,7 +153,7 @@ function updateSlider() {
   slider.style.transform = `translateX(-${currentSlide * 100}%)`;
 }*/
 
-// JavaScript for Work Page Slider
+/* JavaScript for Work Page Slider
 document.addEventListener('DOMContentLoaded', function() {
   let currentSlideWork = 0;
   const slidesWork = document.querySelectorAll('#work .slider img');
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderWork = document.querySelector('#work .slider');
     sliderWork.style.transform = `translateX(-${currentSlideWork * 100}%)`;
   }
-});
+});*/
 
 // JavaScript for Certificates Page Slider
 document.addEventListener('DOMContentLoaded', function() {
@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function downloadPDF() {
             const link = document.createElement('a');
-            link.href = 'resume.pdf'; // Replace with the path to your PDF file
+            link.href = '/img/assets/resume.pdf'; // Replace with the path to your PDF file
             link.download = 'resume.pdf'; // Replace with the desired file name
             document.body.appendChild(link);
             link.click();
