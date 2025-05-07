@@ -256,3 +256,65 @@ function downloadPDF() {
             link.click();
             document.body.removeChild(link);
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const heroMenuButton = document.getElementById('hero-menu-button');
+    const mainNavUl = document.querySelector('#navbar ul'); // Your existing nav ul
+    const bodyElement = document.body; // For scroll lock
+
+    if (heroMenuButton && mainNavUl) {
+        heroMenuButton.addEventListener('click', function() {
+            mainNavUl.classList.toggle('show'); // Re-use 'show' class
+            mainNavUl.classList.toggle('hero-menu-active'); // Add specific class for hero-triggered styles
+            heroMenuButton.classList.toggle('active'); // For styling button as X
+
+            // Body scroll lock
+            if (mainNavUl.classList.contains('show')) {
+                bodyElement.classList.add('body-no-scroll');
+            } else {
+                bodyElement.classList.remove('body-no-scroll');
+            }
+        });
+
+        // Close menu when a link is clicked
+        mainNavUl.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (mainNavUl.classList.contains('show')) {
+                    mainNavUl.classList.remove('show');
+                    mainNavUl.classList.remove('hero-menu-active');
+                    heroMenuButton.classList.remove('active');
+                    bodyElement.classList.remove('body-no-scroll');
+                }
+            });
+        });
+    }
+
+    // Your existing hamburger logic for the main navbar (when it appears on scroll)
+    // This needs to be separate and ensure it doesn't conflict
+    const hamburger = document.querySelector('#navbar .hamburger');
+    // const navLinks = document.querySelector('#navbar ul'); // Already defined as mainNavUl
+
+    if (hamburger && mainNavUl) {
+        hamburger.addEventListener('click', () => {
+            // If hero menu button is active, it should take precedence or be reset
+            if (heroMenuButton.classList.contains('active')) {
+                heroMenuButton.classList.remove('active');
+                mainNavUl.classList.remove('hero-menu-active'); // Remove hero-specific styling
+            }
+            mainNavUl.classList.toggle('show'); // Toggle the general show class
+            hamburger.classList.toggle('active');
+
+            if (mainNavUl.classList.contains('show')) {
+                bodyElement.classList.add('body-no-scroll');
+            } else {
+                bodyElement.classList.remove('body-no-scroll');
+            }
+        });
+    }
+
+    // CSS for body scroll lock (if not already in your CSS)
+    // const style = document.createElement('style');
+    // style.innerHTML = `.body-no-scroll { overflow: hidden; }`;
+    // document.head.appendChild(style);
+});
