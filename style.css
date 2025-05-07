@@ -245,6 +245,86 @@ h1, h2 {
   transform: scaleX(1);
 }
 
+/* --- Hero Page Menu Button --- */
+#hero-menu-button {
+  position: absolute; /* Positioned within the #home page */
+  top: 30px;          /* Adjust as needed */
+  right: 30px;         /* Adjust as needed */
+  font-family: 'Space Mono', monospace; /* Or your preferred UI font */
+  font-size: 1rem;    /* Adjust as needed */
+  color: white;
+  padding: 8px 15px;
+  /* background-color: rgba(255, 255, 255, 0.1); Optional subtle background */
+  /* border: 1px solid rgba(255, 255, 255, 0.2); Optional subtle border */
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10; /* Ensure it's above blob/blur but below navbar if it overlays */
+  transition: color 0.3s ease, background-color 0.3s ease;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+#hero-menu-button:hover {
+  color: aquamarine;
+  /* background-color: rgba(0, 255, 255, 0.1); */
+}
+
+/* Styling for the actual navigation menu that opens */
+/* This uses your EXISTING navbar's ul and makes it a fullscreen overlay */
+/* You might need to adjust your existing #navbar ul styles */
+
+#navbar ul.hero-menu-active { /* New class to trigger fullscreen from hero */
+  display: flex !important; /* Override default display:none on mobile */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(10, 10, 10, 0.85); /* Glassmorphism */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 99; /* Below hero-menu-button if it needs to be an X */
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px); /* Subtle animation */
+  transition: opacity 0.3s ease, visibility 0.3s step-end, transform 0.3s ease;
+}
+
+#navbar ul.hero-menu-active.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, visibility 0s, transform 0.3s ease;
+}
+
+#navbar ul.hero-menu-active li {
+  margin: 20px 0;
+}
+
+#navbar ul.hero-menu-active a {
+  font-size: 1.8rem; /* Larger links for fullscreen */
+  color: #e0e0e0;
+  padding: 10px;
+}
+#navbar ul.hero-menu-active a:hover {
+  color: aquamarine;
+}
+
+/* Optional: Style hero-menu-button as an X when menu is open */
+#hero-menu-button.active {
+  /* Basic X (replace with your preferred X styling) */
+  /* This is a very simple text-based X, you'd likely want an SVG or div-based X */
+  font-size: 1.5rem;
+  padding: 5px 10px;
+  /* background-color: transparent; */
+  /* border: none; */
+}
+
 /* Responsive Navbar Styles */
 @media screen and (max-width: 768px) {
   #navbar ul {
