@@ -112,7 +112,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   z-index: 102; /* Needs to be high if it's part of the scrolled navbar */
-  display: flex; /* For centering lines if needed, but position is absolute */
+  /* display: flex; */ /* Flex handled in media query */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -149,22 +149,30 @@ body {
   padding: 8px 15px;
   border-radius: 5px;
   cursor: pointer;
-  z-index: 101; /* Above hero content, below fullscreen menu's X button potentially */
+  z-index: 101;
   transition: color 0.3s ease;
   letter-spacing: 1px;
   text-transform: uppercase;
-  /* background-color: rgba(255,255,255,0.05); */ /* Optional subtle bg */
+  /* --- Explicit Resets for Hero Menu Button --- */ /* <<< FIX */
+  border: none;
+  background: none;
+  line-height: 1; /* Ensure text aligns normally */
 }
+/* Ensure pseudo-elements aren't adding lines */  /* <<< FIX */
+#hero-menu-button::before,
+#hero-menu-button::after {
+    content: none !important;
+    display: none !important;
+}
+
 #hero-menu-button:hover {
   color: aquamarine;
 }
 /* Styling for hero-menu-button when it's an X (active) */
 #hero-menu-button.active {
-  /* This is a simple text X, for a proper div-based X, styles would be different */
-  /* Or, hide this button and show a separate X button for the fullscreen menu */
+  /* This still needs better styling if you want an 'X' here */
   font-size: 1.5rem; /* Example */
   padding: 5px 10px; /* Example */
-  /* If it becomes a fixed X, ensure its z-index is high enough (e.g., 1002) */
 }
 
 
@@ -189,14 +197,14 @@ body {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-20px);
-  transition: opacity 0.3s ease, visibility 0s 0.3s, transform 0.3s ease; /* Corrected transition for visibility */
+  transition: opacity 0.3s ease, visibility 0s 0.3s, transform 0.3s ease;
 }
 
 #navbar ul.hero-menu-active.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
-  transition: opacity 0.3s ease, visibility 0s 0s, transform 0.3s ease; /* Corrected transition for visibility */
+  transition: opacity 0.3s ease, visibility 0s 0s, transform 0.3s ease;
 }
 
 #navbar ul.hero-menu-active li {
@@ -243,350 +251,159 @@ body {
 
 
 /* --- Hero Section (#home) Styles --- */
-#home {
-  /* overflow: hidden; */ /* Already on .page */
-  /* position: relative; */ /* Already on .page */
-}
+#home { } /* No specific styles needed here now */
+
 @keyframes rotate {
   from { rotate: 0deg; }
   50% { scale: 1 1.5; }
   to { rotate: 360deg; }
 }
 #blob {
-  background-color: white;
-  height: 34vmax;
-  aspect-ratio: 1;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: linear-gradient(to right, aquamarine, mediumpurple);
-  animation: rotate 20s infinite;
-  opacity: 0.8;
-  z-index: 1;
+  background-color: white; height: 34vmax; aspect-ratio: 1;
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  border-radius: 50%; background: linear-gradient(to right, aquamarine, mediumpurple);
+  animation: rotate 20s infinite; opacity: 0.8; z-index: 1;
 }
 #blur {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 2;
-  backdrop-filter: blur(12vmax);
+  height: 100%; width: 100%; position: absolute;
+  z-index: 2; backdrop-filter: blur(12vmax);
 }
-#home h1#changing-text { /* More specific selector */
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2.5rem, 8vw, 6em); /* Responsive H1 */
-  color: white;
-  padding: 0rem clamp(1rem, 2vw, 3rem);
-  border-radius: clamp(0.4rem, 0.75vw, 1rem);
-  margin: 0 0 20px 0; /* Add some margin below */
-  z-index: 3;
-  text-align: center;
+#home h1#changing-text {
+  font-family: 'Orbitron', sans-serif; font-size: clamp(2.5rem, 8vw, 6em);
+  color: white; padding: 0rem clamp(1rem, 2vw, 3rem);
+  border-radius: clamp(0.4rem, 0.75vw, 1rem); margin: 0 0 20px 0;
+  z-index: 3; text-align: center;
 }
 
 /* Hero Terminal Styles */
 #terminal {
-  position: relative; /* Not draggable in this setup unless JS is re-enabled with containment */
-  width: 90%;
-  max-width: 500px;
-  background-color: rgba(30, 30, 30, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-  z-index: 10;
-  margin: 20px auto;
+  position: relative; width: 90%; max-width: 500px;
+  background-color: rgba(30, 30, 30, 0.9); border-radius: 10px;
+  overflow: hidden; font-family: 'Space Mono', monospace;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); z-index: 10; margin: 20px auto;
 }
-#terminal .terminal-header { /* Shared with intro terminal, specific styles can be added */
-  background-color: #323232;
-  padding: 10px;
-  display: flex;
-  gap: 8px;
+#terminal .terminal-header {
+  background-color: #323232; padding: 10px; display: flex; gap: 8px;
 }
-#terminal .terminal-button { /* Shared */
-  width: 15px; height: 15px; border-radius: 50%;
-}
+#terminal .terminal-button { width: 15px; height: 15px; border-radius: 50%; }
 .red { background-color: #ff5f56; }
 .yellow { background-color: #ffbd2e; }
 .green { background-color: #27c93f; }
 
-/* Change this rule in style.css */
+/* Increase Hero Terminal Content Height */ /* <<< FIX */
 #terminal .terminal-content {
-  padding: 15px 20px;
-  color: #f0f0f0;
-  font-size: 1em;
-  line-height: 1.5;
-  height: 140px; /* <<< INCREASED height */
+  padding: 15px 20px; color: #f0f0f0; font-size: 1em; line-height: 1.5;
+  height: 160px; /* <<< INCREASED height further */
   overflow-y: auto;
 }
 
 #terminal .prompt { color: #00ff00; font-size: 1.1em; }
 #terminal #command { font-size: 1.1em; }
-#terminal #command::after { /* Cursor for hero terminal */
-  content: '█';
-  animation: blink 1s step-end infinite;
-}
+#terminal #command::after { content: '█'; animation: blink 1s step-end infinite; }
 #terminal .output { color: #f0f0f0; font-size: 1.2em; font-weight: bold;}
 
 
 /* --- Introduction Terminal Page Styles --- */
-/* .intro-terminal-page specific styles already added at the top with .page */
-.terminal-window { /* Main terminal window for intro page */
-  width: 90%;
-  max-width: 800px;
-  height: 70vh;
-  max-height: 600px; /* Max height to prevent it being too tall */
-  background-color: rgba(10, 10, 10, 0.95); /* Darker, less transparent */
-  border: 1px solid #282828; /* Darker border */
-  border-radius: 8px;
-  box-shadow: 0 0 40px rgba(0, 255, 255, 0.1); /* More prominent glow */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 5;
-  font-family: 'Space Mono', monospace;
+.terminal-window {
+  width: 90%; max-width: 800px; height: 70vh; max-height: 600px;
+  background-color: rgba(10, 10, 10, 0.95); border: 1px solid #282828;
+  border-radius: 8px; box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+  display: flex; flex-direction: column; overflow: hidden;
+  z-index: 5; font-family: 'Space Mono', monospace;
 }
-.terminal-window .terminal-header { /* Header for intro terminal */
-  background-color: #2a2a2a; /* Slightly different header color */
-  padding: 10px 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  border-bottom: 1px solid #1a1a1a;
+.terminal-window .terminal-header {
+  background-color: #2a2a2a; padding: 10px 15px; display: flex;
+  align-items: center; gap: 8px; flex-shrink: 0; border-bottom: 1px solid #1a1a1a;
 }
-.terminal-window .terminal-button { /* Buttons are shared */
-  width: 12px; height: 12px; border-radius: 50%;
+.terminal-window .terminal-button { width: 12px; height: 12px; border-radius: 50%; }
+.terminal-window .terminal-title { color: #bbb; font-size: 0.9em; margin-left: auto; }
+#intro-terminal-content.terminal-content {
+  flex-grow: 1; padding: 15px; color: #d0d0d0; font-size: 1em;
+  line-height: 1.6; overflow-y: auto; white-space: pre-wrap;
 }
-.terminal-window .terminal-title {
-  color: #bbb;
-  font-size: 0.9em;
-  margin-left: auto;
-}
-#intro-terminal-content.terminal-content { /* Content area for intro terminal */
-  flex-grow: 1;
-  padding: 15px;
-  color: #d0d0d0; /* Slightly dimmer default text */
-  font-size: 1em; /* Can be adjusted */
-  line-height: 1.6;
-  overflow-y: auto;
-  white-space: pre-wrap; /* Important for command output */
-}
-/* Styles for dynamic output lines in intro terminal */
-.terminal-line { margin-bottom: 3px; } /* Tighter line spacing */
-.terminal-prompt { color: #32CD32; } /* Brighter green prompt */
+.terminal-line { margin-bottom: 3px; }
+.terminal-prompt { color: #32CD32; }
 .terminal-command { color: #f0f0f0; }
 .terminal-output-line { color: #b0b0b0; }
-.terminal-output-line.info { color: #6495ED; } /* Cornflower blue */
-.terminal-output-line.success { color: #3AE374; } /* Bright Green */
-.terminal-output-line.warning { color: #FFA500; } /* Orange */
-.terminal-output-line.error { color: #FF4757; } /* Bright Red */
-.terminal-link {
-    color: aquamarine;
-    text-decoration: underline;
-    cursor: pointer;
-}
-.terminal-link:hover {
-    color: mediumpurple;
-}
-.ascii-art {
-  color: #00ff00;
-  font-family: 'Monospace', monospace; /* Strict monospace for ASCII */
-  line-height: 1.0; /* Very tight for dense ASCII */
-  white-space: pre; /* CRITICAL for ASCII */
-  font-size: 0.9em; /* Can make ASCII smaller if it's too large */
-}
-.terminal-input-line::after { /* Blinking cursor for intro terminal input */
-  content: '█';
-  animation: blink 1s step-end infinite;
-  color: #f0f0f0;
-  margin-left: 2px;
-}
-@keyframes blink { /* Ensure blink is defined */
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-.loading-dots span {
-  animation: blink 1.4s infinite both;
-  display: inline-block; /* Needed for animation to work right */
-}
+.terminal-output-line.info { color: #6495ED; }
+.terminal-output-line.success { color: #3AE374; }
+.terminal-output-line.warning { color: #FFA500; }
+.terminal-output-line.error { color: #FF4757; }
+.terminal-link { color: aquamarine; text-decoration: underline; cursor: pointer; }
+.terminal-link:hover { color: mediumpurple; }
+.ascii-art { color: #00ff00; font-family: 'Monospace', monospace; line-height: 1.0; white-space: pre; font-size: 0.9em; }
+.terminal-input-line::after { content: '█'; animation: blink 1s step-end infinite; color: #f0f0f0; margin-left: 2px; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.loading-dots span { animation: blink 1.4s infinite both; display: inline-block; }
 .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
 .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
 
 
-/* --- Introduction Section Original Styles (Commented out as replaced by terminal) --- */
-/*
-#introduction {
-  border-bottom: 0.6px solid #fff;
-}
-#introduction h2 {
-  position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
-  font-size: clamp(2rem, 5vw, 3rem); text-align: center; width: 100%;
-}
-.ct {
-  position: absolute; left: 100px; top: 250px; margin-right: 20px;
-  max-width: 500px; font-size: clamp(1em, 2.5vw, 1.4em);
-}
-.glitch-intro {
-  font-size: clamp(1.5em, 4vw, 2em);
-  position: relative; font-weight: bolder; color: white;
-  text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.025em -0.05em 0 rgba(0,255,0,0.75), 0.025em 0.05em 0 rgba(0,0,255,0.75);
-  animation: glitch 500ms infinite;
-}
-@keyframes glitch { // This is a general glitch, specific one for intro was also there
-  0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
-  // ... rest of glitch keyframes ...
-  100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
-}
-*/
-
-
 /* --- Skills Section Placeholder Styles (Original styles kept for now) --- */
-#skills.page {
-  background-color: black; /* Already default */
-  /* justify-content: center; align-items: center; */ /* Handled by .page-content flex */
-}
-/* #skills h2 already styled by .page h2 */
-.skill-list {
-  list-style: none; padding: 0; margin: 0;
-  width: 100%; max-width: 600px;
-  display: flex; flex-direction: column; align-items: center;
-}
+#skills.page { }
+.skill-list { list-style: none; padding: 0; margin: 0; width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
 .skill-list li { margin-bottom: 25px; position: relative; width: 100%; }
 .skill-info { display: flex; align-items: center; margin-bottom: 5px; justify-content: flex-start; }
-.skill-icon {
-  width: 40px; height: 40px; margin-right: 15px;
-  background: rgba(0,255,255,0.1); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 10px rgba(0,255,255,0.5);
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(0,255,255,0.7); }
-  70% { box-shadow: 0 0 0 10px rgba(0,255,255,0); }
-  100% { box-shadow: 0 0 0 0 rgba(0,255,255,0); }
-}
+.skill-icon { width: 40px; height: 40px; margin-right: 15px; background: rgba(0,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px rgba(0,255,255,0.5); animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0,255,255,0.7); } 70% { box-shadow: 0 0 0 10px rgba(0,255,255,0); } 100% { box-shadow: 0 0 0 0 rgba(0,255,255,0); } }
 .skill-icon img { width: 25px; height: 25px; object-fit: contain; }
-.skill-name {
-  position: relative; color: #fff; font-weight: bold; /* Simplified from 10000 */
-  font-size: 1.2em; letter-spacing: 0.1em;
-  font-family: 'Orbitron', sans-serif; /* Use Orbitron for skill names */
-  text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.025em -0.05em 0 rgba(0,255,0,0.75), 0.025em 0.05em 0 rgba(0,0,255,0.75);
-  animation: skill-glitch 500ms infinite; /* Ensure skill-glitch is defined or rename general glitch */
-}
-/* Assuming general glitch animation is used for skill-glitch */
-@keyframes skill-glitch { /* Or use the existing 'glitch' animation */
-  /* ... (copy keyframes from general glitch or define specifically) ... */
-  0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
-  14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
-  15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
-  49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
-  50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
-  99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
-  100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
-}
-.skill-bar-container {
-  width: 100%; background: rgba(30,30,30,0.9); height: 10px;
-  border-radius: 5px; overflow: hidden; position: relative;
-}
-.skill-bar {
-  height: 100%; background: linear-gradient(90deg, aquamarine, mediumpurple);
-  position: relative; transition: width 1s ease-in-out;
-  box-shadow: 0 0 10px rgba(0,255,255,0.8), 0 0 20px rgba(147,112,219,0.8);
-}
-.skill-bar::before {
-  content: ''; position: absolute; top:0;left:0;right:0;bottom:0;
-  background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1)10px, rgba(0,0,0,0.1)20px);
-  animation: move 20s linear infinite;
-}
+.skill-name { position: relative; color: #fff; font-weight: bold; font-size: 1.2em; letter-spacing: 0.1em; font-family: 'Orbitron', sans-serif; text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.025em -0.05em 0 rgba(0,255,0,0.75), 0.025em 0.05em 0 rgba(0,0,255,0.75); animation: skill-glitch 500ms infinite; }
+@keyframes skill-glitch { 0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); } 14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); } 15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); } 49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); } 50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); } 99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); } 100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); } }
+.skill-bar-container { width: 100%; background: rgba(30,30,30,0.9); height: 10px; border-radius: 5px; overflow: hidden; position: relative; }
+.skill-bar { height: 100%; background: linear-gradient(90deg, aquamarine, mediumpurple); position: relative; transition: width 1s ease-in-out; box-shadow: 0 0 10px rgba(0,255,255,0.8), 0 0 20px rgba(147,112,219,0.8); }
+.skill-bar::before { content: ''; position: absolute; top:0;left:0;right:0;bottom:0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.1)10px, rgba(0,0,0,0.1)20px); animation: move 20s linear infinite; }
 @keyframes move { 0% { background-position:0 0; } 100% { background-position:50px 50px; } }
-.skill-percentage {
-  position:absolute; right:10px; top:50%; transform:translateY(-50%);
-  color:#fff; font-size:0.9em; text-shadow:0 0 5px rgba(255,255,255,0.5);
-}
+.skill-percentage { position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#fff; font-size:0.9em; text-shadow:0 0 5px rgba(255,255,255,0.5); }
 
 
 /* --- Work Section Placeholder Styles --- */
-#work.page {
-  /* padding-top: 80px; */ /* Adjust if navbar is always visible and fixed */
-  justify-content: center; /* Center the placeholder text */
-}
-/* #work .page-content already styled */
-/* #work p is fine as default */
+#work.page { justify-content: center; }
 
-
-/* --- Certificates Section (Slider styles kept for now) --- */
-#certificates.page {
-    justify-content: center; /* Center content */
-}
-/* #certificates .slider-container, .slider-header, .slider-button are shared with #terminal styles */
-/* This specific style for slider-container will override the #terminal one if needed */
+/* --- Certificates Section --- */
+#certificates.page { justify-content: center; }
 #certificates .slider-container {
-  position: relative;
-  width: 90%;
-  max-width: 700px; /* Can be wider for certificates */
-  background-color: rgba(30, 30, 30, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-  z-index: 10;
-  margin: 20px auto;
+  position: relative; width: 90%; max-width: 700px;
+  background-color: rgba(30, 30, 30, 0.9); border-radius: 10px;
+  overflow: hidden; font-family: 'Space Mono', monospace;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7); z-index: 10; margin: 20px auto;
+}
+#certificates .slider-header { /* <<< Ensure header exists if sharing styles */
+  background-color: #323232; padding: 10px; display: flex; gap: 8px;
+}
+#certificates .slider-button { /* <<< Ensure buttons exist if sharing styles */
+   width: 15px; height: 15px; border-radius: 50%;
 }
 #certificates .slider-content {
-  padding: 10px; /* Add some padding around the slider images */
-  color: #f0f0f0;
-  font-size: 16px;
-  line-height: 1.5;
-  /* height: calc(100% - 55px); */ /* Auto height based on image */
-  overflow: hidden; /* Slider JS handles overflow */
-  white-space: nowrap;
-  text-align: center;
+  /* <<< Define a height for stability */
+  height: 400px; /* Adjust as needed based on your tallest certificate */
+  padding: 10px; color: #f0f0f0; overflow: hidden; /* Keep overflow hidden */
+  white-space: nowrap; text-align: center; position: relative; /* For prev/next buttons */
 }
 #certificates .slider {
-  display: flex;
+  display: flex; height: 100%; /* Make slider take full height of content area */
   transition: transform 0.5s ease-in-out;
 }
 #certificates .slider img {
-  width: 100%; /* Image takes full width of its container in the flex row */
-  height: auto;
-  max-height: 400px; /* Limit height of certificate images */
-  object-fit: contain; /* Ensure whole image is visible */
-  flex-shrink: 0; /* Prevent images from shrinking */
+  width: 100%; /* Take full width *of the slide item* */
+  height: 100%; /* Take full height *of the slide item* */
+  object-fit: contain; /* Scale down to fit within the slide item bounds */
+  flex-shrink: 0; display: block; /* Ensure proper block display */
 }
 #certificates .slider-prev, #certificates .slider-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0,0,0,0.5);
-  color: white; border: none;
-  padding: 10px; cursor: pointer;
-  z-index: 15; /* Above images */
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(0,0,0,0.5); color: white; border: none;
+  padding: 10px; cursor: pointer; z-index: 15;
 }
-#certificates .slider-prev { left: 10px; }
-#certificates .slider-next { right: 10px; }
+#certificates .slider-prev { left: 20px; } /* Position relative to slider-content padding */
+#certificates .slider-next { right: 20px; } /* Position relative to slider-content padding */
 
 
 /* --- Footer Styles --- */
-#footer {
-  position: relative; width: 100%;
-  padding: 40px 0; overflow: hidden;
-  background-color: #000; /* Ensure footer has solid bg */
-}
-.falling-letters-container {
-  position:absolute; top:0; left:0; right:0; bottom:0;
-  overflow:hidden; z-index: 1;
-}
-.footer-content {
-  position:relative; z-index:2; display:flex;
-  justify-content:space-between; align-items:center;
-  max-width:1200px; margin:0 auto; padding:0 20px; color:#fff;
-}
+#footer { position: relative; width: 100%; padding: 40px 0; overflow: hidden; background-color: #000; }
+.falling-letters-container { position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden; z-index: 1; }
+.footer-content { position:relative; z-index:2; display:flex; justify-content:space-between; align-items:center; max-width:1200px; margin:0 auto; padding:0 20px; color:#fff; }
 .unq { display:grid; }
-.letter {
-  position:absolute; color:#5e5e5e;
-  font-family:'Orbitron',sans-serif; font-size:16px; user-select:none;
-}
+.letter { position:absolute; color:#5e5e5e; font-family:'Orbitron',sans-serif; font-size:16px; user-select:none; }
 .footer-content h3 { font-size:2.5em; color:#fff; font-family: 'Orbitron', sans-serif; }
 .footer-content h5 { margin-bottom:-40px; font-size:2em; color:#fff; font-family: 'Orbitron', sans-serif; }
 .contact-section { display:flex; align-items:center; }
@@ -594,28 +411,10 @@ body {
 
 
 /* --- Resume Button (.button-86) --- */
-.button-86 {
-  all:unset; width:120px; height:30px; font-size:16px;
-  background:transparent; border:none; position:relative;
-  color:#f0f0f0; font-weight:bolder; cursor:pointer; z-index:1;
-  padding:10px 20px; display:flex; align-items:center;
-  justify-content:center; white-space:nowrap; user-select:none;
-  -webkit-user-select:none; touch-action:manipulation; text-decoration:none;
-  margin-top: 20px; /* Spacing for button in intro */
-}
-.button-86::after, .button-86::before {
-  content:''; position:absolute; bottom:0; right:0;
-  z-index:-99999; transition:all .4s;
-}
-.button-86::before {
-  transform:translate(0%,0%); width:100%; height:100%;
-  background:#28282d; border-radius:10px;
-}
-.button-86::after {
-  transform:translate(10px,10px); width:35px; height:35px;
-  background:#ffffff15; backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px); border-radius:50px;
-}
+.button-86 { all:unset; width:120px; height:30px; font-size:16px; background:transparent; border:none; position:relative; color:#f0f0f0; font-weight:bolder; cursor:pointer; z-index:1; padding:10px 20px; display:flex; align-items:center; justify-content:center; white-space:nowrap; user-select:none; -webkit-user-select:none; touch-action:manipulation; text-decoration:none; margin-top: 20px; }
+.button-86::after, .button-86::before { content:''; position:absolute; bottom:0; right:0; z-index:-99999; transition:all .4s; }
+.button-86::before { transform:translate(0%,0%); width:100%; height:100%; background:#28282d; border-radius:10px; }
+.button-86::after { transform:translate(10px,10px); width:35px; height:35px; background:#ffffff15; backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); border-radius:50px; }
 .button-86:hover::before { transform:translate(5%,20%); width:110%; height:110%; }
 .button-86:hover::after { border-radius:10px; transform:translate(0,0); width:100%; height:100%; }
 .button-86:active::after { transition:0s; transform:translate(0,5%); }
@@ -623,69 +422,32 @@ body {
 
 /* --- Responsive Design Adjustments --- */
 @media screen and (max-width: 768px) {
-  /* General Page adjustments for mobile */
-  .page h2 { /* Rotated headings become static */
-    position: static;
-    transform: none;
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: clamp(1.8rem, 5vw, 2.5rem); /* Adjust h2 size on mobile */
-  }
-  .page-content { /* Content area for sections with rotated H2s */
-    margin-left: 0;
-    width: 100%;
-  }
+  .page h2 { position: static; transform: none; text-align: center; margin-bottom: 20px; font-size: clamp(1.8rem, 5vw, 2.5rem); }
+  .page-content { margin-left: 0; width: 100%; }
 
-  /* Original Navbar Mobile Styles */
-  #navbar ul:not(.hero-menu-active) { /* Styles for OG hamburger dropdown IF NOT fullscreen */
-    display: none; /* Hidden by default, shown by JS */
-    flex-direction: column;
-    align-items: center;
-    position: absolute; /* Dropdown below navbar bar */
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: rgba(30,30,30,0.95); /* Solid bg for dropdown */
-    padding: 10px 0;
-  }
-  #navbar ul:not(.hero-menu-active).show { /* For OG hamburger to show its list */
-      display: flex !important;
-  }
-  #navbar ul:not(.hero-menu-active) li {
-    margin: 10px 0;
-    width: 100%;
-    text-align: center;
-  }
-  #navbar ul:not(.hero-menu-active) a {
-      padding: 12px 0;
-  }
-  #navbar .hamburger { /* Ensure OG hamburger is visible on mobile */
-    display: flex; /* Changed from block to flex for consistency */
-  }
+  #navbar ul:not(.hero-menu-active) { display: none; flex-direction: column; align-items: center; position: absolute; top: 100%; left: 0; width: 100%; background-color: rgba(30,30,30,0.95); padding: 10px 0; }
+  #navbar ul:not(.hero-menu-active).show { display: flex !important; }
+  #navbar ul:not(.hero-menu-active) li { margin: 10px 0; width: 100%; text-align: center; }
+  #navbar ul:not(.hero-menu-active) a { padding: 12px 0; }
+  #navbar .hamburger { display: flex; /* Now visible */ }
 
-
-  /* Hero Section Mobile */
   #home h1#changing-text { font-size: clamp(2rem, 10vw, 3em); }
   #terminal { width: 95%; max-width: 95%; }
-  #terminal .terminal-content { height: 80px; font-size: 0.9em; }
+  #terminal .terminal-content { height: 100px; font-size: 0.9em; } /* Reduced height slightly for mobile */
   #hero-menu-button { top: 20px; right: 20px; padding: 6px 12px; font-size: 0.9rem;}
 
-  /* Intro Terminal Mobile */
-  .terminal-window { height: 80vh; max-height: none; } /* Take more vertical space */
+  .terminal-window { height: 80vh; max-height: none; }
   #intro-terminal-content.terminal-content { font-size: 0.85em; line-height: 1.5; padding: 10px; }
   .ascii-art { font-size: 0.7em; line-height: 1.0; }
 
-  /* Skills Mobile */
   .skill-list { width: 90%; }
   .skill-name { font-size: 1em; }
   .skill-icon { width:30px; height:30px; }
   .skill-icon img { width:20px; height:20px; }
 
-  /* Original Introduction CT styles mobile (commented out as intro is now terminal) */
-  /* .ct { left:30px; top:180px; max-width:calc(100% - 60px); } */
-  /* .glitch-intro { font-size:1.7em; } */
+  #certificates .slider-content { height: 300px; } /* Adjust slider height for mobile */
+  #certificates .slider-prev, #certificates .slider-next { padding: 8px; }
 
-  /* Footer Mobile */
   .footer-content { flex-direction:column; text-align:center; }
   .contact-section { margin-top:20px; flex-direction:column; }
 }
@@ -693,13 +455,11 @@ body {
 @media screen and (max-width: 480px) {
   #home h1#changing-text { font-size: clamp(1.8rem, 12vw, 2.5em); }
   #hero-menu-button { top: 15px; right: 15px; font-size: 0.8rem;}
-  /* Intro Terminal very small screens */
+  #terminal .terminal-content { height: 90px; } /* Adjust hero terminal height */
+
   #intro-terminal-content.terminal-content { font-size: 0.75em; }
   .ascii-art { font-size: 0.6em; }
-  .terminal-window .terminal-title { display: none; } /* Hide title if too cramped */
+  .terminal-window .terminal-title { display: none; }
 
-
-  /* Original Introduction CT styles mobile (commented out) */
-  /* .ct { top:140px; font-size: clamp(0.9em, 2vw, 1em); } */
-  /* .glitch-intro { font-size: clamp(1.2em, 3vw, 1.5em); } */
+  #certificates .slider-content { height: 250px; } /* Adjust slider height */
 }
