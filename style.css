@@ -310,14 +310,16 @@ body {
 .yellow { background-color: #ffbd2e; }
 .green { background-color: #27c93f; }
 
+/* Change this rule in style.css */
 #terminal .terminal-content {
-  padding: 15px 20px; /* Adjusted padding */
+  padding: 15px 20px;
   color: #f0f0f0;
-  font-size: 1em; /* Adjusted font size */
+  font-size: 1em;
   line-height: 1.5;
-  height: 100px; /* Fixed height for hero terminal */
+  height: 140px; /* <<< INCREASED height */
   overflow-y: auto;
 }
+
 #terminal .prompt { color: #00ff00; font-size: 1.1em; }
 #terminal #command { font-size: 1.1em; }
 #terminal #command::after { /* Cursor for hero terminal */
