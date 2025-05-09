@@ -1,16 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&display=swap');
 
-
 * {
     box-sizing: border-box;
 }
 
 body {
-  background-color: black;
+  background-color: #1e1e1e; /* Dark editor-like background */
   margin: 0;
-  color: white;
-  font-family: 'Orbitron', sans-serif;
+  color: #d4d4d4; /* Default text color for editor */
+  font-family: 'Rubik', sans-serif; /* Default body font */
   overflow-x: hidden;
   width: 100%;
 }
@@ -19,52 +18,21 @@ body {
 .page {
   min-height: 100vh;
   width: 100%;
-  display: flex; /* JS will control which is flex, default for #home */
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   position: relative;
-  padding: 20px;
+  padding: 0; /* Remove default page padding for full-width IDE sections */
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
-/* Specific styles for placeholder pages for better visibility during testing */
-#introduction, #skills, #work, #certificates {
-  background-color: #111;
-  text-align: center;
-}
-#introduction h2, #skills h2, #work h2, #certificates h2 {
-  position: static;
-  transform: none;
-  margin-bottom: 20px;
-  font-size: clamp(2rem, 4vw, 2.5rem);
-}
-#introduction p, #skills p, #work p, #certificates p {
-  font-family: 'Rubik', sans-serif;
-  font-size: 1.2rem;
-  line-height: 1.6;
-}
-.nav-back-home, #introduction button, #skills button, #work button, #certificates button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: mediumpurple;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-}
-.nav-back-home:hover, #introduction button:hover, #skills button:hover, #work button:hover, #certificates button:hover {
-  background-color: aquamarine;
-  color: black;
-}
-
-
 /* --- Hero Section (#home) Specific Styles --- */
 #home {
   overflow: hidden;
+  background-color: black; /* Keep hero distinct if desired */
+  padding: 20px; /* Add back padding for hero content alignment */
 }
 
 @keyframes rotate {
@@ -97,158 +65,158 @@ body {
 }
 
 #changing-text {
-  font-size: 6em;
+  font-size: clamp(2.5em, 8vw, 6em); /* Responsive font size */
   color: white;
   padding: 0rem clamp(1rem, 2vw, 3rem);
   border-radius: clamp(0.4rem, 0.75vw, 1rem);
   margin: 0;
   z-index: 3;
   font-family: 'Orbitron', sans-serif;
+  text-align: center;
 }
 
 #scroll-text {
   position: absolute;
-  bottom: 80px;
+  bottom: 40px; /* Adjusted position */
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: white;
   z-index: 3;
   font-family: 'Space Mono', monospace;
 }
 
 
-/* --- Terminal Styles --- */
-#terminal {
-  position: relative;
-  width: 90%;
-  max-width: 600px;
-  min-height: 200px;
-  /* Example: Set a max-height to prevent it from growing too large */
-  max-height: 40vh; /* Or a fixed px value like 300px */
-  background-color: rgba(10, 10, 10, 0.9);
-  border-radius: 10px;
-  overflow: hidden; /* Important: children will handle their own scroll */
-  font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 5px rgba(0,0,0,0.7);
-  z-index: 10;
-  margin: 20px auto;
-  border: 1px solid rgba(100,100,100,0.5);
-  display: flex; /* Added for internal flex layout */
-  flex-direction: column; /* Stack header and content */
+/* --- IDE Theme Styles --- */
+.ide-section {
+    width: 100%;
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    background-color: #1e1e1e; /* VS Code Dark Theme background */
+    color: #d4d4d4; /* Default text color */
+    font-family: 'Space Mono', monospace; /* Monospaced font for IDE feel */
+    display: flex;
+    flex-direction: column;
+    padding-top: 60px; /* Account for fixed navbar height */
 }
 
-.terminal-header {
-  background-color: #222;
-  padding: 8px 12px;
-  display: flex;
-  gap: 8px;
-  cursor: move;
-  flex-shrink: 0; /* Prevent header from shrinking */
+.ide-file-header {
+    background-color: #252526; /* Tab bar color */
+    padding: 0 10px;
+    display: flex;
+    border-bottom: 1px solid #333333;
+    flex-shrink: 0;
 }
 
-.terminal-button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+.ide-tab {
+    padding: 8px 15px;
+    font-size: 0.9em;
+    color: #9e9e9e; /* Inactive tab color */
+    cursor: default; /* Can be made interactive later */
+    border-right: 1px solid #1e1e1e; /* Separator */
 }
 
-.red { background-color: #ff5f56; }
-.yellow { background-color: #ffbd2e; }
-.green { background-color: #27c93f; }
-
-.terminal-content {
-  padding: 15px;
-  color: #e0e0e0;
-  font-size: 0.9em;
-  line-height: 1.6;
-  /* height: calc(100% - 38px); Removed fixed height, rely on flex-grow */
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1; /* Allow this to take up space in #terminal */
-  overflow: hidden; /* Parent handles main scroll if #terminal has fixed height */
+.ide-tab.active {
+    background-color: #1e1e1e; /* Active tab matches editor bg */
+    color: #d4d4d4; /* Active tab text color */
+    border-bottom: 2px solid mediumpurple; /* Active indicator */
+    margin-bottom: -1px; /* Align with border-bottom of header */
 }
 
-.output-area {
-  flex-grow: 1; /* Allow it to take available vertical space */
-  overflow-y: auto; /* Scroll for output history WITHIN this area */
-  padding-bottom: 10px;
+.ide-editor-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden; /* Important: children handle scroll */
+    padding: 10px 0; /* Padding for top/bottom of editor area */
 }
 
-.output-area p {
-  margin: 0 0 2px 0;
-  word-break: break-word;
-  white-space: pre-wrap;
+.line-numbers {
+    background-color: #1e1e1e; /* Same as editor bg */
+    color: #5a5a5a; /* Line number color */
+    padding: 10px 15px 10px 20px; /* ltr padding */
+    text-align: right;
+    font-size: 0.9em; /* Match code font size */
+    line-height: 1.7; /* Match code line-height */
+    user-select: none; /* Non-selectable line numbers */
+    border-right: 1px solid #333333; /* Separator */
+    white-space: pre; /* Preserve line breaks if JS adds them */
 }
 
-.command-line-container {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0; /* Prevent command line from shrinking */
+.ide-code-area {
+    flex-grow: 1;
+    padding: 10px 20px;
+    margin: 0; /* Reset pre margin */
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9em;
+    line-height: 1.7; /* Consistent line height for alignment with numbers */
+    overflow: auto; /* Scrollable code area */
+    white-space: pre-wrap; /* Wrap long lines but preserve whitespace */
+    word-break: break-word;
 }
 
-.prompt {
-  color: #00ff00;
-  font-weight: bold;
-  margin-right: 8px;
-  font-size: 1em;
+.ide-code-area code { /* Target the code tag inside pre */
+    display: block; /* Make it take full width */
 }
 
-#command {
-  color: #e0e0e0;
-  flex-grow: 1;
-  outline: none;
-  caret-color: transparent;
-  min-width: 1ch;
-  font-size: 1em;
-}
+/* Syntax Highlighting Styles (Customize these colors!) */
+.ide-comment { color: #6A9955; /* Green for comments */ }
+.ide-keyword { color: #569CD6; /* Blue for keywords like --- */ }
+.ide-key { color: #9CDCFE; /* Light blue for keys in key-value */ }
+.ide-string { color: #CE9178; /* Orange for strings */ }
+.ide-heading { color: #DCDCAA; font-weight: bold; margin-top: 1em; margin-bottom: 0.5em; display: block; } /* Yellowish for headings */
+.ide-highlight { color: mediumpurple; font-weight: bold; } /* Accent color */
+.ide-tag { color: #4EC9B0; /* Teal for tags or special items */ }
+.ide-blockquote { color: #b0b0b0; font-style: italic; margin-left: 20px; display: block; border-left: 2px solid #555; padding-left: 10px; margin-bottom: 0.5em;}
+.ide-list-item { display: block; margin-left: 20px; position: relative; }
+.ide-list-item::before { content: '- '; color: #569CD6; position: absolute; left: -15px; }
 
-#command:empty::before {
-  /* content: "type command..."; */
-  /* color: #555; */
-}
-
-#command::after {
-  content: '█';
-  color: #00ff00;
-  animation: blink 1s step-end infinite;
-  margin-left: 1px;
-  display: inline-block;
-  vertical-align: baseline;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Styles for Clickable Terminal Links */
-.terminal-link {
-    color: #87CEFA; /* LightSkyBlue - stands out a bit */
+.ide-link {
+    color: #CE9178; /* Same as string, often links are in strings */
     text-decoration: underline;
-    cursor: pointer;
-    background: none;
+}
+.ide-link:hover {
+    color: #e0a992;
+}
+
+.ide-button {
+    background-color: #569CD6; /* Blue, like a primary action */
+    color: white;
     border: none;
-    padding: 0; /* Reset padding */
-    font: inherit; /* Inherit .output-area p font if nested, or .terminal-content font */
-    display: inline; /* Or inline-block if more control needed */
+    padding: 8px 15px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9em;
+    margin-top: 15px;
+    display: inline-block; /* Allow margin-top */
+}
+.ide-button:hover {
+    background-color: #408ac9;
 }
 
-.terminal-link:hover {
-    color: #ADD8E6; /* Lighter blue on hover */
-    /* background-color: rgba(255, 255, 255, 0.1); Optional subtle hover background */
+
+.ide-status-bar {
+    background-color: #007ACC; /* VS Code blue status bar */
+    color: white;
+    padding: 5px 15px;
+    font-size: 0.8em;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    flex-shrink: 0;
+}
+.ide-status-bar span {
+    cursor: default;
 }
 
 
-/* --- Navbar Styles --- */
+/* --- Navbar Styles (Kept from previous) --- */
 #navbar {
-  position: fixed;
+  position: fixed; /* Keep navbar fixed on top */
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(20, 20, 20, 0.95);
-  z-index: 100;
+  background-color: rgba(30, 30, 30, 0.9); /* Slightly different from IDE theme to stand out */
+  z-index: 1000; /* Ensure navbar is above IDE content */
   transform: translateY(-100%);
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
   backdrop-filter: blur(5px);
@@ -337,20 +305,23 @@ body {
 /* --- Responsive Design Adjustments --- */
 @media screen and (max-width: 768px) {
   #changing-text {
-    font-size: 3.5em;
+    font-size: clamp(2em, 7vw, 3.5em);
   }
 
-  .page h2 {
-    font-size: clamp(1.8rem, 5vw, 2.2rem);
+  .ide-section {
+    padding-top: 50px; /* Adjust for potentially smaller navbar on mobile */
   }
-
-  #terminal {
-    width: 95%;
-    min-height: 180px;
-    max-height: 50vh; /* Adjust max-height for mobile */
+  .ide-code-area, .line-numbers, .ide-button {
+    font-size: 0.85em; /* Slightly smaller font in editor on mobile */
   }
-  .terminal-content {
-    font-size: 0.85em;
+  .line-numbers {
+    padding: 10px 8px 10px 10px;
+  }
+  .ide-code-area {
+    padding: 10px;
+  }
+  .ide-file-header {
+    overflow-x: auto; /* Allow tabs to scroll if they don't fit */
   }
 
   #navbar ul {
@@ -358,7 +329,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    background-color: rgba(20, 20, 20, 0.98);
+    background-color: rgba(30, 30, 30, 0.98);
     position: absolute;
     top: 100%;
     left: 0;
@@ -380,16 +351,6 @@ body {
 
   .hamburger {
     display: block;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  #changing-text {
-    font-size: 2.5em;
-  }
-  #scroll-text {
-    font-size: 1rem;
-    bottom: 60px;
   }
 }
 
