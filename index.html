@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geetansh Jangid - Portfolio</title>
+  <title>Geetansh Jangid - Portfolio (Hero)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
@@ -29,101 +29,19 @@
     <div id="blob"></div>
     <div id="blur"></div>
     <h1 id="changing-text">PROGRAMMER</h1>
-    <!-- Terminal code removed for this example as per previous request to move away from it -->
+    <div id="terminal">
+      <div class="terminal-header">
+        <div class="terminal-button red"></div>
+        <div class="terminal-button yellow"></div>
+        <div class="terminal-button green"></div>
+      </div>
+      <div class="terminal-content">
+        <p><span class="prompt">$</span> <span id="command"></span></p>
+        <p id="output" class="output"></p>
+      </div>
+    </div>
     <div id="scroll-text">Scroll Down</div>
   </div>
-
-  <!-- Introduction Section with IDE Theme -->
-  <div id="introduction" class="page ide-section" style="display: none;">
-    <div class="ide-file-header">
-      <span class="ide-tab active">about_me.md</span>
-      <!-- <span class="ide-tab">config.js</span> -->
-    </div>
-    <div class="ide-editor-content">
-      <div class="line-numbers">
-        <!-- JS will populate this, or you can do it manually for static content -->
-      </div>
-      <pre class="ide-code-area"><code><span class="ide-comment">// FILE: about_me.md</span>
-<span class="ide-comment">// Personal Profile: Geetansh Jangid</span>
-
-<span class="ide-keyword">---</span>
-<span class="ide-key">name</span>: <span class="ide-string">"Geetansh Jangid"</span>
-<span class="ide-key">title</span>: <span class="ide-string">"Passionate Programmer, Developer, Lifelong Learner"</span>
-<span class="ide-key">location</span>: <span class="ide-string">"Jaipur, India"</span> <span class="ide-comment">// Or your location</span>
-<span class="ide-key">status</span>: <span class="ide-string">"Open to new opportunities & collaborations"</span>
-<span class="ide-keyword">---</span>
-
-<span class="ide-heading">## Greetings! 👋</span>
-
-I'm <span class="ide-highlight">Geetansh Jangid</span>, a dedicated and enthusiastic software developer
-with a strong foundation in <span class="ide-tag">[Your Key Skill 1, e.g., Web Development]</span> and a keen interest in
-<span class="ide-tag">[Your Key Skill 2, e.g., Artificial Intelligence]</span>.
-
-My journey into the world of technology began with a fascination for
-how software can solve real-world problems and create impactful
-experiences. I thrive on challenges, continuously seek to expand my
-knowledge, and am committed to writing clean, efficient, and
-maintainable code.
-
-<span class="ide-comment">// Core Philosophy:</span>
-<span class="ide-blockquote">> Learning never exhausts the mind. - Leonardo da Vinci</span>
-<span class="ide-blockquote">> I believe in constant growth and adapting to new technologies.</span>
-
-<span class="ide-heading">## What I Do</span>
-
-<span class="ide-list-item">- Building responsive and user-friendly web applications.</span>
-<span class="ide-list-item">- Exploring machine learning models and AI research.</span>
-<span class="ide-list-item">- Developing robust backend systems and APIs.</span>
-<span class="ide-list-item">- Always eager to collaborate on exciting projects!</span>
-
-<span class="ide-comment">// Let's connect!</span>
-<span class="ide-key">email</span>: <a href="mailto:jangidgeetansh22@gmail.com" class="ide-link"><span class="ide-string">"jangidgeetansh22@gmail.com"</span></a>
-<span class="ide-key">linkedin</span>: <a href="[Your LinkedIn URL]" target="_blank" class="ide-link"><span class="ide-string">"linkedin.com/in/yourprofile"</span></a>
-
-<span class="ide-comment">// You can download my resume here:</span>
-<button onclick="downloadPDF()" class="ide-button" role="button">Download Resume</button>
-</code></pre>
-    </div>
-    <div class="ide-status-bar">
-      <span>UTF-8</span>
-      <span>Spaces: 2</span>
-      <span>Markdown</span>
-      <span class="ide-line-col">Ln 1, Col 1</span>
-    </div>
-  </div>
-
-  <!-- Placeholder Sections for other pages -->
-  <div id="skills" class="page ide-section" style="display: none;">
-    <!-- Content for Skills page will go here -->
-    <div class="ide-file-header"><span class="ide-tab active">skills_config.json</span></div>
-    <div class="ide-editor-content">
-        <div class="line-numbers"></div>
-        <pre class="ide-code-area"><code>// Skills content here</code></pre>
-    </div>
-    <div class="ide-status-bar"><span>JSON</span></div>
-  </div>
-
-  <div id="work" class="page ide-section" style="display: none;">
-    <!-- Content for Work page will go here -->
-    <div class="ide-file-header"><span class="ide-tab active">projects_gallery.jsx</span></div>
-     <div class="ide-editor-content">
-        <div class="line-numbers"></div>
-        <pre class="ide-code-area"><code>// Work/Projects content here</code></pre>
-    </div>
-    <div class="ide-status-bar"><span>JSX</span></div>
-  </div>
-
-  <div id="certificates" class="page ide-section" style="display: none;">
-    <!-- Content for Certificates page will go here -->
-    <div class="ide-file-header"><span class="ide-tab active">credentials.env</span></div>
-     <div class="ide-editor-content">
-        <div class="line-numbers"></div>
-        <pre class="ide-code-area"><code># Certificates content here</code></pre>
-    </div>
-    <div class="ide-status-bar"><span>ENV</span></div>
-  </div>
-  <!-- End of Placeholder Sections -->
-
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
