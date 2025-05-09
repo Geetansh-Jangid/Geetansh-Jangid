@@ -19,11 +19,11 @@ body {
 .page {
   min-height: 100vh;
   width: 100%;
-  display: flex; /* Changed from none, JS will control which is flex */
+  display: flex; /* JS will control which is flex, default for #home */
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative; /* Keep relative for absolute children like h2 in some sections */
+  position: relative;
   padding: 20px;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -31,11 +31,11 @@ body {
 
 /* Specific styles for placeholder pages for better visibility during testing */
 #introduction, #skills, #work, #certificates {
-  background-color: #111; /* Slightly different background */
+  background-color: #111;
   text-align: center;
 }
 #introduction h2, #skills h2, #work h2, #certificates h2 {
-  position: static; /* Override absolute positioning for these simple pages */
+  position: static;
   transform: none;
   margin-bottom: 20px;
   font-size: clamp(2rem, 4vw, 2.5rem);
@@ -64,7 +64,7 @@ body {
 
 /* --- Hero Section (#home) Specific Styles --- */
 #home {
-  overflow: hidden; /* Prevents content inside #home from overflowing horizontally */
+  overflow: hidden;
 }
 
 @keyframes rotate {
@@ -85,7 +85,7 @@ body {
   background: linear-gradient(to right, aquamarine, mediumpurple);
   animation: rotate 20s infinite;
   opacity: 0.8;
-  z-index: 1; /* Ensure blob is behind blur and content */
+  z-index: 1;
 }
 
 #blur {
@@ -96,7 +96,7 @@ body {
   backdrop-filter: blur(12vmax);
 }
 
-#changing-text { /* This is the H1 in the hero */
+#changing-text {
   font-size: 6em;
   color: white;
   padding: 0rem clamp(1rem, 2vw, 3rem);
@@ -122,24 +122,29 @@ body {
 #terminal {
   position: relative;
   width: 90%;
-  max-width: 600px; /* Slightly wider for better usability */
-  min-height: 200px; /* Minimum height */
-  background-color: rgba(10, 10, 10, 0.9); /* Darker, more terminal-like */
+  max-width: 600px;
+  min-height: 200px;
+  /* Example: Set a max-height to prevent it from growing too large */
+  max-height: 40vh; /* Or a fixed px value like 300px */
+  background-color: rgba(10, 10, 10, 0.9);
   border-radius: 10px;
-  overflow: hidden;
+  overflow: hidden; /* Important: children will handle their own scroll */
   font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 5px rgba(0,0,0,0.7); /* Cyan glow */
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 5px rgba(0,0,0,0.7);
   z-index: 10;
   margin: 20px auto;
   border: 1px solid rgba(100,100,100,0.5);
+  display: flex; /* Added for internal flex layout */
+  flex-direction: column; /* Stack header and content */
 }
 
 .terminal-header {
-  background-color: #222; /* Darker header */
+  background-color: #222;
   padding: 8px 12px;
   display: flex;
   gap: 8px;
-  cursor: move; /* For dragging */
+  cursor: move;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .terminal-button {
@@ -154,65 +159,85 @@ body {
 
 .terminal-content {
   padding: 15px;
-  color: #e0e0e0; /* Lighter grey for text */
-  font-size: 0.9em; /* Base size for terminal text */
+  color: #e0e0e0;
+  font-size: 0.9em;
   line-height: 1.6;
-  height: calc(100% - 38px); /* Adjust based on header height */
+  /* height: calc(100% - 38px); Removed fixed height, rely on flex-grow */
   display: flex;
   flex-direction: column;
+  flex-grow: 1; /* Allow this to take up space in #terminal */
+  overflow: hidden; /* Parent handles main scroll if #terminal has fixed height */
 }
 
 .output-area {
-  flex-grow: 1;
-  overflow-y: auto; /* Scroll for output history */
-  padding-bottom: 10px; /* Space before command line */
+  flex-grow: 1; /* Allow it to take available vertical space */
+  overflow-y: auto; /* Scroll for output history WITHIN this area */
+  padding-bottom: 10px;
 }
 
 .output-area p {
-  margin: 0 0 2px 0; /* Tighten spacing between output lines */
-  word-break: break-word; /* Break long words/commands */
-  white-space: pre-wrap; /* Preserve whitespace and newlines from JS output */
+  margin: 0 0 2px 0;
+  word-break: break-word;
+  white-space: pre-wrap;
 }
 
 .command-line-container {
-  margin: 0; /* Remove default p margin */
-  display: flex; /* Align prompt and input */
+  margin: 0;
+  display: flex;
   align-items: center;
+  flex-shrink: 0; /* Prevent command line from shrinking */
 }
 
 .prompt {
-  color: #00ff00; /* Bright green prompt */
+  color: #00ff00;
   font-weight: bold;
   margin-right: 8px;
-  font-size: 1em; /* Match terminal content base size */
+  font-size: 1em;
 }
 
-#command { /* The contenteditable span for input */
-  color: #e0e0e0; /* Input text color */
-  flex-grow: 1; /* Take remaining space */
-  outline: none; /* Remove focus outline on contenteditable */
-  caret-color: transparent; /* Hide native caret, we use ::after */
-  min-width: 1ch; /* Ensure it has some width even when empty */
-  font-size: 1em; /* Match terminal content base size */
+#command {
+  color: #e0e0e0;
+  flex-grow: 1;
+  outline: none;
+  caret-color: transparent;
+  min-width: 1ch;
+  font-size: 1em;
 }
 
 #command:empty::before {
-  /* content: "type command..."; */ /* Optional placeholder */
+  /* content: "type command..."; */
   /* color: #555; */
 }
 
-#command::after { /* Blinking cursor for the command line input itself */
+#command::after {
   content: '█';
-  color: #00ff00; /* Cursor color */
+  color: #00ff00;
   animation: blink 1s step-end infinite;
   margin-left: 1px;
-  display: inline-block; /* Needed for animation and proper placement */
+  display: inline-block;
   vertical-align: baseline;
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+/* Styles for Clickable Terminal Links */
+.terminal-link {
+    color: #87CEFA; /* LightSkyBlue - stands out a bit */
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0; /* Reset padding */
+    font: inherit; /* Inherit .output-area p font if nested, or .terminal-content font */
+    display: inline; /* Or inline-block if more control needed */
+}
+
+.terminal-link:hover {
+    color: #ADD8E6; /* Lighter blue on hover */
+    /* background-color: rgba(255, 255, 255, 0.1); Optional subtle hover background */
 }
 
 
@@ -222,11 +247,11 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(20, 20, 20, 0.95); /* Darker, slightly more transparent */
+  background-color: rgba(20, 20, 20, 0.95);
   z-index: 100;
   transform: translateY(-100%);
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-  backdrop-filter: blur(5px); /* Subtle blur for navbar background */
+  backdrop-filter: blur(5px);
 }
 
 #navbar.visible {
@@ -242,14 +267,14 @@ body {
 }
 
 #navbar li {
-  margin: 0 15px; /* Slightly less margin */
+  margin: 0 15px;
 }
 
 #navbar a {
-  color: #ccc; /* Lighter grey for nav links */
+  color: #ccc;
   text-decoration: none;
-  font-size: 1.1rem; /* Slightly smaller */
-  padding: 18px 10px; /* Adjust padding */
+  font-size: 1.1rem;
+  padding: 18px 10px;
   display: inline-block;
   position: relative;
   transition: color 0.3s ease;
@@ -261,7 +286,7 @@ body {
   position: absolute;
   width: 100%;
   height: 2px;
-  bottom: 10px; /* Raise the underline slightly */
+  bottom: 10px;
   left: 0;
   background-color: aquamarine;
   visibility: hidden;
@@ -278,12 +303,11 @@ body {
   transform: scaleX(1);
 }
 
-/* Hamburger Menu Animation */
 .hamburger {
-  display: none; /* Hidden by default, shown in media query */
+  display: none;
   cursor: pointer;
   padding: 15px;
-  position: absolute; /* Position it within the navbar */
+  position: absolute;
   right: 15px;
   top: 50%;
   transform: translateY(-50%);
@@ -313,16 +337,17 @@ body {
 /* --- Responsive Design Adjustments --- */
 @media screen and (max-width: 768px) {
   #changing-text {
-    font-size: 3.5em; /* Adjusted for smaller screens */
+    font-size: 3.5em;
   }
 
-  .page h2 { /* General H2 on smaller screens */
+  .page h2 {
     font-size: clamp(1.8rem, 5vw, 2.2rem);
   }
 
   #terminal {
     width: 95%;
     min-height: 180px;
+    max-height: 50vh; /* Adjust max-height for mobile */
   }
   .terminal-content {
     font-size: 0.85em;
@@ -333,9 +358,9 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    background-color: rgba(20, 20, 20, 0.98); /* Solid background when open */
+    background-color: rgba(20, 20, 20, 0.98);
     position: absolute;
-    top: 100%; /* Position below the navbar header part */
+    top: 100%;
     left: 0;
     padding: 10px 0;
   }
