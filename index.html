@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geetansh Jangid - Portfolio (Hero)</title>
+  <title>Geetansh Jangid - Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
@@ -36,12 +36,54 @@
         <div class="terminal-button green"></div>
       </div>
       <div class="terminal-content">
-        <p><span class="prompt">$</span> <span id="command"></span></p>
-        <p id="output" class="output"></p>
+        <div id="output" class="output-area">
+          <!-- Command history and results will be appended here by JavaScript -->
+        </div>
+        <p class="command-line-container">
+            <span class="prompt">$</span>
+            <span id="command" contenteditable="true" spellcheck="false"></span>
+        </p>
       </div>
     </div>
-    <div id="scroll-text">Scroll Down</div>
+    <div id="scroll-text">Scroll Down (or use terminal: 'cd intro')</div>
   </div>
+
+  <!-- Placeholder Sections for Terminal Navigation -->
+  <!-- These will be hidden by default and shown by the 'cd' command -->
+  <div id="introduction" class="page" style="display: none;">
+    <!-- Content for Introduction page will go here -->
+    <h2>Introduction</h2>
+    <p>This is the introduction section. Type 'cd skills' to go to skills.</p>
+    <p><a href="#home" class="nav-back-home">Back to Home (via link)</a></p>
+    <button onclick="navigateToSection('home')">Back to Home (via button)</button> <!-- Example for JS nav -->
+
+  </div>
+
+  <div id="skills" class="page" style="display: none;">
+    <!-- Content for Skills page will go here -->
+    <h2>Skills</h2>
+    <p>This is the skills section. Type 'cd work' to go to work.</p>
+     <p><a href="#home" class="nav-back-home">Back to Home (via link)</a></p>
+     <button onclick="navigateToSection('home')">Back to Home (via button)</button>
+  </div>
+
+  <div id="work" class="page" style="display: none;">
+    <!-- Content for Work page will go here -->
+    <h2>Work</h2>
+    <p>This is the work section. Type 'cd certificates' to go to certificates.</p>
+     <p><a href="#home" class="nav-back-home">Back to Home (via link)</a></p>
+     <button onclick="navigateToSection('home')">Back to Home (via button)</button>
+  </div>
+
+  <div id="certificates" class="page" style="display: none;">
+    <!-- Content for Certificates page will go here -->
+    <h2>Certificates</h2>
+    <p>This is the certificates section. Type 'cd home' to go back home.</p>
+     <p><a href="#home" class="nav-back-home">Back to Home (via link)</a></p>
+     <button onclick="navigateToSection('home')">Back to Home (via button)</button>
+  </div>
+  <!-- End of Placeholder Sections -->
+
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
