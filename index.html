@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geetansh Jangid - Portfolio</title>
+  <title>Geetansh Jangid - Portfolio (Hero Section)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+
+  <!-- Navbar Structure (for Hero Menu Button functionality and potential future use) -->
   <nav id="navbar">
     <div class="hamburger">
       <div></div>
@@ -18,16 +20,21 @@
     </div>
     <ul>
       <li><a href="#home">Home</a></li>
-      <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#certificates">Certificates</a></li>
+      <!-- Other links removed as their sections are gone for now -->
+      <!-- <li><a href="#introduction">Introduction</a></li> -->
+      <!-- <li><a href="#skills">Skills</a></li> -->
+      <!-- <li><a href="#work">Work</a></li> -->
+      <!-- <li><a href="#certificates">Certificates</a></li> -->
     </ul>
   </nav>
 
+  <!-- Hero Section -->
   <div id="home" class="page">
     <div id="blob"></div>
     <div id="blur"></div>
+
+    <div id="hero-menu-button">MENU</div>
+
     <h1 id="changing-text">PROGRAMMER</h1>
     <div id="terminal">
       <div class="terminal-header">
@@ -40,141 +47,9 @@
         <p id="output" class="output"></p>
       </div>
     </div>
-    <div id="scroll-text">Scroll Down</div>
   </div>
 
-  <div id="introduction" class="page intro-terminal-page">
-    <div id="intro-terminal" class="terminal-window">
-      <div class="terminal-header">
-        <div class="terminal-button red"></div>
-        <div class="terminal-button yellow"></div>
-        <div class="terminal-button green"></div>
-        <div class="terminal-title">Geetansh:~</div>
-      </div>
-      <div id="intro-terminal-content" class="terminal-content">
-      </div>
-    </div>
-  </div>
-
-  <div id="skills" class="page">
-    <h2>Skills</h2>
-    <div class="page-content">
-      <ul class="skill-list">
-        <li>
-          <div class="skill-info">
-            <div class="skill-icon">
-              <img src="/img/assets/html-icon.png" alt="Web Development Icon">
-            </div>
-            <span class="skill-name" data-text="Web Development"><h3>Web Development</h3></span>
-          </div>
-          <div class="skill-bar-container">
-            <div class="skill-bar" style="width: 75%"></div>
-            <span class="skill-percentage">75%</span>
-          </div>
-        </li>
-        <li>
-        <div class="skill-info">
-          <div class="skill-icon">
-            <img src="/img/assets/python-icon.png" alt="Python Icon">
-          </div>
-          <span class="skill-name" data-text="Python"><h3>Python</h3></span>
-        </div>
-        <div class="skill-bar-container">
-          <div class="skill-bar" style="width: 40%"></div>
-          <span class="skill-percentage">40%</span>
-        </div>
-      </li>
-      <li>
-        <div class="skill-info">
-          <div class="skill-icon">
-            <img src="/img/assets/javascript-icon.png" alt="JavaScript Icon">
-          </div>
-          <span class="skill-name" data-text="JavaScript"><h3>JavaScript</h3></span>
-        </div>
-        <div class="skill-bar-container">
-          <div class="skill-bar" style="width: 30%"></div>
-          <span class="skill-percentage">30%</span>
-        </div>
-      </li>
-      <li>
-        <div class="skill-info">
-          <div class="skill-icon">
-            <img src="/img/assets/ai.png" alt="AI Icon">
-          </div>
-          <span class="skill-name" data-text="AI Researcher"><h3>AI Researcher</h3></span>
-        </div>
-        <div class="skill-bar-container">
-          <div class="skill-bar" style="width: 93%"></div>
-          <span class="skill-percentage">93%</span>
-        </div>
-      </li>
-      <li>
-      <div class="skill-info">
-          <div class="skill-icon">
-            <img src="/img/assets/artist-icon.png" alt="Artist icon">
-          </div>
-          <span class="skill-name" data-text="Sketching"><h3>Sketching</h3></span>
-        </div>
-        <div class="skill-bar-container">
-          <div class="skill-bar" style="width: 45%"></div>
-          <span class="skill-percentage">45%</span>
-        </div>
-    </li>
-        <!-- Repeat for other skills -->
-      </ul>
-    </div>
-  </div>
-
-  <div id="work" class="page">
-    <h2>Work</h2>
-    <p>Here are some of my recent projects:</p>
-    
-  </div>
-
-  <div id="certificates" class="page">
-    <h2>Certificates</h2>
-    <p>Here are some of my certifications:</p>
-    <div class="slider-container">
-      <div class="slider-header">
-        <div class="slider-button red"></div>
-        <div class="slider-button yellow"></div>
-        <div class="slider-button green"></div>
-      </div>
-      <div class="slider-content">
-        <div class="slider">
-          <img src="/img/cert/c1.jpg" alt="Certificate 1">
-          <img src="/img/cert/c2.jpg" alt="Certificate 2">
-          <img src="/img/cert/c3.png" alt="Certificate 3">
-          <img src="/img/cert/c4.jpg" alt="Certificate 4">
-          <img src="/img/cert/c5.jpg" alt="Certificate 5">
-          <img src="/img/cert/c6.png" alt="Certificate 6">
-          <img src="/img/cert/c7.png" alt="Certificate 7">
-          <img src="/img/cert/c8.png" alt="Certificate 8">
-          <img src="/img/cert/c9.jpg" alt="Certificate 9">
-          <img src="/img/cert/c10.jpg" alt="Certificate 10">
-          <img src="/img/cert/c11.png" alt="Certificate 11">
-        </div>
-        <button class="slider-prev">&#10094;</button>
-        <button class="slider-next">&#10095;</button>
-      </div>
-    </div>
-  </div>
-
-  <footer id="footer">
-    <div class="falling-letters-container"></div>
-    <div class="footer-content">
-      <div class="unq">
-        <h5>私 わ</h5>
-        <h3>Geetansh Jangid</h3>
-      </div>
-      
-      <div class="contact-section">
-        <div class="contact-info">
-          <p>Email: jangidgeetansh22@gmail.com</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+  <!-- All other sections (Introduction, Skills, Work, Certificates, Footer) are removed for this hero-only version -->
 
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
