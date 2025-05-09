@@ -1,51 +1,159 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&display=swap'); /* Added Rubik for general text */
 
 * {
     box-sizing: border-box;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background-color: black;
   margin: 0;
   color: white;
-  font-family: 'Rubik', sans-serif; /* Default to Rubik for readability */
+  font-family: 'Orbitron', sans-serif;
   overflow-x: hidden;
   width: 100%;
 }
 
-.body-no-scroll { /* For locking body scroll when menu is open */
-  overflow: hidden;
+/* Terminal cursor styles */
+#command::after {
+  content: '█';
+  animation: blink 1s step-end infinite;
 }
 
-/* --- General Page Structure --- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+#home {
+  overflow: hidden;
+  position: relative;
+}
+
 .page {
   min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden; /* Prevents most internal horizontal overflow */
+  overflow-x: hidden;
 }
 
-/* Center content for specific pages like home */
-#home {
-  justify-content: center;
-  align-items: center;
+@keyframes rotate {
+  from { rotate: 0deg; }
+  50% { scale: 1 1.5; }
+  to { rotate: 360deg; }
 }
 
-/* --- Original Navbar Styles (Appears on Scroll) --- */
+#blob {
+  background-color: white;
+  height: 34vmax;
+  aspect-ratio: 1;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: linear-gradient(to right, aquamarine, mediumpurple);
+  animation: rotate 20s infinite;
+  opacity: 0.8;
+}
+
+#blur {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 2;
+  backdrop-filter: blur(12vmax);
+}
+
+h1, h2 { /* General heading style, h1 is used in #home */
+  font-size: clamp(2rem, 5vw, 5rem);
+  color: white;
+  padding: 0rem clamp(1rem, 2vw, 3rem);
+  border-radius: clamp(0.4rem, 0.75vw, 1rem);
+  margin: 0;
+  z-index: 3;
+}
+
+#terminal {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  background-color: rgba(30, 30, 30, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: 'Space Mono', monospace;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  margin: 20px auto;
+}
+
+.terminal-header {
+  background-color: #323232;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+}
+
+.terminal-button {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.red { background-color: #ff5f56; }
+.yellow { background-color: #ffbd2e; }
+.green { background-color: #27c93f; }
+
+.terminal-content {
+  padding: 20px;
+  color: #f0f0f0;
+  font-size: 16px;
+  line-height: 1.5;
+  height: 150px; /* Fixed height for terminal content area */
+  overflow-y: auto;
+}
+
+.prompt {
+  color: #00ff00;
+  font-size: 1.4em;
+}
+
+#command {
+  font-size: 1.4em;
+}
+
+.output {
+  color: #f0f0f0;
+  font-size: 1.7em;
+  font-weight: 1000;
+}
+
+#scroll-text {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  color: white;
+  z-index: 3;
+}
+
+#changing-text {
+  font-size: 6em;
+}
+
+/* Navbar Styles */
 #navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   background-color: rgba(30, 30, 30, 0.9);
-  backdrop-filter: blur(5px);
   z-index: 100;
   transform: translateY(-100%);
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -55,7 +163,7 @@ body {
   transform: translateY(0);
 }
 
-#navbar ul { /* Default desktop UL style */
+#navbar ul {
   display: flex;
   justify-content: center;
   list-style-type: none;
@@ -70,7 +178,6 @@ body {
 #navbar a {
   color: white;
   text-decoration: none;
-  font-family: 'Space Mono', monospace;
   font-size: 1.2rem;
   padding: 15px 0;
   display: inline-block;
@@ -78,7 +185,7 @@ body {
   transition: color 0.3s ease;
 }
 
-#navbar a::before { /* Hover underline for desktop links */
+#navbar a::before {
   content: '';
   position: absolute;
   width: 100%;
@@ -94,252 +201,82 @@ body {
 #navbar a:hover {
   color: #fff;
 }
+
 #navbar a:hover::before {
   visibility: visible;
   transform: scaleX(1);
 }
 
-/* Hamburger for the original navbar (when it scrolls into view) */
-#navbar .hamburger {
-  display: none; /* Hidden on desktop */
-  width: 35px;
-  height: 30px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  z-index: 102;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 0;
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#navbar .hamburger div {
-  width: 22px;
-  height: 2.5px;
-  background-color: white;
-  margin: 3.5px 0;
-  transition: all 0.3s ease-in-out;
-  border-radius: 1.5px;
-}
-
-#navbar .hamburger.active div { background-color: #fff; }
-#navbar .hamburger.active div:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-#navbar .hamburger.active div:nth-child(2) { opacity: 0; transform: translateX(-20px); }
-#navbar .hamburger.active div:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
-
-
-/* --- Hero Page Menu Button --- */
-#hero-menu-button {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  font-family: 'Space Mono', monospace;
-  font-size: 1rem;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  z-index: 101;
-  transition: color 0.3s ease;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-#hero-menu-button:hover {
-  color: aquamarine;
-}
-#hero-menu-button.active {
-  font-size: 1.5rem;
-  padding: 5px 10px;
-}
-
-
-/* --- Fullscreen Menu Styles (triggered by hero-menu-button or OG hamburger) --- */
-#navbar ul.hero-menu-active { /* Class for fullscreen mode */
-  display: flex !important; /* Override other display states */
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 1000;
-  padding: 0;
-  margin: 0;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-20px);
-  transition: opacity 0.3s ease, visibility 0s 0.3s, transform 0.3s ease;
-}
-
-#navbar ul.hero-menu-active.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  transition: opacity 0.3s ease, visibility 0s 0s, transform 0.3s ease;
-}
-
-#navbar ul.hero-menu-active li {
-  margin: 20px 0;
-}
-
-#navbar ul.hero-menu-active a {
-  font-size: 1.8rem;
-  color: #e0e0e0;
-  padding: 10px;
-  font-family: 'Orbitron', sans-serif;
-}
-#navbar ul.hero-menu-active a::before {
-    display: none;
-}
-#navbar ul.hero-menu-active a:hover {
-  color: aquamarine;
-}
-
-/* --- Hero Section (#home) Styles --- */
-#home {
-  /* overflow: hidden; */ /* Already on .page */
-  /* position: relative; */ /* Already on .page */
-}
-@keyframes rotate {
-  from { rotate: 0deg; }
-  50% { scale: 1 1.5; }
-  to { rotate: 360deg; }
-}
-#blob {
-  background-color: white;
-  height: 34vmax;
-  aspect-ratio: 1;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: linear-gradient(to right, aquamarine, mediumpurple);
-  animation: rotate 20s infinite;
-  opacity: 0.8;
-  z-index: 1;
-}
-#blur {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 2;
-  backdrop-filter: blur(12vmax);
-}
-#home h1#changing-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: clamp(2.5rem, 8vw, 6em);
-  color: white;
-  padding: 0rem clamp(1rem, 2vw, 3rem);
-  border-radius: clamp(0.4rem, 0.75vw, 1rem);
-  margin: 0 0 20px 0;
-  z-index: 3;
-  text-align: center;
-}
-
-/* Hero Terminal Styles */
-#terminal {
-  position: relative;
-  width: 90%;
-  max-width: 500px;
-  background-color: rgba(30, 30, 30, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-  z-index: 10;
-  margin: 20px auto;
-}
-#terminal .terminal-header {
-  background-color: #323232;
-  padding: 10px;
-  display: flex;
-  gap: 8px;
-}
-#terminal .terminal-button {
-  width: 15px; height: 15px; border-radius: 50%;
-}
-.red { background-color: #ff5f56; }
-.yellow { background-color: #ffbd2e; }
-.green { background-color: #27c93f; }
-
-#terminal .terminal-content {
-  padding: 15px 20px;
-  color: #f0f0f0;
-  font-size: 1em;
-  line-height: 1.5;
-  height: 140px;
-  overflow-y: auto;
-}
-
-#terminal .prompt { color: #00ff00; font-size: 1.1em; }
-#terminal #command { font-size: 1.1em; }
-#terminal #command::after { /* Cursor for hero terminal */
-  content: '█';
-  animation: blink 1s step-end infinite;
-}
-#terminal .output { color: #f0f0f0; font-size: 1.2em; font-weight: bold;}
-
-@keyframes blink { /* Ensure blink is defined (used by hero terminal cursor) */
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* Styles for other sections (Introduction, Skills, Work, Certificates, Footer) are removed */
-/* Rotated headings, page-content for specific sections, etc., are removed */
-
-
-/* --- Responsive Design Adjustments --- */
+/* Responsive Navbar Styles */
 @media screen and (max-width: 768px) {
-  /* Original Navbar Mobile Styles */
-  #navbar ul:not(.hero-menu-active) {
+  #navbar ul {
     display: none;
     flex-direction: column;
     align-items: center;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background-color: rgba(30,30,30,0.95);
-    padding: 10px 0;
   }
-  #navbar ul:not(.hero-menu-active).show {
-      display: flex !important;
-  }
-  #navbar ul:not(.hero-menu-active) li {
-    margin: 10px 0;
-    width: 100%;
-    text-align: center;
-  }
-  #navbar ul:not(.hero-menu-active) a {
-      padding: 12px 0;
-  }
-  #navbar .hamburger {
+
+  #navbar ul.show {
     display: flex;
   }
 
-  /* Hero Section Mobile */
-  #home h1#changing-text { font-size: clamp(2rem, 10vw, 3em); }
-  #terminal { width: 95%; max-width: 95%; }
-  #terminal .terminal-content { height: 80px; font-size: 0.9em; }
-  #hero-menu-button { top: 20px; right: 20px; padding: 6px 12px; font-size: 0.9rem;}
+  #navbar li {
+    margin: 10px 0;
+  }
 
-  /* Styles specific to removed sections on mobile are also removed */
+  .hamburger {
+    display: block;
+  }
 }
 
-@media screen and (max-width: 480px) {
-  #home h1#changing-text { font-size: clamp(1.8rem, 12vw, 2.5em); }
-  #hero-menu-button { top: 15px; right: 15px; font-size: 0.8rem;}
+/* Hamburger Menu Animation */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  padding: 15px;
+  transition: all 0.3s ease-in-out;
+}
 
-  /* Styles specific to removed sections on very small screens are also removed */
+.hamburger div {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.hamburger.active div:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.active div:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active div:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/* Responsive Design Adjustments for Hero Elements */
+@media screen and (max-width: 768px) {
+  #changing-text {
+    font-size: 2.5em;
+  }
+
+  h1, h2 {
+    font-size: clamp(2.5rem, 4vw, 3rem);
+  }
+  
+  #terminal {
+    width: 95%;
+  }
+}
+
+/* Remove blue background on click */
+* {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, input {
+  -webkit-tap-highlight-color: transparent;
 }
