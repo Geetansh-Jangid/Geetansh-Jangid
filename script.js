@@ -35,7 +35,7 @@ $(document).ready(function() {
         function startTextAnimation() {
             let iteration = 0;
             clearInterval(intervalTextEffect);
-            if (!words[wordIndex]) return; // Safety check
+            if (!words[wordIndex]) return;
 
             intervalTextEffect = setInterval(() => {
                 if (!changingTextElement) {
@@ -59,8 +59,8 @@ $(document).ready(function() {
                         startTextAnimation();
                     }, 2000);
                 }
-                iteration += 1 / 1.5; // Adjust speed
-            }, 60); // Adjust timing
+                iteration += 1 / 1.5;
+            }, 60);
         }
         startTextAnimation();
     }
@@ -78,56 +78,70 @@ $(document).ready(function() {
         terminalInput.contentEditable = true;
         terminalInput.spellcheck = false;
 
-        // Initial welcome message
         appendToTerminal("Welcome to Geetansh's Interactive Portfolio Terminal!");
-        appendToTerminal("Type 'help' for a list of commands.");
-        appendToTerminal(" "); // Empty line
+        appendToTerminal("Type 'help' or click commands for navigation."); // Updated welcome
+        appendToTerminal(" ");
 
         terminalInput.addEventListener('keydown', function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
                 const commandToProcess = terminalInput.textContent.trim();
-                terminalInput.textContent = ""; // Clear input immediately
+                terminalInput.textContent = "";
 
                 if (commandToProcess) {
                     processCommand(commandToProcess);
-                } else { // If user just presses enter on an empty line
-                    appendToTerminal("", true); // Just show a new prompt
+                } else {
+                    appendToTerminal("", true); // Echo prompt for empty enter
                 }
             }
-            // Add more key handling here (e.g., ArrowUp for history) if desired
         });
 
         if (terminalElement) {
             terminalElement.addEventListener('click', (e) => {
-                // Only focus if the click is not on a button inside the terminal
-                if (!e.target.closest('button') && !e.target.closest('.terminal-header')) {
+                if (!e.target.closest('button') && !e.target.closest('.terminal-header') && !e.target.classList.contains('terminal-link')) {
                      terminalInput.focus();
                 }
             });
         }
-         // Auto-focus terminal input on load (optional)
-        // terminalInput.focus();
+
+        // Event listener for clickable terminal links
+        actualOutputDisplay.addEventListener('click', function(event) {
+            const target = event.target;
+            if (target.classList.contains('terminal-link')) {
+                event.preventDefault();
+                const commandToRun = target.dataset.command;
+                if (commandToRun) {
+                    // No need to echo command here, processCommand will do it.
+                    processCommand(commandToRun);
+                    terminalInput.textContent = ""; // Ensure input is cleared
+                    terminalInput.focus();
+                }
+            }
+        });
     }
 
-    function appendToTerminal(text, isCommandEcho = false) {
+    function appendToTerminal(htmlContent, isCommandEcho = false, commandText = "") {
         const newLine = document.createElement('p');
         if (isCommandEcho) {
-            // For command echoes, we create the prompt and then the command text
             const promptSpan = document.createElement('span');
             promptSpan.className = 'prompt';
-            promptSpan.textContent = '$ '; // Ensure space after prompt
+            promptSpan.textContent = '$ ';
             newLine.appendChild(promptSpan);
-            newLine.appendChild(document.createTextNode(text)); // Append command text after prompt
+            newLine.appendChild(document.createTextNode(commandText)); // Use commandText for echo
         } else {
-            newLine.innerHTML = text; // For regular output, allow HTML
+            newLine.innerHTML = htmlContent; // Allow HTML for links etc.
         }
         actualOutputDisplay.appendChild(newLine);
-        terminalOutputContainer.scrollTop = terminalOutputContainer.scrollHeight; // Auto-scroll
+        if (terminalOutputContainer) { // Check if container exists
+           terminalOutputContainer.scrollTop = terminalOutputContainer.scrollHeight;
+        }
     }
 
     function processCommand(commandStr) {
-        appendToTerminal(commandStr, true); // Echo the command with prompt
+        // Echo the command with prompt, only if it's not an internal call from a link
+        // For simplicity, we'll always echo. Clicks will look like typed commands.
+        appendToTerminal(commandStr, true, commandStr);
+
 
         const parts = commandStr.trim().toLowerCase().split(" ");
         const command = parts[0];
@@ -138,22 +152,38 @@ $(document).ready(function() {
                 if (args.length > 0) {
                     navigateToSection(args[0]);
                 } else {
-                    appendToTerminal("Usage: cd <section_name><br>Sections: home, intro, skills, work, certificates");
+                    let cdHelp = "Usage: cd <section_name><br>Available sections:<br>";
+                    const sectionsForCd = ["home", "introduction", "skills", "work", "certificates"];
+                    sectionsForCd.forEach(sec => {
+                        cdHelp += `  <a href="#" class="terminal-link" data-command="cd ${sec}">${sec}</a><br>`;
+                    });
+                    appendToTerminal(cdHelp);
                 }
                 break;
             case "ls":
             case "dir":
-                appendToTerminal("home<br>introduction<br>skills<br>work<br>certificates");
+                const sections = ["home", "introduction", "skills", "work", "certificates"];
+                let sectionLinksHTML = "Available sections:<br>";
+                sections.forEach(section => {
+                    sectionLinksHTML += `  <a href="#" class="terminal-link" data-command="cd ${section}">${section}</a><br>`;
+                });
+                appendToTerminal(sectionLinksHTML);
                 break;
             case "help":
-                appendToTerminal(
-                    "Available commands:<br>" +
-                    "  cd <section>  - Navigate (e.g., cd intro)<br>" +
-                    "  ls | dir         - List sections<br>" +
-                    "  whoami           - Display user info<br>" +
-                    "  clear | cls      - Clear terminal<br>" +
-                    "  help             - Show this help"
-                );
+                let helpHTML = "Available commands (click or type):<br>";
+                const commandsHelp = [
+                    { cmdText: "cd <section>", desc: "Navigate to a section", clickCmd: "cd introduction" },
+                    { cmdText: "ls", desc: "List available sections", clickCmd: "ls" },
+                    { cmdText: "dir", desc: "List available sections (alias for ls)", clickCmd: "dir" },
+                    { cmdText: "whoami", desc: "Display user info", clickCmd: "whoami" },
+                    { cmdText: "clear", desc: "Clear the terminal", clickCmd: "clear" },
+                    { cmdText: "cls", desc: "Clear the terminal (alias for clear)", clickCmd: "cls" },
+                    { cmdText: "help", desc: "Show this help message", clickCmd: "help" }
+                ];
+                commandsHelp.forEach(item => {
+                    helpHTML += `  <a href="#" class="terminal-link" data-command="${item.clickCmd}">${item.cmdText}</a> - ${item.desc}<br>`;
+                });
+                appendToTerminal(helpHTML);
                 break;
             case "whoami":
                 appendToTerminal("Geetansh Jangid");
@@ -169,7 +199,7 @@ $(document).ready(function() {
         }
     }
 
-    window.navigateToSection = function(sectionNameInput) { // Make it globally accessible for inline button onclicks
+    window.navigateToSection = function(sectionNameInput) {
         const sectionName = sectionNameInput.toLowerCase();
         const validSections = {
             "home": "#home",
@@ -193,34 +223,39 @@ $(document).ready(function() {
                 }
             });
 
-            if (!anyPageVisible && targetId === "#home") { // Fallback for home if somehow no pages are visible
+            if (!anyPageVisible && targetId === "#home") {
                  document.querySelector("#home").style.display = 'flex';
             }
 
-
-            // Update URL only if it's different to avoid spamming history
-            const currentPath = window.location.pathname.substring(1).toLowerCase();
+            const currentPath = window.location.pathname.substring(1).toLowerCase().replace(/index\.html\/?$/, '');
             const newPath = (sectionName === "home" || sectionName === "") ? "" : sectionName;
+
             if (currentPath !== newPath) {
                  history.pushState({ section: sectionName }, `Geetansh - ${sectionName}`, `/${newPath}`);
+            } else if (currentPath === "" && newPath === "" && window.location.pathname !== "/") {
+                // Handles case where initial load is root but pushState might try to push "/" again
+                 history.replaceState({ section: sectionName }, `Geetansh - ${sectionName}`, `/`);
             }
 
-            // Navbar visibility update
-            updateNavbarVisibility();
 
-            if (terminalElement) appendToTerminal(`Navigated to ${sectionName}.`);
+            updateNavbarVisibility();
+            // Feedback in terminal is now handled by processCommand echoing 'cd <section>'
+            // appendToTerminal(`Navigated to ${sectionName}.`); // Remove this duplicate feedback
 
         } else {
-            if (terminalElement) appendToTerminal(`Error: Section '${sectionNameInput}' not found.`);
+            appendToTerminal(`Error: Section '${sectionNameInput}' not found.`);
         }
     }
 
     function handleInitialLoad() {
-        const path = window.location.pathname.substring(1).toLowerCase();
-        if (path && path !== "index.html") { // Ignore index.html if it appears
+        let path = window.location.pathname.substring(1).toLowerCase();
+        // Remove trailing slash or index.html for cleaner matching
+        path = path.replace(/\/$/, "").replace(/index\.html$/, "");
+
+        if (path && path !== "index.html") {
             navigateToSection(path);
         } else {
-            navigateToSection("home"); // Default to home
+            navigateToSection("home");
         }
     }
 
@@ -228,8 +263,8 @@ $(document).ready(function() {
         if (event.state && event.state.section) {
             navigateToSection(event.state.section);
         } else {
-            // If no state, it might be the initial page or a refresh on a path
-            const path = window.location.pathname.substring(1).toLowerCase();
+            let path = window.location.pathname.substring(1).toLowerCase();
+            path = path.replace(/\/$/, "").replace(/index\.html$/, "");
             if (path && path !== "index.html") {
                 navigateToSection(path);
             } else {
@@ -238,7 +273,6 @@ $(document).ready(function() {
         }
     };
 
-    // --- Navbar Logic ---
     function updateNavbarVisibility() {
         if (!navbar) return;
         const homePage = document.getElementById('home');
@@ -253,24 +287,20 @@ $(document).ready(function() {
 
     if (navbar) {
         window.addEventListener('scroll', updateNavbarVisibility);
-        // Initial check in case page loads scrolled or on a non-home section
         updateNavbarVisibility();
     }
 
-    // Smooth scrolling for NAV LINKS (primarily for #home or if user clicks them)
     document.querySelectorAll('#navbar a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href').substring(1); // remove #
-            // Use navigateToSection for consistency if it's a known section
+            const targetId = this.getAttribute('href').substring(1);
             if (["home", "introduction", "skills", "work", "certificates"].includes(targetId)) {
                 navigateToSection(targetId);
-                // Close hamburger if open
                 if (navLinks && navLinks.classList.contains('show')) {
                     navLinks.classList.remove('show');
                     if(hamburger) hamburger.classList.remove('active');
                 }
-            } else { // Fallback for other hrefs if any
+            } else {
                 const targetElement = document.querySelector(this.getAttribute('href'));
                 if (targetElement) {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
@@ -286,7 +316,6 @@ $(document).ready(function() {
         });
     }
 
-    // --- Initialize ---
-    handleInitialLoad(); // Load appropriate section based on URL
+    handleInitialLoad();
 
-}); // End of $(document).ready
+});
