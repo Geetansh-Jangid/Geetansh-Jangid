@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&display=swap');
+
 
 * {
     box-sizing: border-box;
@@ -13,33 +15,56 @@ body {
   width: 100%;
 }
 
-/* Terminal cursor styles */
-#command::after {
-  content: '█';
-  animation: blink 1s step-end infinite;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-#home {
-  overflow: hidden;
-  position: relative;
-}
-
+/* --- Page Structure --- */
 .page {
   min-height: 100vh;
   width: 100%;
-  display: flex;
+  display: flex; /* Changed from none, JS will control which is flex */
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+  position: relative; /* Keep relative for absolute children like h2 in some sections */
   padding: 20px;
   box-sizing: border-box;
   overflow-x: hidden;
+}
+
+/* Specific styles for placeholder pages for better visibility during testing */
+#introduction, #skills, #work, #certificates {
+  background-color: #111; /* Slightly different background */
+  text-align: center;
+}
+#introduction h2, #skills h2, #work h2, #certificates h2 {
+  position: static; /* Override absolute positioning for these simple pages */
+  transform: none;
+  margin-bottom: 20px;
+  font-size: clamp(2rem, 4vw, 2.5rem);
+}
+#introduction p, #skills p, #work p, #certificates p {
+  font-family: 'Rubik', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+.nav-back-home, #introduction button, #skills button, #work button, #certificates button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: mediumpurple;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+}
+.nav-back-home:hover, #introduction button:hover, #skills button:hover, #work button:hover, #certificates button:hover {
+  background-color: aquamarine;
+  color: black;
+}
+
+
+/* --- Hero Section (#home) Specific Styles --- */
+#home {
+  overflow: hidden; /* Prevents content inside #home from overflowing horizontally */
 }
 
 @keyframes rotate {
@@ -60,6 +85,7 @@ body {
   background: linear-gradient(to right, aquamarine, mediumpurple);
   animation: rotate 20s infinite;
   opacity: 0.8;
+  z-index: 1; /* Ensure blob is behind blur and content */
 }
 
 #blur {
@@ -70,67 +96,14 @@ body {
   backdrop-filter: blur(12vmax);
 }
 
-h1, h2 { /* General heading style, h1 is used in #home */
-  font-size: clamp(2rem, 5vw, 5rem);
+#changing-text { /* This is the H1 in the hero */
+  font-size: 6em;
   color: white;
   padding: 0rem clamp(1rem, 2vw, 3rem);
   border-radius: clamp(0.4rem, 0.75vw, 1rem);
   margin: 0;
   z-index: 3;
-}
-
-#terminal {
-  position: relative;
-  width: 90%;
-  max-width: 500px;
-  background-color: rgba(30, 30, 30, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  font-family: 'Space Mono', monospace;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
-  z-index: 10;
-  margin: 20px auto;
-}
-
-.terminal-header {
-  background-color: #323232;
-  padding: 10px;
-  display: flex;
-  gap: 8px;
-}
-
-.terminal-button {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-}
-
-.red { background-color: #ff5f56; }
-.yellow { background-color: #ffbd2e; }
-.green { background-color: #27c93f; }
-
-.terminal-content {
-  padding: 20px;
-  color: #f0f0f0;
-  font-size: 16px;
-  line-height: 1.5;
-  height: 150px; /* Fixed height for terminal content area */
-  overflow-y: auto;
-}
-
-.prompt {
-  color: #00ff00;
-  font-size: 1.4em;
-}
-
-#command {
-  font-size: 1.4em;
-}
-
-.output {
-  color: #f0f0f0;
-  font-size: 1.7em;
-  font-weight: 1000;
+  font-family: 'Orbitron', sans-serif;
 }
 
 #scroll-text {
@@ -141,22 +114,119 @@ h1, h2 { /* General heading style, h1 is used in #home */
   font-size: 1.2rem;
   color: white;
   z-index: 3;
+  font-family: 'Space Mono', monospace;
 }
 
-#changing-text {
-  font-size: 6em;
+
+/* --- Terminal Styles --- */
+#terminal {
+  position: relative;
+  width: 90%;
+  max-width: 600px; /* Slightly wider for better usability */
+  min-height: 200px; /* Minimum height */
+  background-color: rgba(10, 10, 10, 0.9); /* Darker, more terminal-like */
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: 'Space Mono', monospace;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 5px rgba(0,0,0,0.7); /* Cyan glow */
+  z-index: 10;
+  margin: 20px auto;
+  border: 1px solid rgba(100,100,100,0.5);
 }
 
-/* Navbar Styles */
+.terminal-header {
+  background-color: #222; /* Darker header */
+  padding: 8px 12px;
+  display: flex;
+  gap: 8px;
+  cursor: move; /* For dragging */
+}
+
+.terminal-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.red { background-color: #ff5f56; }
+.yellow { background-color: #ffbd2e; }
+.green { background-color: #27c93f; }
+
+.terminal-content {
+  padding: 15px;
+  color: #e0e0e0; /* Lighter grey for text */
+  font-size: 0.9em; /* Base size for terminal text */
+  line-height: 1.6;
+  height: calc(100% - 38px); /* Adjust based on header height */
+  display: flex;
+  flex-direction: column;
+}
+
+.output-area {
+  flex-grow: 1;
+  overflow-y: auto; /* Scroll for output history */
+  padding-bottom: 10px; /* Space before command line */
+}
+
+.output-area p {
+  margin: 0 0 2px 0; /* Tighten spacing between output lines */
+  word-break: break-word; /* Break long words/commands */
+  white-space: pre-wrap; /* Preserve whitespace and newlines from JS output */
+}
+
+.command-line-container {
+  margin: 0; /* Remove default p margin */
+  display: flex; /* Align prompt and input */
+  align-items: center;
+}
+
+.prompt {
+  color: #00ff00; /* Bright green prompt */
+  font-weight: bold;
+  margin-right: 8px;
+  font-size: 1em; /* Match terminal content base size */
+}
+
+#command { /* The contenteditable span for input */
+  color: #e0e0e0; /* Input text color */
+  flex-grow: 1; /* Take remaining space */
+  outline: none; /* Remove focus outline on contenteditable */
+  caret-color: transparent; /* Hide native caret, we use ::after */
+  min-width: 1ch; /* Ensure it has some width even when empty */
+  font-size: 1em; /* Match terminal content base size */
+}
+
+#command:empty::before {
+  /* content: "type command..."; */ /* Optional placeholder */
+  /* color: #555; */
+}
+
+#command::after { /* Blinking cursor for the command line input itself */
+  content: '█';
+  color: #00ff00; /* Cursor color */
+  animation: blink 1s step-end infinite;
+  margin-left: 1px;
+  display: inline-block; /* Needed for animation and proper placement */
+  vertical-align: baseline;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+
+/* --- Navbar Styles --- */
 #navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  background-color: rgba(30, 30, 30, 0.9);
+  background-color: rgba(20, 20, 20, 0.95); /* Darker, slightly more transparent */
   z-index: 100;
   transform: translateY(-100%);
   transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+  backdrop-filter: blur(5px); /* Subtle blur for navbar background */
 }
 
 #navbar.visible {
@@ -172,17 +242,18 @@ h1, h2 { /* General heading style, h1 is used in #home */
 }
 
 #navbar li {
-  margin: 0 20px;
+  margin: 0 15px; /* Slightly less margin */
 }
 
 #navbar a {
-  color: white;
+  color: #ccc; /* Lighter grey for nav links */
   text-decoration: none;
-  font-size: 1.2rem;
-  padding: 15px 0;
+  font-size: 1.1rem; /* Slightly smaller */
+  padding: 18px 10px; /* Adjust padding */
   display: inline-block;
   position: relative;
   transition: color 0.3s ease;
+  font-family: 'Orbitron', sans-serif;
 }
 
 #navbar a::before {
@@ -190,7 +261,7 @@ h1, h2 { /* General heading style, h1 is used in #home */
   position: absolute;
   width: 100%;
   height: 2px;
-  bottom: 0;
+  bottom: 10px; /* Raise the underline slightly */
   left: 0;
   background-color: aquamarine;
   visibility: hidden;
@@ -207,33 +278,15 @@ h1, h2 { /* General heading style, h1 is used in #home */
   transform: scaleX(1);
 }
 
-/* Responsive Navbar Styles */
-@media screen and (max-width: 768px) {
-  #navbar ul {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #navbar ul.show {
-    display: flex;
-  }
-
-  #navbar li {
-    margin: 10px 0;
-  }
-
-  .hamburger {
-    display: block;
-  }
-}
-
 /* Hamburger Menu Animation */
 .hamburger {
-  display: none;
+  display: none; /* Hidden by default, shown in media query */
   cursor: pointer;
   padding: 15px;
-  transition: all 0.3s ease-in-out;
+  position: absolute; /* Position it within the navbar */
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .hamburger div {
@@ -256,27 +309,71 @@ h1, h2 { /* General heading style, h1 is used in #home */
   transform: rotate(45deg) translate(-5px, -6px);
 }
 
-/* Responsive Design Adjustments for Hero Elements */
+
+/* --- Responsive Design Adjustments --- */
 @media screen and (max-width: 768px) {
   #changing-text {
-    font-size: 2.5em;
+    font-size: 3.5em; /* Adjusted for smaller screens */
   }
 
-  h1, h2 {
-    font-size: clamp(2.5rem, 4vw, 3rem);
+  .page h2 { /* General H2 on smaller screens */
+    font-size: clamp(1.8rem, 5vw, 2.2rem);
   }
-  
+
   #terminal {
     width: 95%;
+    min-height: 180px;
+  }
+  .terminal-content {
+    font-size: 0.85em;
+  }
+
+  #navbar ul {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: rgba(20, 20, 20, 0.98); /* Solid background when open */
+    position: absolute;
+    top: 100%; /* Position below the navbar header part */
+    left: 0;
+    padding: 10px 0;
+  }
+
+  #navbar ul.show {
+    display: flex;
+  }
+
+  #navbar li {
+    margin: 10px 0;
+    width: 100%;
+    text-align: center;
+  }
+  #navbar a {
+    padding: 10px 0;
+  }
+
+  .hamburger {
+    display: block;
   }
 }
 
-/* Remove blue background on click */
+@media screen and (max-width: 480px) {
+  #changing-text {
+    font-size: 2.5em;
+  }
+  #scroll-text {
+    font-size: 1rem;
+    bottom: 60px;
+  }
+}
+
+/* Remove blue background on click/tap */
 * {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-button, a, input {
+button, a, input, [contenteditable] {
   -webkit-tap-highlight-color: transparent;
 }
