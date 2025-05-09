@@ -16,6 +16,7 @@ body {
 #home {
   overflow: hidden;
   position: relative;
+  max-height: 100vh;
 }
 
 .page {
