@@ -1,17 +1,16 @@
-const fileMap = {
-  work: [
-    "data/work/ai-productivity-assistant.txt",
-    "data/work/creative-studio-landing.txt",
-    "data/work/automation-toolkit.txt"
-  ],
-  education: [
-    "data/education/bachelors.txt",
-    "data/education/senior-secondary.txt"
-  ],
-  achievements: [
-    "data/achievements/open-source-contributor.txt",
-    "data/achievements/web-development-certification.txt"
-  ]
+const sectionConfig = {
+  work: {
+    path: "data/work/",
+    requiredKeys: ["title", "role", "timeline", "summary"]
+  },
+  education: {
+    path: "data/education/",
+    requiredKeys: ["institution", "location", "timeline", "details"]
+  },
+  achievements: {
+    path: "data/achievements/",
+    requiredKeys: ["title", "meta", "description"]
+  }
 };
 
 function parseDataFile(text) {
@@ -50,19 +49,57 @@ function parseDataFile(text) {
   return record;
 }
 
-async function loadSection(files) {
+function hasTemplateShape(record, requiredKeys) {
+  return requiredKeys.every((key) => key in record);
+}
+
+function resolveRelativePath(basePath, href) {
+  const parsedHref = decodeURIComponent(href);
+
+  if (parsedHref.startsWith("http://") || parsedHref.startsWith("https://")) {
+    const url = new URL(parsedHref);
+    return `${url.pathname}${url.search}`.replace(/^\//, "");
+  }
+
+  return `${basePath}${parsedHref.replace(/^\.?\/?/, "")}`;
+}
+
+async function discoverSectionFiles(basePath) {
+  const response = await fetch(basePath);
+  if (!response.ok) {
+    throw new Error(`Failed to load section directory: ${basePath}`);
+  }
+
+  const html = await response.text();
+  const parser = new DOMParser();
+  const directoryDocument = parser.parseFromString(html, "text/html");
+
+  const files = Array.from(directoryDocument.querySelectorAll("a[href]"))
+    .map((link) => link.getAttribute("href")?.trim() || "")
+    .filter((href) => href && href.endsWith(".txt"))
+    .map((href) => resolveRelativePath(basePath, href));
+
+  return [...new Set(files)].sort((a, b) => a.localeCompare(b));
+}
+
+async function loadSection(sectionName) {
+  const config = sectionConfig[sectionName];
+  const files = await discoverSectionFiles(config.path);
+
   const items = await Promise.all(
     files.map(async (path) => {
       const response = await fetch(path);
       if (!response.ok) {
         throw new Error(`Failed to load: ${path}`);
       }
+
       const text = await response.text();
-      return parseDataFile(text);
+      const record = parseDataFile(text);
+      return hasTemplateShape(record, config.requiredKeys) ? record : null;
     })
   );
 
-  return items;
+  return items.filter(Boolean);
 }
 
 function renderWork(items) {
@@ -145,9 +182,9 @@ async function init() {
 
   try {
     const [workItems, educationItems, achievementItems] = await Promise.all([
-      loadSection(fileMap.work),
-      loadSection(fileMap.education),
-      loadSection(fileMap.achievements)
+      loadSection("work"),
+      loadSection("education"),
+      loadSection("achievements")
     ]);
 
     renderWork(workItems);
