@@ -1,3 +1,0 @@
-title: Open Source Contributor
-meta: Community Projects | Ongoing
-description: Contributed fixes and enhancements across frontend and tooling repositories.
