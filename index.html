@@ -3,19 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geetansh Jangid - Portfolio (Hero)</title>
+  <title>Geetansh Jangid | Minimal Portfolio</title>
+  <meta name="description" content="Raw minimal grayscale portfolio powered by modular text data files.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Rubik:wght@400;500&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div id="home" class="page">
-    <div id="blob"></div>
-    <div id="blur"></div>
-    <h1 id="changing-text">PROGRAMMER</h1>
-    <div id="scroll-text">Scroll Down</div>
-  </div>
+  <header class="container stack">
+    <nav class="row between bordered pad">
+      <h1 class="site-title">GEETANSH JANGID</h1>
+      <div class="row gap nav-links">
+        <a href="#work">Work</a>
+        <a href="#education">Education</a>
+        <a href="#achievements">Achievements</a>
+        <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle theme">LIGHT</button>
+      </div>
+    </nav>
+
+    <section class="bordered pad stack intro">
+      <p class="mono">RAW • MINIMAL • MODULAR</p>
+      <p>Simple portfolio with editable text-file data sources for every section.</p>
+    </section>
+  </header>
+
+  <main class="container stack">
+    <section id="work" class="stack section-block">
+      <h2>Work</h2>
+      <div id="work-grid" class="grid"></div>
+    </section>
+
+    <section id="education" class="stack section-block">
+      <h2>Education</h2>
+      <div id="education-timeline" class="stack"></div>
+    </section>
+
+    <section id="achievements" class="stack section-block">
+      <h2>Achievements</h2>
+      <div id="achievement-grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer class="container pad bordered">
+    <p>© <span id="year"></span> Geetansh Jangid</p>
+  </footer>
+
   <script src="./script.js"></script>
 </body>
 </html>

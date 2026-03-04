@@ -1,105 +1,150 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap');
+:root {
+  --bg: #0b0b0b;
+  --surface: #141414;
+  --text: #f1f1f1;
+  --muted: #a6a6a6;
+  --line: #343434;
+}
+
+body.light {
+  --bg: #efefef;
+  --surface: #ffffff;
+  --text: #121212;
+  --muted: #4a4a4a;
+  --line: #b9b9b9;
+}
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: black;
-  margin: 0;
-  color: white;
-  font-family: 'Orbitron', sans-serif;
-  overflow-x: hidden;
-  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  padding: 1.2rem 0;
 }
 
-#home {
-  overflow: hidden;
-  position: relative;
-  max-height: 100vh;
+a,
+button {
+  color: inherit;
 }
 
-.page {
-  min-height: 100vh;
-  width: 100%;
+.container {
+  width: min(980px, 92vw);
+  margin: 0 auto;
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.row {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  position: relative;
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-x: hidden;
 }
 
-@keyframes rotate {
-  from { rotate: 0deg; }
-  50% { scale: 1 1.5; }
-  to { rotate: 360deg; }
+.between {
+  justify-content: space-between;
 }
 
-#blob {
-  background-color: white;
-  height: 34vmax;
-  aspect-ratio: 1;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: linear-gradient(to right, aquamarine, mediumpurple);
-  animation: rotate 20s infinite;
-  opacity: 0.8;
+.gap {
+  gap: 1rem;
 }
 
-#blur {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  z-index: 2;
-  backdrop-filter: blur(12vmax);
+.pad {
+  padding: 1rem;
 }
 
-h1, h2 { 
-  font-size: clamp(2rem, 5vw, 5rem);
-  color: white;
-  padding: 0rem clamp(1rem, 2vw, 3rem);
-  border-radius: clamp(0.4rem, 0.75vw, 1rem);
-  margin: 0;
-  z-index: 3;
+.bordered {
+  border: 1px solid var(--line);
+  background: var(--surface);
 }
 
-#scroll-text {
-  position: absolute;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
+.site-title {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  font-weight: 800;
+}
+
+.intro p:last-child {
+  color: var(--muted);
+}
+
+main {
+  padding: 1rem 0 2rem;
+}
+
+.section-block {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 1rem;
+}
+
+h2 {
   font-size: 1.2rem;
-  color: white;
-  z-index: 3;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.45rem;
 }
 
-#changing-text {
-  font-size: 6em;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
 }
 
-/* Responsive Design Adjustments for Hero Elements */
-@media screen and (max-width: 768px) {
-  #changing-text {
-    font-size: 2.5em;
+.card {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.9rem;
+}
+
+.card h3 {
+  font-size: 1rem;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0.35rem 0 0.55rem;
+}
+
+.card ul {
+  margin-left: 1rem;
+}
+
+.mono,
+.toggle {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.toggle {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+footer {
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 720px) {
+  .between {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
   }
 
-  h1, h2 {
-    font-size: clamp(2.5rem, 4vw, 3rem);
+  .nav-links {
+    flex-wrap: wrap;
   }
-}
-
-/* Remove blue background on click */
-* {
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button, a, input {
-  -webkit-tap-highlight-color: transparent;
 }
