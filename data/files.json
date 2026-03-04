@@ -1,0 +1,15 @@
+{
+  "work": [
+    "data/work/ai-productivity-assistant.txt",
+    "data/work/automation-toolkit.txt",
+    "data/work/creative-studio-landing.txt"
+  ],
+  "education": [
+    "data/education/bachelors.txt",
+    "data/education/senior-secondary.txt"
+  ],
+  "achievements": [
+    "data/achievements/open-source-contributor.txt",
+    "data/achievements/web-development-certification.txt"
+  ]
+}

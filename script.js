@@ -13,6 +13,8 @@ const sectionConfig = {
   }
 };
 
+const MANIFEST_PATH = "data/files.json";
+
 function parseDataFile(text) {
   const record = {};
   const lines = text.split("\n");
@@ -64,10 +66,24 @@ function resolveRelativePath(basePath, href) {
   return `${basePath}${parsedHref.replace(/^\.?\/?/, "")}`;
 }
 
-async function discoverSectionFiles(basePath) {
+async function readManifest() {
+  const response = await fetch(MANIFEST_PATH, { cache: "no-store" });
+  if (!response.ok) {
+    return null;
+  }
+
+  const manifest = await response.json();
+  if (!manifest || typeof manifest !== "object") {
+    return null;
+  }
+
+  return manifest;
+}
+
+async function discoverSectionFilesFromDirectory(basePath) {
   const response = await fetch(basePath);
   if (!response.ok) {
-    throw new Error(`Failed to load section directory: ${basePath}`);
+    return [];
   }
 
   const html = await response.text();
@@ -82,10 +98,27 @@ async function discoverSectionFiles(basePath) {
   return [...new Set(files)].sort((a, b) => a.localeCompare(b));
 }
 
-async function loadSection(sectionName) {
-  const config = sectionConfig[sectionName];
-  const files = await discoverSectionFiles(config.path);
+function normalizeManifestSectionFiles(files) {
+  if (!Array.isArray(files)) {
+    return [];
+  }
 
+  return files.filter((filePath) => typeof filePath === "string" && filePath.endsWith(".txt"));
+}
+
+async function getSectionFiles(sectionName, manifest) {
+  const config = sectionConfig[sectionName];
+  const filesFromManifest = normalizeManifestSectionFiles(manifest?.[sectionName]);
+
+  if (filesFromManifest.length > 0) {
+    return filesFromManifest;
+  }
+
+  return discoverSectionFilesFromDirectory(config.path);
+}
+
+async function loadSection(sectionName, files) {
+  const config = sectionConfig[sectionName];
   const items = await Promise.all(
     files.map(async (path) => {
       const response = await fetch(path);
@@ -181,10 +214,17 @@ async function init() {
   setYear();
 
   try {
+    const manifest = await readManifest();
+    const [workFiles, educationFiles, achievementFiles] = await Promise.all([
+      getSectionFiles("work", manifest),
+      getSectionFiles("education", manifest),
+      getSectionFiles("achievements", manifest)
+    ]);
+
     const [workItems, educationItems, achievementItems] = await Promise.all([
-      loadSection("work"),
-      loadSection("education"),
-      loadSection("achievements")
+      loadSection("work", workFiles),
+      loadSection("education", educationFiles),
+      loadSection("achievements", achievementFiles)
     ]);
 
     renderWork(workItems);
