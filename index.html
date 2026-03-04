@@ -3,55 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Geetansh Jangid | Minimal Portfolio</title>
-  <meta name="description" content="Minimal grayscale portfolio with modular text-file data sources.">
+  <title>Geetansh Jangid | Modular Portfolio</title>
+  <meta name="description" content="A modular, futuristic portfolio with editable data for work, education, and achievements.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <header class="container stack">
-    <nav class="row between bordered pad">
-      <h1 class="site-title">GEETANSH JANGID</h1>
-      <div class="row gap">
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="ambient-glow glow-1" aria-hidden="true"></div>
+  <div class="ambient-glow glow-2" aria-hidden="true"></div>
+
+  <header class="hero section" id="home">
+    <nav class="glass nav">
+      <p class="logo">GJ<span>_portfolio</span></p>
+      <div class="nav-links">
         <a href="#work">Work</a>
         <a href="#education">Education</a>
         <a href="#achievements">Achievements</a>
-        <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle theme">LIGHT</button>
+        <a href="#contact">Contact</a>
       </div>
     </nav>
 
-    <section class="bordered pad stack">
-      <p class="mono">Minimal Portfolio / Grayscale / Modular Data</p>
-      <p>I build software products with clean structure and practical outcomes.</p>
-    </section>
+    <div class="hero-content glass">
+      <p class="eyebrow">Digital Craftsman • AI Builder • Problem Solver</p>
+      <h1>Hello, I'm <span class="gradient-text">Geetansh Jangid</span></h1>
+      <p class="subtitle">I build thoughtful products at the intersection of design, code, and intelligent systems.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#work">Explore Work</a>
+        <a class="btn" href="#terminal">Open Terminal</a>
+      </div>
+    </div>
   </header>
 
-  <main class="container stack">
-    <section id="terminal" class="bordered pad">
-      <p class="mono">terminal://portfolio</p>
-      <pre id="terminal-output"></pre>
+  <main>
+    <section class="section" id="terminal">
+      <div class="glass terminal">
+        <div class="terminal-topbar">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <p>portfolio://console</p>
+        </div>
+        <div class="terminal-body" id="terminal-output"></div>
+      </div>
     </section>
 
-    <section id="work" class="stack">
-      <h2>Work</h2>
-      <div id="work-grid" class="grid"></div>
+    <section class="section" id="work">
+      <div class="section-heading">
+        <p>Selected Projects</p>
+        <h2>Work Experience & Builds</h2>
+      </div>
+      <div class="grid" id="work-grid"></div>
     </section>
 
-    <section id="education" class="stack">
-      <h2>Education</h2>
-      <div id="education-timeline" class="stack"></div>
+    <section class="section" id="education">
+      <div class="section-heading">
+        <p>Academic Path</p>
+        <h2>Education</h2>
+      </div>
+      <div class="timeline" id="education-timeline"></div>
     </section>
 
-    <section id="achievements" class="stack">
-      <h2>Achievements</h2>
-      <div id="achievement-grid" class="grid"></div>
+    <section class="section" id="achievements">
+      <div class="section-heading">
+        <p>Milestones</p>
+        <h2>Achievements</h2>
+      </div>
+      <div class="grid" id="achievement-grid"></div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="glass contact-card">
+        <h2>Let's build something amazing.</h2>
+        <p>Open to collaborations, internships, and freelance opportunities.</p>
+        <a href="mailto:jangidgeetansh22@gmail.com" class="btn btn-primary">Say Hello</a>
+      </div>
     </section>
   </main>
 
-  <footer class="container pad bordered">
-    <p>© <span id="year"></span> Geetansh Jangid</p>
+  <footer>
+    <p>© <span id="year"></span> Geetansh Jangid • Crafted with modular components.</p>
   </footer>
 
   <script src="./script.js"></script>
