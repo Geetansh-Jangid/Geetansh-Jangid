@@ -1,4 +1,0 @@
-institution: Bachelor of Computer Science
-location: Jaipur, India
-timeline: 2022 - 2026
-details: Focused on software engineering, intelligent systems, and practical product development.
