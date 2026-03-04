@@ -9,7 +9,6 @@ const fileMap = {
     "data/education/senior-secondary.txt"
   ],
   achievements: [
-    "data/achievements/hackathon-finalist.txt",
     "data/achievements/open-source-contributor.txt",
     "data/achievements/web-development-certification.txt"
   ]
