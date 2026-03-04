@@ -1,7 +1,0 @@
-title: Creative Studio Landing Experience
-role: Frontend Engineer
-timeline: 2024 | Freelance
-summary:
-- Crafted a responsive interface with accessibility-first structure.
-- Used modular content patterns so updates never break layout.
-- Improved Lighthouse performance through optimized assets.
