@@ -1,0 +1,3 @@
+title: Certified in Modern Web Development
+meta: Professional Learning Track
+description: Completed advanced coursework in JavaScript architecture, APIs, and performance.
