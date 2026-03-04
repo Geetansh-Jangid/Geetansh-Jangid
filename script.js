@@ -1,18 +1,19 @@
-const fileMap = {
-  work: [
-    "data/work/ai-productivity-assistant.txt",
-    "data/work/creative-studio-landing.txt",
-    "data/work/automation-toolkit.txt"
-  ],
-  education: [
-    "data/education/bachelors.txt",
-    "data/education/senior-secondary.txt"
-  ],
-  achievements: [
-    "data/achievements/open-source-contributor.txt",
-    "data/achievements/web-development-certification.txt"
-  ]
+const sectionConfig = {
+  work: {
+    path: "data/work/",
+    requiredKeys: ["title", "role", "timeline", "summary"]
+  },
+  education: {
+    path: "data/education/",
+    requiredKeys: ["institution", "location", "timeline", "details"]
+  },
+  achievements: {
+    path: "data/achievements/",
+    requiredKeys: ["title", "meta", "description"]
+  }
 };
+
+const MANIFEST_PATH = "data/files.json";
 
 function parseDataFile(text) {
   const record = {};
@@ -50,19 +51,88 @@ function parseDataFile(text) {
   return record;
 }
 
-async function loadSection(files) {
+function hasTemplateShape(record, requiredKeys) {
+  return requiredKeys.every((key) => key in record);
+}
+
+function resolveRelativePath(basePath, href) {
+  const parsedHref = decodeURIComponent(href);
+
+  if (parsedHref.startsWith("http://") || parsedHref.startsWith("https://")) {
+    const url = new URL(parsedHref);
+    return `${url.pathname}${url.search}`.replace(/^\//, "");
+  }
+
+  return `${basePath}${parsedHref.replace(/^\.?\/?/, "")}`;
+}
+
+async function readManifest() {
+  const response = await fetch(MANIFEST_PATH, { cache: "no-store" });
+  if (!response.ok) {
+    return null;
+  }
+
+  const manifest = await response.json();
+  if (!manifest || typeof manifest !== "object") {
+    return null;
+  }
+
+  return manifest;
+}
+
+async function discoverSectionFilesFromDirectory(basePath) {
+  const response = await fetch(basePath);
+  if (!response.ok) {
+    return [];
+  }
+
+  const html = await response.text();
+  const parser = new DOMParser();
+  const directoryDocument = parser.parseFromString(html, "text/html");
+
+  const files = Array.from(directoryDocument.querySelectorAll("a[href]"))
+    .map((link) => link.getAttribute("href")?.trim() || "")
+    .filter((href) => href && href.endsWith(".txt"))
+    .map((href) => resolveRelativePath(basePath, href));
+
+  return [...new Set(files)].sort((a, b) => a.localeCompare(b));
+}
+
+function normalizeManifestSectionFiles(files) {
+  if (!Array.isArray(files)) {
+    return [];
+  }
+
+  return files.filter((filePath) => typeof filePath === "string" && filePath.endsWith(".txt"));
+}
+
+async function getSectionFiles(sectionName, manifest) {
+  const config = sectionConfig[sectionName];
+  const filesFromManifest = normalizeManifestSectionFiles(manifest?.[sectionName]);
+
+  if (filesFromManifest.length > 0) {
+    return filesFromManifest;
+  }
+
+  return discoverSectionFilesFromDirectory(config.path);
+}
+
+async function loadSection(sectionName, files) {
+  const config = sectionConfig[sectionName];
   const items = await Promise.all(
     files.map(async (path) => {
       const response = await fetch(path);
       if (!response.ok) {
         throw new Error(`Failed to load: ${path}`);
       }
+
       const text = await response.text();
-      return parseDataFile(text);
+      const record = parseDataFile(text);
+      return hasTemplateShape(record, config.requiredKeys) ? record : null;
     })
   );
 
-  return items;
+  return items.filter(Boolean);
 }
 
 function renderWork(items) {
@@ -144,10 +214,17 @@ async function init() {
   setYear();
 
   try {
+    const manifest = await readManifest();
+    const [workFiles, educationFiles, achievementFiles] = await Promise.all([
+      getSectionFiles("work", manifest),
+      getSectionFiles("education", manifest),
+      getSectionFiles("achievements", manifest)
+    ]);
+
     const [workItems, educationItems, achievementItems] = await Promise.all([
-      loadSection(fileMap.work),
-      loadSection(fileMap.education),
-      loadSection(fileMap.achievements)
+      loadSection("work", workFiles),
+      loadSection("education", educationFiles),
+      loadSection("achievements", achievementFiles)
     ]);
 
     renderWork(workItems);
