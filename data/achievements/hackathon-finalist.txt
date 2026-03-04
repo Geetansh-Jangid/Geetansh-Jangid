@@ -1,0 +1,3 @@
+title: Hackathon Finalist
+meta: National Innovation Sprint | 2025
+description: Built an AI-first solution shortlisted for implementation quality and usability.

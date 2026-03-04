@@ -1,0 +1,7 @@
+title: Automation Toolkit
+role: Scripting and Automation
+timeline: 2024 | Developer Toolkit
+summary:
+- Built reusable scripts for repetitive development workflows.
+- Reduced manual QA time by standardizing project checks.
+- Wrote clear docs so teammates can extend the toolkit quickly.

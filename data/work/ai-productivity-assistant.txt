@@ -1,0 +1,7 @@
+title: AI Productivity Assistant
+role: Full-Stack Developer
+timeline: 2025 | Personal Build
+summary:
+- Designed a conversational workflow for task planning and note synthesis.
+- Integrated LLM-based summarization with context-aware prompting.
+- Built modular UI widgets to speed up feature experiments.
