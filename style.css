@@ -97,8 +97,23 @@ h2 {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0.8rem;
+}
+
+.grid-1 { grid-template-columns: 1fr; }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+@media (max-width: 720px) {
+  .grid-2, .grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-1, .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .card {
@@ -135,6 +150,94 @@ h2 {
 
 footer {
   margin-bottom: 1rem;
+}
+
+.bordered-bottom {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.45rem;
+  margin-bottom: 1rem;
+}
+
+.bordered-bottom h2 {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  color: var(--muted);
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 0.5rem;
+}
+
+.month-header h3 {
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.goals-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.nav-btn {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--line);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.current-month-display {
+  flex: 1;
+  text-align: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.current-month-display .label {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.slider-container {
+  min-height: 200px;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.slider-container.transitioning {
+  opacity: 0;
+}
+
+.toggle:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 @media (max-width: 720px) {

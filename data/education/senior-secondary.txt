@@ -1,4 +1,0 @@
-institution: Senior Secondary (Science)
-location: Rajasthan, India
-timeline: 2020 - 2022
-details: Built core foundations in mathematics, logic, and computational thinking.

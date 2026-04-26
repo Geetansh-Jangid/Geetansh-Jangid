@@ -1,0 +1,4 @@
+institution: SpringBoard High School
+location: California, USA
+timeline: 2018 - 2022
+details: High School diploma with focus on mathematics and computer science.

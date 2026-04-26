@@ -5,7 +5,7 @@ const root = process.cwd();
 const dataDir = path.join(root, 'data');
 const outputFile = path.join(dataDir, 'files.json');
 
-const sections = ['work', 'education', 'achievements'];
+const sections = ['work', 'education', 'achievements', 'goals'];
 
 function getTxtFiles(section) {
   const sectionPath = path.join(dataDir, section);
@@ -15,7 +15,7 @@ function getTxtFiles(section) {
 
   return fs
     .readdirSync(sectionPath, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.txt'))
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.txt') && entry.name !== 'template.txt')
     .map((entry) => `data/${section}/${entry.name}`)
     .sort((a, b) => a.localeCompare(b));
 }

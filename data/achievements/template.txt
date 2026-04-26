@@ -1,0 +1,3 @@
+title: [Achievement Title]
+meta: [Award/Honour | Event Name | Year]
+description: [Brief description of what you achieved and its impact]

@@ -1,0 +1,7 @@
+title: [Your Title Here]
+role: [Your Role]
+timeline: [Start Year - End Year or Present]
+summary:
+- [Bullet point 1: Describe your responsibility or achievement]
+- [Bullet point 2: Describe your responsibility or achievement]
+- [Bullet point 3: Describe your responsibility or achievement]

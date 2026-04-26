@@ -1,0 +1,4 @@
+institution: [Institution Name]
+location: [City, Country]
+timeline: [Start Year - End Year]
+details: [Degree or certification details, focus area, achievements]
