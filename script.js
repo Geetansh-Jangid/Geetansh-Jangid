@@ -14,6 +14,10 @@ const sectionConfig = {
   goals: {
     path: "data/goals/",
     requiredKeys: ["title", "status", "month", "description"]
+  },
+  contact: {
+    path: "data/contact/",
+    requiredKeys: ["type", "value"]
   }
 };
 
@@ -157,6 +161,21 @@ function renderAchievements(items) {
     </article>`).join("");
 }
 
+function renderContact(items) {
+  const target = document.getElementById("contact-grid");
+  target.className = `grid ${getGridClass(items.length)}`;
+  target.innerHTML = items.map((item) => {
+    const label = item.label || item.type;
+    const isLink = item.type.toLowerCase() !== 'email';
+    const href = item.type.toLowerCase() === 'email' ? `mailto:${item.value}` : item.value;
+    return `
+      <article class="card contact-card">
+        <p class="meta">${item.type}</p>
+        ${isLink ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>` : `<p>${label}</p>`}
+      </article>`;
+  }).join("");
+}
+
 let goalsState = { months: [], grouped: {}, currentIndex: 0 };
 
 function renderGoals(items) {
@@ -284,14 +303,15 @@ async function init() {
   document.getElementById("year").textContent = new Date().getFullYear();
   try {
     const manifest = await readManifest();
-    const sections = ["work", "education", "achievements", "goals"];
+    const sections = ["work", "goals", "education", "achievements", "contact"];
     const fileLists = await Promise.all(sections.map(s => getSectionFiles(s, manifest)));
     const data = await Promise.all(sections.map((s, i) => loadSection(s, fileLists[i])));
     
     renderWork(data[0]);
     renderEducation(data[1]);
     renderAchievements(data[2]);
-    renderGoals(data[3]);
+    renderContact(data[3]);
+    renderGoals(data[4]);
   } catch (err) {
     const errBox = document.createElement("section");
     errBox.className = "section-block";

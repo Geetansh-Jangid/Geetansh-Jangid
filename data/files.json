@@ -4,5 +4,9 @@
     "data/education/high-school.txt"
   ],
   "achievements": [],
+  "contact": [
+    "data/contact/email.txt",
+    "data/contact/github.txt"
+  ],
   "goals": []
 }

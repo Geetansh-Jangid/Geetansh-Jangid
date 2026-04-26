@@ -1,4 +1,4 @@
-institution: SpringBoard High School
-location: California, USA
-timeline: 2018 - 2022
-details: High School diploma with focus on mathematics and computer science.
+institution: SJT School
+location: Jaipur, Rajasthan
+timeline: 2024-2025
+details: Senioe Secondary with focus on mathematics and computer science.
