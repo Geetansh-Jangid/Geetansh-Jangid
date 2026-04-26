@@ -287,24 +287,23 @@ window.switchGoalMonth = (dir) => {
 
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
-  const favicon = document.querySelector("link[rel='icon']");
+  const favicon = document.getElementById("site-favicon");
   const updateFavicon = (isLight) => {
     if (favicon) {
       favicon.href = isLight ? "./logo-light.svg" : "./logo-dark.svg";
     }
   };
-  if (localStorage.getItem("theme") === "light") {
+  const isLight = localStorage.getItem("theme") === "light";
+  if (isLight) {
     document.body.classList.add("light");
-    btn.textContent = "DARK";
-    updateFavicon(true);
-  } else {
-    updateFavicon(false);
   }
+  btn.textContent = isLight ? "DARK" : "LIGHT";
+  updateFavicon(isLight);
   btn.onclick = () => {
-    const isLight = document.body.classList.toggle("light");
-    btn.textContent = isLight ? "DARK" : "LIGHT";
-    localStorage.setItem("theme", isLight ? "light" : "dark");
-    updateFavicon(isLight);
+    const nowLight = document.body.classList.toggle("light");
+    btn.textContent = nowLight ? "DARK" : "LIGHT";
+    localStorage.setItem("theme", nowLight ? "light" : "dark");
+    updateFavicon(nowLight);
   };
 }
 
