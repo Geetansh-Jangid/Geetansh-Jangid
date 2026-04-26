@@ -166,7 +166,7 @@ function renderContact(items) {
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => {
     const label = item.label || item.type;
-    const isEmail = item.type.toLowerCase() === 'email';
+    const isEmail = item.type.toLowerCase().includes('email');
     const href = isEmail ? `mailto:${item.value}` : item.value;
     return `
       <article class="card contact-card">
