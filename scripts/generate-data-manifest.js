@@ -5,7 +5,7 @@ const root = process.cwd();
 const dataDir = path.join(root, 'data');
 const outputFile = path.join(dataDir, 'files.json');
 
-const sections = ['work', 'education', 'achievements', 'contact', 'goals'];
+const sections = ['work', 'goals', 'education', 'achievements', 'contact'];
 
 function getTxtFiles(section) {
   const sectionPath = path.join(dataDir, section);

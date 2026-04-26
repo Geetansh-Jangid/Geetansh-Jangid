@@ -1,5 +1,6 @@
 {
   "work": [],
+  "goals": [],
   "education": [
     "data/education/high-school.txt"
   ],
@@ -7,6 +8,5 @@
   "contact": [
     "data/contact/email.txt",
     "data/contact/github.txt"
-  ],
-  "goals": []
+  ]
 }

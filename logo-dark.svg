@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75042, 2025-12-25)"
+   sodipodi:docname="logo-light.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     inkscape:zoom="0.89147687"
+     inkscape:cx="552.45404"
+     inkscape:cy="376.34179"
+     inkscape:window-width="1920"
+     inkscape:window-height="1054"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <rect
+       x="-40.382427"
+       y="-33.652023"
+       width="576.57133"
+       height="594.51907"
+       id="rect17" />
+    <rect
+       x="2.6290643"
+       y="9.201725"
+       width="517.92566"
+       height="475.20337"
+       id="rect16" />
+    <rect
+       x="13.145321"
+       y="9.201725"
+       width="475.86064"
+       height="487.03416"
+       id="rect15" />
+    <rect
+       x="30.901775"
+       y="38.778698"
+       width="576.83314"
+       height="469.5858"
+       id="rect14" />
+    <rect
+       x="69.074556"
+       y="84.828402"
+       width="378.69822"
+       height="369.60947"
+       id="rect13" />
+    <rect
+       x="46.049704"
+       y="36.960947"
+       width="437.47219"
+       height="404.75266"
+       id="rect12" />
+    <rect
+       x="89.069822"
+       y="62.409467"
+       width="359.91479"
+       height="373.24497"
+       id="rect11" />
+    <rect
+       x="93.311243"
+       y="64.227219"
+       width="352.03787"
+       height="382.33373"
+       id="rect10" />
+    <rect
+       x="51.502959"
+       y="83.616568"
+       width="452.62012"
+       height="356.27929"
+       id="rect6" />
+    <rect
+       x="110.88284"
+       y="58.773964"
+       width="306.59408"
+       height="365.36805"
+       id="rect5" />
+    <rect
+       x="129.66627"
+       y="100.58225"
+       width="370.8213"
+       height="380.51598"
+       id="rect4" />
+    <rect
+       x="103.61183"
+       y="52.108876"
+       width="304.77633"
+       height="347.79645"
+       id="rect3" />
+    <rect
+       x="154.50888"
+       y="129.66627"
+       width="213.88876"
+       height="229.6426"
+       id="rect2" />
+    <rect
+       x="110.88284"
+       y="58.773964"
+       width="306.59408"
+       height="365.36805"
+       id="rect8" />
+    <rect
+       x="51.502959"
+       y="83.616568"
+       width="452.62012"
+       height="356.27929"
+       id="rect9" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:0;stroke-dasharray:none"
+       id="rect1"
+       width="606.52307"
+       height="581.68048"
+       x="-47.261536"
+       y="-34.84024" />
+    <path
+       d="m 101.48395,389.95401 q -34.066687,0 -59.733372,-12.60001 Q 16.083894,364.28733 1.6172168,341.42065 -12.382793,318.0873 -12.382793,287.28727 V 142.62051 q 0,-31.26669 14.0000098,-54.133375 Q 16.083894,65.620453 41.750578,53.020444 67.417263,39.953768 101.48395,39.953768 q 34.53336,0 59.73338,13.066676 25.66668,12.600009 39.66669,35.466691 14.46668,22.866685 14.46668,54.133375 h -70.00005 q 0,-20.53335 -11.66667,-31.26669 -11.20001,-10.73334 -32.20003,-10.73334 -21.000012,0 -32.666686,10.73334 -11.200008,10.73334 -11.200008,31.26669 v 144.66676 q 0,20.06668 11.200008,31.26669 11.666674,10.73334 32.666686,10.73334 21.00002,0 32.20003,-10.73334 11.66667,-11.20001 11.66667,-31.26669 V 255.55392 H 94.950615 V 196.28721 H 215.3507 v 91.00006 q 0,30.80003 -14.46668,54.13338 -14.00001,22.86668 -39.66669,35.93335 -25.20002,12.60001 -59.73338,12.60001 z"
+       id="text16"
+       style="font-weight:800;font-size:466.667px;font-family:'JetBrainsMono Nerd Font Mono';-inkscape-font-specification:'JetBrainsMono Nerd Font Mono Ultra-Bold';white-space:pre;stroke-width:0;fill:#ffffff"
+       transform="translate(154.51609,41.046003)"
+       aria-label="G" />
+  </g>
+</svg>

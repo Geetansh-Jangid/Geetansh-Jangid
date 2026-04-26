@@ -166,12 +166,12 @@ function renderContact(items) {
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => {
     const label = item.label || item.type;
-    const isLink = item.type.toLowerCase() !== 'email';
-    const href = item.type.toLowerCase() === 'email' ? `mailto:${item.value}` : item.value;
+    const isEmail = item.type.toLowerCase() === 'email';
+    const href = isEmail ? `mailto:${item.value}` : item.value;
     return `
       <article class="card contact-card">
         <p class="meta">${item.type}</p>
-        ${isLink ? `<a href="${href}" target="_blank" rel="noopener">${label}</a>` : `<p>${label}</p>`}
+        <a href="${href}" ${isEmail ? '' : 'target="_blank" rel="noopener"'} >${label}</a>
       </article>`;
   }).join("");
 }
@@ -287,14 +287,24 @@ window.switchGoalMonth = (dir) => {
 
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
+  const favicon = document.querySelector("link[rel='icon']");
+  const updateFavicon = (isLight) => {
+    if (favicon) {
+      favicon.href = isLight ? "./logo-light.svg" : "./logo-dark.svg";
+    }
+  };
   if (localStorage.getItem("theme") === "light") {
     document.body.classList.add("light");
     btn.textContent = "DARK";
+    updateFavicon(true);
+  } else {
+    updateFavicon(false);
   }
   btn.onclick = () => {
     const isLight = document.body.classList.toggle("light");
     btn.textContent = isLight ? "DARK" : "LIGHT";
     localStorage.setItem("theme", isLight ? "light" : "dark");
+    updateFavicon(isLight);
   };
 }
 

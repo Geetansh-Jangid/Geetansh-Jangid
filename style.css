@@ -136,6 +136,10 @@ h2 {
   margin-left: 1rem;
 }
 
+.contact-card a {
+  text-decoration: underline;
+}
+
 .mono,
 .toggle {
   font-family: "IBM Plex Mono", monospace;
