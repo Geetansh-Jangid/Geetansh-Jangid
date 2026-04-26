@@ -1,0 +1,11 @@
+{
+  "name": "geetansh-jangid-portfolio",
+  "version": "1.0.0",
+  "description": "Raw minimal grayscale portfolio",
+  "scripts": {
+    "build": "node scripts/generate-data-manifest.js"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.3.1"
+  }
+}
