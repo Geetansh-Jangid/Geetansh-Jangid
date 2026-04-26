@@ -308,10 +308,10 @@ async function init() {
     const data = await Promise.all(sections.map((s, i) => loadSection(s, fileLists[i])));
     
     renderWork(data[0]);
-    renderEducation(data[1]);
-    renderAchievements(data[2]);
-    renderContact(data[3]);
-    renderGoals(data[4]);
+    renderGoals(data[1]);
+    renderEducation(data[2]);
+    renderAchievements(data[3]);
+    renderContact(data[4]);
   } catch (err) {
     const errBox = document.createElement("section");
     errBox.className = "section-block";

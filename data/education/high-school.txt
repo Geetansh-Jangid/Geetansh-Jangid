@@ -1,4 +1,4 @@
 institution: SJT School
 location: Jaipur, Rajasthan
 timeline: 2024-2025
-details: Senioe Secondary with focus on mathematics and computer science.
+details: Senior Secondary with focus on mathematics and computer science.
