@@ -1,4 +1,4 @@
-type: [Email | LinkedIn | GitHub | Twitter | Website | Other]
-value: [Your contact value]
-label: [Display label for this contact]
-icon: [Optional icon name]
+type: Email
+icon: fa-envelope
+value: your-email@example.com
+label: your-email@example.com

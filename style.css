@@ -14,6 +14,14 @@ body.light {
   --line: #b9b9b9;
 }
 
+.fa, .fas, .far, .fal, .fab {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", var(--font-awesome, sans-serif) !important;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -138,6 +146,12 @@ h2 {
 
 .contact-card a {
   text-decoration: underline;
+}
+
+.contact-card .meta i {
+  margin-right: 0.4rem;
+  width: 1.2em;
+  text-align: center;
 }
 
 .mono,

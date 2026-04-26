@@ -1,3 +1,4 @@
-type:  GitHub
+type: GitHub
+icon: fa-github
 value: https://github.com/Geetansh-Jangid
 label: @Geetansh-Jangid

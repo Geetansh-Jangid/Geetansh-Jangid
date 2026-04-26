@@ -1,3 +1,4 @@
-type: 🖂 Email
+type: Email
+icon: fa-envelope
 value: jangidgeetansh22@gmail.com
 label: jangidgeetansh22@gmail.com

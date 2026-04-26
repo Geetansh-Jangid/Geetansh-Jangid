@@ -161,16 +161,43 @@ function renderAchievements(items) {
     </article>`).join("");
 }
 
+function getIconClass(iconStr) {
+  if (!iconStr) {
+    return { iconHtml: '', iconType: 'none' };
+  }
+  
+  const iconId = iconStr.trim();
+  const brands = ['fa-github', 'fa-github-alt', 'fa-github-square', 'fa-twitter', 'fa-twitter-square', 'fa-linkedin', 'fa-linkedin-in', 'fa-instagram', 'fa-discord', 'fa-youtube', 'fa-youtube-square', 'fa-tiktok', 'fa-snapchat', 'fa-reddit', 'fa-reddit-alien', 'fa-stack-overflow', 'fa-codepen', 'fa-gitlab', 'fa-bitbucket', 'fa-bitbucket-square', 'fa-npm', 'fa-docker', 'fa-aws', 'fa-google', 'fa-facebook', 'fa-facebook-f', 'fa-mastodon', 'fa-mysql', 'fa-postgres', 'fa-linux', 'fa-windows', 'fa-apple', 'fa-android'];
+  const regulars = ['fa-envelope', 'fa-envelope-open', 'fa-file', 'fa-folder', 'fa-folder-open', 'fa-image', 'fa-user', 'fa-user-circle', 'fa-calendar', 'fa-clock', 'fa-bookmark', 'fa-star', 'fa-heart', 'fa-comment', 'fa-share-square', 'fa-book', 'fa-newspaper', 'fa-clipboard', 'fa-chart-bar', 'fa-chart-line', 'fa-map', 'fa-flag', 'fa-bell', 'fa-building', 'fa-money-bill', 'fa-credit-card', 'fa-phone', 'fa-phone-square'];
+  
+  let prefix = 'fa-solid';
+  if (brands.includes(iconId)) {
+    prefix = 'fa-brands';
+  } else if (regulars.includes(iconId)) {
+    prefix = 'fa-regular';
+  }
+  
+  const iconClass = `${prefix} ${iconId}`;
+  return { iconHtml: `<i class="${iconClass}"></i>`, iconType: 'icon' };
+}
+
 function renderContact(items) {
   const target = document.getElementById("contact-grid");
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => {
-    const label = item.label || item.type;
-    const isEmail = item.type.toLowerCase().includes('email');
+    const typeLabel = item.type || '';
+    const { iconHtml, iconType } = getIconClass(item.icon);
+    const label = item.label || typeLabel;
+    const isEmail = (typeLabel || '').toLowerCase().includes('email');
     const href = isEmail ? `mailto:${item.value}` : item.value;
+    
+    const typeDisplay = iconType === 'icon' && iconHtml 
+      ? `${iconHtml} ${typeLabel}` 
+      : typeLabel;
+    
     return `
       <article class="card contact-card">
-        <p class="meta">${item.type}</p>
+        <p class="meta">${typeDisplay}</p>
         <a href="${href}" ${isEmail ? '' : 'target="_blank" rel="noopener"'} >${label}</a>
       </article>`;
   }).join("");
