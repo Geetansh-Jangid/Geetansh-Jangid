@@ -1,0 +1,4 @@
+- title: Learn NumPy
+  status: In Progress
+  month: July 2026
+  description: Master array operations, broadcasting, linear algebra, random number generation, and performance optimization through hands-on exercises.
