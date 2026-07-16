@@ -1,6 +1,16 @@
 {
-  "work": [],
-  "goals": [],
+  "work": [
+    "data/work/bookfinder.txt",
+    "data/work/jarvis-bot.txt",
+    "data/work/orion-bot.txt",
+    "data/work/thiswebsite.txt",
+    "data/work/tool-suite.txt"
+  ],
+  "goals": [
+    "data/goals/numpy.txt",
+    "data/goals/python.txt",
+    "data/goals/torch.txt"
+  ],
   "education": [
     "data/education/high-school.txt"
   ],
