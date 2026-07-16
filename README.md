@@ -15,8 +15,7 @@
 
 - 🎨 I enjoy tuning and tweaking llms and exploring datasets and sometimes designing web pages.
 - 🧠 I care about both **clean code** and **finetuned data**.
-- ⚡ I love experimenting with motion, layout, and visual storytelling on the web.
-- 📚 Always learning, always iterating, always improving.
+- ⚡ I love automated code.
 
 ---
 
