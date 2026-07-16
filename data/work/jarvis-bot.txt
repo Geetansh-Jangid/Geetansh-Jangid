@@ -1,0 +1,5 @@
+title: Jarvis Discord Bot
+role: Developer
+summary:
+- Github : https://github.com/Geetansh-Jangid/Jarvis 
+- A very simple bot that serves as a seamless llm on any discord server or dm.
