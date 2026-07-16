@@ -1,0 +1,4 @@
+title: Strengthen python basics
+status: In Progress
+month: May 2026
+description: Work on Python crucial fundamentals
