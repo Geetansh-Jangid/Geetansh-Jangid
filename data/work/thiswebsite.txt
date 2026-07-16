@@ -1,0 +1,6 @@
+title: This website
+role: Developer
+timeline : 2025-26
+summary:
+- Github : https://github.com/Geetansh-Jangid/Geetansh-Jangid 
+- A portfolio that takes txt file and updates the data on web automatically using javascript.
