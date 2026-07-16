@@ -1,4 +1,4 @@
-- title: Learn PyTorch
-  status: Not Started
-  month: July 2026
-  description: Understand tensors, autograd, datasets, optimization, and neural network training.
+title: Learn PyTorch
+status: Not Started
+month: July 2026
+description: Understand tensors, autograd, datasets, optimization, and neural network training.
