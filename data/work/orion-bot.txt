@@ -1,0 +1,6 @@
+title: Orion Discord Bot
+role: Developer
+timeline : 2023-24
+summary:
+- Github : https://github.com/Geetansh-Jangid/orion 
+- A discord bot that can search the web and summarise live data.
