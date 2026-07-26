@@ -1,0 +1,6 @@
+title: [Company/Organization Name]
+role: [Your Role]
+timeline: [Start Year - End Year or Present]
+summary:
+- [Key responsibility or achievement]
+- [Another responsibility or achievement]

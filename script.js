@@ -3,6 +3,10 @@ const sectionConfig = {
     path: "data/work/",
     requiredKeys: ["title", "role", "timeline", "summary"]
   },
+  experience: {
+    path: "data/experience/",
+    requiredKeys: ["title", "role", "timeline", "summary"]
+  },
   education: {
     path: "data/education/",
     requiredKeys: ["institution", "location", "timeline", "details"]
@@ -21,7 +25,6 @@ const sectionConfig = {
   }
 };
 
-const MANIFEST_PATH = "data/files.json";
 
 function parseDataFile(text) {
   const record = {};
@@ -59,22 +62,41 @@ function hasTemplateShape(record, requiredKeys) {
   return requiredKeys.every((key) => key in record);
 }
 
+function escapeHtml(str) {
+  if (typeof str !== "string") return "";
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+
+function isSafeUrl(href) {
+  return /^(https?:\/\/|mailto:)/i.test(href);
+}
+
+function parseTimelineYear(timeline) {
+  if (!timeline) return 0;
+  const match = timeline.match(/(\d{4})\s*-\s*(\d{2,4})/);
+  if (!match) return 0;
+  let endYear = parseInt(match[2]);
+  if (endYear < 100) endYear += 2000;
+  return endYear;
+}
+
+function parseMetaYear(meta) {
+  if (!meta) return 0;
+  const match = meta.match(/(\d{4})/);
+  return match ? parseInt(match[1]) : 0;
+}
+
 function resolveRelativePath(basePath, href) {
   if (href.startsWith("http://") || href.startsWith("https://")) {
     const url = new URL(href);
     return `${url.pathname}${url.search}`.replace(/^\//, "");
   }
+  if (href.startsWith("/")) {
+    return href.replace(/^\//, "");
+  }
   return `${basePath}${href.replace(/^\.?\/?/, "")}`;
 }
 
-async function readManifest() {
-  try {
-    const response = await fetch(MANIFEST_PATH, { cache: "no-store" });
-    return response.ok ? await response.json() : null;
-  } catch (err) {
-    return null;
-  }
-}
 
 async function discoverSectionFilesFromDirectory(basePath) {
   try {
@@ -85,7 +107,7 @@ async function discoverSectionFilesFromDirectory(basePath) {
     const directoryDocument = parser.parseFromString(html, "text/html");
     const files = Array.from(directoryDocument.querySelectorAll("a[href]"))
       .map((link) => link.getAttribute("href")?.trim() || "")
-      .filter((href) => href && href.endsWith(".txt"))
+      .filter((href) => href && href.endsWith(".txt") && !href.endsWith("template.txt"))
       .map((href) => resolveRelativePath(basePath, href));
     return [...new Set(files)].sort((a, b) => a.localeCompare(b));
   } catch (err) {
@@ -93,10 +115,7 @@ async function discoverSectionFilesFromDirectory(basePath) {
   }
 }
 
-async function getSectionFiles(sectionName, manifest) {
-  if (manifest && manifest[sectionName] && manifest[sectionName].length > 0) {
-    return manifest[sectionName];
-  }
+async function getSectionFiles(sectionName) {
   return discoverSectionFilesFromDirectory(sectionConfig[sectionName].path);
 }
 
@@ -125,16 +144,16 @@ function getGridClass(count) {
   return "grid-3";
 }
 
-function renderWork(items) {
-  const target = document.getElementById("work-grid");
+function renderCardList(targetId, items) {
+  const target = document.getElementById(targetId);
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => {
     const summary = Array.isArray(item.summary) ? item.summary : [item.summary];
     return `
       <article class="card">
-        <h3>${item.title}</h3>
-        <p class="meta">${item.role} | ${item.timeline}</p>
-        <ul>${summary.map(pt => `<li>${pt}</li>`).join("")}</ul>
+        <h3>${escapeHtml(item.title)}</h3>
+        <p class="meta">${escapeHtml(item.role)} | ${escapeHtml(item.timeline)}</p>
+        <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
       </article>`;
   }).join("");
 }
@@ -144,9 +163,9 @@ function renderEducation(items) {
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${item.institution}</h3>
-      <p class="meta">${item.location} | ${item.timeline}</p>
-      <p>${item.details}</p>
+      <h3>${escapeHtml(item.institution)}</h3>
+      <p class="meta">${escapeHtml(item.location)} | ${escapeHtml(item.timeline)}</p>
+      <p>${escapeHtml(item.details)}</p>
     </article>`).join("");
 }
 
@@ -155,9 +174,9 @@ function renderAchievements(items) {
   target.className = `grid ${getGridClass(items.length)}`;
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${item.title}</h3>
-      <p class="meta">${item.meta}</p>
-      <p>${item.description}</p>
+      <h3>${escapeHtml(item.title)}</h3>
+      <p class="meta">${escapeHtml(item.meta)}</p>
+      <p>${escapeHtml(item.description)}</p>
     </article>`).join("");
 }
 
@@ -170,13 +189,11 @@ function getIconClass(iconStr) {
   const brands = ['fa-github', 'fa-github-alt', 'fa-github-square', 'fa-twitter', 'fa-twitter-square', 'fa-linkedin', 'fa-linkedin-in', 'fa-instagram', 'fa-discord', 'fa-youtube', 'fa-youtube-square', 'fa-tiktok', 'fa-snapchat', 'fa-reddit', 'fa-reddit-alien', 'fa-stack-overflow', 'fa-codepen', 'fa-gitlab', 'fa-bitbucket', 'fa-bitbucket-square', 'fa-npm', 'fa-docker', 'fa-aws', 'fa-google', 'fa-facebook', 'fa-facebook-f', 'fa-mastodon', 'fa-mysql', 'fa-postgres', 'fa-linux', 'fa-windows', 'fa-apple', 'fa-android'];
   const regulars = ['fa-envelope', 'fa-envelope-open', 'fa-file', 'fa-folder', 'fa-folder-open', 'fa-image', 'fa-user', 'fa-user-circle', 'fa-calendar', 'fa-clock', 'fa-bookmark', 'fa-star', 'fa-heart', 'fa-comment', 'fa-share-square', 'fa-book', 'fa-newspaper', 'fa-clipboard', 'fa-chart-bar', 'fa-chart-line', 'fa-map', 'fa-flag', 'fa-bell', 'fa-building', 'fa-money-bill', 'fa-credit-card', 'fa-phone', 'fa-phone-square'];
   
-  let prefix = 'fa-solid';
-  if (brands.includes(iconId)) {
-    prefix = 'fa-brands';
-  } else if (regulars.includes(iconId)) {
-    prefix = 'fa-regular';
+  if (!brands.includes(iconId) && !regulars.includes(iconId)) {
+    return { iconHtml: '', iconType: 'none' };
   }
   
+  const prefix = brands.includes(iconId) ? 'fa-brands' : 'fa-regular';
   const iconClass = `${prefix} ${iconId}`;
   return { iconHtml: `<i class="${iconClass}"></i>`, iconType: 'icon' };
 }
@@ -189,16 +206,17 @@ function renderContact(items) {
     const { iconHtml, iconType } = getIconClass(item.icon);
     const label = item.label || typeLabel;
     const isEmail = (typeLabel || '').toLowerCase().includes('email');
-    const href = isEmail ? `mailto:${item.value}` : item.value;
+    const rawHref = isEmail ? `mailto:${item.value}` : item.value;
+    const href = isSafeUrl(rawHref) ? rawHref : '#';
     
     const typeDisplay = iconType === 'icon' && iconHtml 
-      ? `${iconHtml} ${typeLabel}` 
-      : typeLabel;
+      ? `${iconHtml} ${escapeHtml(typeLabel)}` 
+      : escapeHtml(typeLabel);
     
     return `
       <article class="card contact-card">
         <p class="meta">${typeDisplay}</p>
-        <a href="${href}" ${isEmail ? '' : 'target="_blank" rel="noopener"'} >${label}</a>
+        <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
       </article>`;
   }).join("");
 }
@@ -290,9 +308,9 @@ function updateGoalsUI() {
         <div class="grid ${getGridClass(items.length)}">
           ${items.map(item => `
             <article class="card">
-              <h3>${item.title}</h3>
-              <p class="meta">${item.status}</p>
-              <p>${item.description}</p>
+              <h3>${escapeHtml(item.title)}</h3>
+              <p class="meta">${escapeHtml(item.status)}</p>
+              <p>${escapeHtml(item.description)}</p>
             </article>`).join("")}
         </div>
       ` : `<p class="meta" style="text-align: center; padding: 2rem;">No goals set for this month.</p>`}
@@ -322,36 +340,57 @@ function setupThemeToggle() {
   };
   const isLight = localStorage.getItem("theme") === "light";
   if (isLight) {
-    document.body.classList.add("light");
+    document.documentElement.classList.add("light");
   }
   btn.textContent = isLight ? "DARK" : "LIGHT";
+  btn.setAttribute("aria-pressed", isLight);
   updateFavicon(isLight);
   btn.onclick = () => {
-    const nowLight = document.body.classList.toggle("light");
+    const nowLight = document.documentElement.classList.toggle("light");
     btn.textContent = nowLight ? "DARK" : "LIGHT";
+    btn.setAttribute("aria-pressed", nowLight);
     localStorage.setItem("theme", nowLight ? "light" : "dark");
     updateFavicon(nowLight);
   };
 }
 
+function setupNavHighlight() {
+  document.querySelectorAll('.nav-links a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const id = link.getAttribute('href').slice(1);
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.classList.remove('section-highlight');
+      void section.offsetWidth;
+      section.classList.add('section-highlight');
+      section.addEventListener('animationend', () => {
+        section.classList.remove('section-highlight');
+      }, { once: true });
+    });
+  });
+}
+
 async function init() {
   setupThemeToggle();
+  setupNavHighlight();
   document.getElementById("year").textContent = new Date().getFullYear();
   try {
-    const manifest = await readManifest();
-    const sections = ["work", "goals", "education", "achievements", "contact"];
-    const fileLists = await Promise.all(sections.map(s => getSectionFiles(s, manifest)));
+    const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
+    const fileLists = await Promise.all(sections.map(s => getSectionFiles(s)));
     const data = await Promise.all(sections.map((s, i) => loadSection(s, fileLists[i])));
     
-    renderWork(data[0]);
-    renderGoals(data[1]);
-    renderEducation(data[2]);
-    renderAchievements(data[3]);
-    renderContact(data[4]);
+    requestAnimationFrame(() => {
+      renderCardList("work-grid", data[0].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderCardList("experience-grid", data[1].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderGoals(data[2]);
+      renderEducation(data[3].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderAchievements(data[4].sort((a, b) => parseMetaYear(b.meta) - parseMetaYear(a.meta)));
+      renderContact(data[5]);
+    });
   } catch (err) {
     const errBox = document.createElement("section");
     errBox.className = "section-block";
-    errBox.innerHTML = `<h2>Error</h2><p class="meta">${err.message}</p>`;
+    errBox.innerHTML = `<h2>Error</h2><p class="meta">${escapeHtml(err.message)}</p>`;
     document.querySelector("main").prepend(errBox);
   }
 }
