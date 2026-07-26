@@ -25,6 +25,7 @@ const sectionConfig = {
   }
 };
 
+const MANIFEST_PATH = "data/files.json";
 
 function parseDataFile(text) {
   const record = {};
@@ -97,6 +98,14 @@ function resolveRelativePath(basePath, href) {
   return `${basePath}${href.replace(/^\.?\/?/, "")}`;
 }
 
+async function readManifest() {
+  try {
+    const response = await fetch(MANIFEST_PATH, { cache: "no-store" });
+    return response.ok ? await response.json() : null;
+  } catch (err) {
+    return null;
+  }
+}
 
 async function discoverSectionFilesFromDirectory(basePath) {
   try {
@@ -115,8 +124,13 @@ async function discoverSectionFilesFromDirectory(basePath) {
   }
 }
 
-async function getSectionFiles(sectionName) {
-  return discoverSectionFilesFromDirectory(sectionConfig[sectionName].path);
+async function getSectionFiles(sectionName, manifest) {
+  const discovered = await discoverSectionFilesFromDirectory(sectionConfig[sectionName].path);
+  if (discovered.length > 0) return discovered;
+  if (manifest && manifest[sectionName] && manifest[sectionName].length > 0) {
+    return manifest[sectionName];
+  }
+  return [];
 }
 
 async function loadSection(sectionName, files) {
@@ -376,7 +390,8 @@ async function init() {
   document.getElementById("year").textContent = new Date().getFullYear();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
-    const fileLists = await Promise.all(sections.map(s => getSectionFiles(s)));
+    const manifest = await readManifest();
+    const fileLists = await Promise.all(sections.map(s => getSectionFiles(s, manifest)));
     const data = await Promise.all(sections.map((s, i) => loadSection(s, fileLists[i])));
     
     requestAnimationFrame(() => {
