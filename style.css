@@ -118,13 +118,13 @@ h2 {
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
 @media (max-width: 720px) {
-  .grid-2, .grid-3 {
+  .grid-3 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
-  .grid-1, .grid-2, .grid-3 {
+@media (max-width: 560px) {
+  .grid-2, .grid-3 {
     grid-template-columns: 1fr;
   }
 }
@@ -138,19 +138,15 @@ h2 {
 
 .card h3 {
   font-size: 1rem;
-  overflow-wrap: break-word;
-  word-break: break-word;
 }
 
 .card p,
 .card li {
   overflow-wrap: break-word;
-  word-break: break-word;
 }
 
 .card a {
-  overflow-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .meta {
