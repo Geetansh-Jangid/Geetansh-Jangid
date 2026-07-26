@@ -41,6 +41,7 @@ button {
 .page {
   width: min(980px, 92vw);
   margin: 0 auto;
+  max-width: 100%;
 }
 
 .stack {
@@ -93,6 +94,8 @@ main {
   border: 1px solid var(--line);
   background: var(--surface);
   padding: 1rem;
+  min-width: 0;
+  overflow: hidden;
 }
 
 h2 {
@@ -104,6 +107,10 @@ h2 {
 .grid {
   display: grid;
   gap: 0.8rem;
+}
+
+.grid > * {
+  min-width: 0;
 }
 
 .grid-1 { grid-template-columns: 1fr; }
@@ -126,10 +133,24 @@ h2 {
   border: 1px solid var(--line);
   background: var(--surface);
   padding: 0.9rem;
+  overflow: hidden;
 }
 
 .card h3 {
   font-size: 1rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.card p,
+.card li {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.card a {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .meta {
@@ -140,6 +161,8 @@ h2 {
 
 .card ul {
   margin-left: 1rem;
+  padding-left: 0;
+  list-style-position: outside;
 }
 
 .contact-card a {
@@ -199,6 +222,7 @@ footer {
   align-items: center;
   gap: 0.8rem;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .nav-btn {
@@ -315,5 +339,25 @@ footer {
 
   .nav-links {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 0.7rem;
+  }
+
+  .card h3 {
+    font-size: 0.95rem;
+  }
+
+  .goals-nav {
+    gap: 0.4rem;
+  }
+
+  .month-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
   }
 }
