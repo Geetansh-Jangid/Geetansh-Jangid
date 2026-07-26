@@ -387,7 +387,6 @@ function setupNavHighlight() {
 async function init() {
   setupThemeToggle();
   setupNavHighlight();
-  document.getElementById("year").textContent = new Date().getFullYear();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
