@@ -289,10 +289,17 @@ function setupThemeToggle() {
 function setupMobileMenu() {
   const menuBtn = document.getElementById("menu-toggle");
   const navLinks = document.getElementById("nav-links");
-  if (!menuBtn || !navLinks) return;
+  const header = document.querySelector("header");
+  if (!menuBtn || !navLinks || !header) return;
+
+  const positionPanel = () => {
+    navLinks.style.top = `${header.getBoundingClientRect().bottom}px`;
+  };
 
   const setOpen = (open) => {
+    if (open) positionPanel();
     navLinks.classList.toggle("open", open);
+    document.body.classList.toggle("menu-open", open);
     menuBtn.setAttribute("aria-expanded", String(open));
     menuBtn.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
   };
@@ -307,7 +314,35 @@ function setupMobileMenu() {
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 860) setOpen(false);
+    else if (navLinks.classList.contains("open")) positionPanel();
   });
+}
+
+function setupHeaderHeightVar() {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const set = () => {
+    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+  };
+  set();
+  window.addEventListener("resize", set);
+  window.addEventListener("load", set);
+  if (window.ResizeObserver) {
+    new ResizeObserver(set).observe(header);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(set);
+  }
+}
+
+function setupScrollHeader() {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const onScroll = () => {
+    header.classList.toggle("scrolled", window.scrollY > 40);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 }
 
 function setupNavHighlight() {
@@ -329,6 +364,8 @@ function setupNavHighlight() {
 async function init() {
   setupThemeToggle();
   setupMobileMenu();
+  setupHeaderHeightVar();
+  setupScrollHeader();
   setupNavHighlight();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
