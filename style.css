@@ -46,9 +46,11 @@ a { color: inherit; text-decoration: none; }
 button { color: inherit; font: inherit; }
 
 .page {
-  width: min(860px, 92vw);
+  width: min(1180px, 94vw);
   margin: 0 auto;
   max-width: 100%;
+  padding-inline: clamp(1.1rem, 3vw, 2.5rem);
+  box-sizing: border-box;
 }
 
 .stack { display: grid; gap: 3rem; }
@@ -67,7 +69,8 @@ nav.row {
   padding-bottom: 1.25rem;
   border-bottom: 1px solid var(--line);
   flex-wrap: wrap;
-  gap: 1rem 0;
+  row-gap: 1rem;
+  column-gap: 2rem;
 }
 
 .site-title {
@@ -84,6 +87,29 @@ nav.row {
   font-weight: 500;
   gap: 1.7rem;
 }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.3rem;
+  margin-left: auto;
+}
+
+.menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  width: 2.15rem;
+  height: 2.15rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.menu-btn:hover { border-color: var(--accent-dim); color: var(--accent-soft); }
 
 .nav-links a {
   color: var(--text-2);
@@ -138,11 +164,12 @@ h2 {
 
 .card {
   display: grid;
-  grid-template-columns: 148px 1fr;
-  gap: 2rem;
+  grid-template-columns: 190px 1fr;
+  gap: 2.6rem;
   border: none;
   background: none;
-  padding: 1.5rem 0;
+  padding: 1.6rem 0;
+  box-sizing: border-box;
   border-bottom: 1px solid var(--line-soft);
   overflow: hidden;
   transition: background 0.15s ease;
@@ -150,17 +177,31 @@ h2 {
 
 .grid > .card:last-child { border-bottom: none; }
 
-.card:hover { background: var(--surface); }
+.card:hover {
+  background: var(--surface);
+  margin-inline: -1.1rem;
+  padding-inline: 1.1rem;
+}
 
 .card > .meta {
-  color: var(--text-2);
-  font-family: var(--mono);
-  font-size: 0.82rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
   margin: 0;
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
+}
+
+.card > .meta .meta-cat {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.card > .meta .meta-date {
+  color: var(--text-3);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
 }
 
 .card h3 {
@@ -212,7 +253,7 @@ h2 {
 /* ---------- Contact ---------- */
 
 .contact-card > .meta {
-  display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
   text-transform: uppercase;
@@ -335,9 +376,36 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
   html { scroll-behavior: auto; }
 }
 
-@media (max-width: 860px) {
-  .between { flex-direction: column; align-items: flex-start; gap: 0.9rem; }
-  .nav-links { flex-wrap: wrap; }
+@media (max-width: 1000px) {
+  .between { flex-direction: row; align-items: center; }
+  nav.row { position: relative; }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1.25rem);
+    left: calc(-1 * clamp(1.1rem, 3vw, 2.5rem));
+    right: calc(-1 * clamp(1.1rem, 3vw, 2.5rem));
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem clamp(1.1rem, 3vw, 2.5rem) 1.1rem;
+    z-index: 30;
+  }
+
+  .nav-links.open { display: flex; }
+
+  .nav-links a {
+    width: 100%;
+    padding: 0.7rem 0;
+    font-size: 1.05rem;
+  }
+
+  .nav-links a::after { display: none; }
+
+  .menu-btn { display: inline-flex; }
 }
 
 @media (max-width: 480px) {

@@ -173,7 +173,7 @@ function renderCardList(targetId, items) {
     const summary = Array.isArray(item.summary) ? item.summary : [item.summary];
     return `
       <article class="card">
-        <p class="meta">${escapeHtml(item.role)} · ${escapeHtml(item.timeline)}</p>
+        <p class="meta"><span class="meta-cat">${escapeHtml(item.role)}</span><span class="meta-date">${escapeHtml(item.timeline)}</span></p>
         <div class="content-col">
           <h3>${escapeHtml(item.title)}</h3>
           <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
@@ -187,7 +187,7 @@ function renderEducation(items) {
   target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <p class="meta">${escapeHtml(item.location)} · ${escapeHtml(item.timeline)}</p>
+      <p class="meta"><span class="meta-cat">${escapeHtml(item.location)}</span><span class="meta-date">${escapeHtml(item.timeline)}</span></p>
       <div class="content-col">
         <h3>${escapeHtml(item.institution)}</h3>
         <p>${escapeHtml(item.details)}</p>
@@ -200,7 +200,7 @@ function renderAchievements(items) {
   target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <p class="meta">${escapeHtml(item.meta)}</p>
+      <p class="meta"><span class="meta-cat">${escapeHtml(item.meta)}</span></p>
       <div class="content-col">
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
@@ -286,6 +286,30 @@ function setupThemeToggle() {
   };
 }
 
+function setupMobileMenu() {
+  const menuBtn = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+  if (!menuBtn || !navLinks) return;
+
+  const setOpen = (open) => {
+    navLinks.classList.toggle("open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+  };
+
+  menuBtn.addEventListener("click", () => {
+    setOpen(!navLinks.classList.contains("open"));
+  });
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setOpen(false));
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 860) setOpen(false);
+  });
+}
+
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -304,6 +328,7 @@ function setupNavHighlight() {
 
 async function init() {
   setupThemeToggle();
+  setupMobileMenu();
   setupNavHighlight();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
