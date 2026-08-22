@@ -152,6 +152,14 @@ async function loadSection(sectionName, files) {
   return items.filter(Boolean);
 }
 
+function getStatusClass(status) {
+  const s = (status || "").toLowerCase();
+  if (s.includes("progress")) return "status-progress";
+  if (s.includes("done") || s.includes("complete")) return "status-done";
+  if (s.includes("not started") || s.includes("pending")) return "status-pending";
+  return "";
+}
+
 function getGridClass(count) {
   if (count <= 1) return "grid-1";
   if (count === 2) return "grid-2";
@@ -160,37 +168,43 @@ function getGridClass(count) {
 
 function renderCardList(targetId, items) {
   const target = document.getElementById(targetId);
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => {
     const summary = Array.isArray(item.summary) ? item.summary : [item.summary];
     return `
       <article class="card">
-        <h3>${escapeHtml(item.title)}</h3>
-        <p class="meta">${escapeHtml(item.role)} | ${escapeHtml(item.timeline)}</p>
-        <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
+        <p class="meta">${escapeHtml(item.role)} · ${escapeHtml(item.timeline)}</p>
+        <div class="content-col">
+          <h3>${escapeHtml(item.title)}</h3>
+          <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
+        </div>
       </article>`;
   }).join("");
 }
 
 function renderEducation(items) {
   const target = document.getElementById("education-timeline");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${escapeHtml(item.institution)}</h3>
-      <p class="meta">${escapeHtml(item.location)} | ${escapeHtml(item.timeline)}</p>
-      <p>${escapeHtml(item.details)}</p>
+      <p class="meta">${escapeHtml(item.location)} · ${escapeHtml(item.timeline)}</p>
+      <div class="content-col">
+        <h3>${escapeHtml(item.institution)}</h3>
+        <p>${escapeHtml(item.details)}</p>
+      </div>
     </article>`).join("");
 }
 
 function renderAchievements(items) {
   const target = document.getElementById("achievement-grid");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${escapeHtml(item.title)}</h3>
       <p class="meta">${escapeHtml(item.meta)}</p>
-      <p>${escapeHtml(item.description)}</p>
+      <div class="content-col">
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.description)}</p>
+      </div>
     </article>`).join("");
 }
 
@@ -214,7 +228,7 @@ function getIconClass(iconStr) {
 
 function renderContact(items) {
   const target = document.getElementById("contact-grid");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => {
     const typeLabel = item.type || '';
     const { iconHtml, iconType } = getIconClass(item.icon);
@@ -222,127 +236,31 @@ function renderContact(items) {
     const isEmail = (typeLabel || '').toLowerCase().includes('email');
     const rawHref = isEmail ? `mailto:${item.value}` : item.value;
     const href = isSafeUrl(rawHref) ? rawHref : '#';
-    
-    const typeDisplay = iconType === 'icon' && iconHtml 
-      ? `${iconHtml} ${escapeHtml(typeLabel)}` 
-      : escapeHtml(typeLabel);
-    
+
     return `
       <article class="card contact-card">
-        <p class="meta">${typeDisplay}</p>
-        <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
+        <p class="meta">${iconType === 'icon' ? iconHtml : ''}${escapeHtml(typeLabel)}</p>
+        <div class="content-col">
+          <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
+        </div>
       </article>`;
   }).join("");
 }
 
-let goalsState = { months: [], grouped: {}, currentIndex: 0 };
-
 function renderGoals(items) {
   const target = document.getElementById("goals-container");
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonthIdx = now.getMonth();
-
-  // Create a robust normalization function for "MMM YYYY"
-  const normalize = (date) => date.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-  const todayKey = normalize(new Date(currentYear, currentMonthIdx, 1));
-
-  const grouped = items.reduce((acc, item) => {
-    let rawMonth = item.month || "";
-    const filename = (item._path || "").split('/').pop();
-    
-    let monthName = "";
-    let yearValue = currentYear;
-
-    const monthNames = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-    const monthShorts = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-
-    if (filename.includes('-')) {
-      const monthPart = filename.split('-')[0].toLowerCase();
-      if (monthNames.includes(monthPart) || monthShorts.includes(monthPart)) monthName = monthPart;
-    }
-
-    if (rawMonth) {
-      const mMatch = rawMonth.match(/(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i);
-      const yMatch = rawMonth.match(/\d{4}/);
-      if (mMatch) monthName = mMatch[0].toLowerCase();
-      if (yMatch) yearValue = parseInt(yMatch[0]);
-    }
-
-    let key = "Unknown";
-    if (monthName) {
-      const mIdx = monthNames.indexOf(monthName) !== -1 ? monthNames.indexOf(monthName) : monthShorts.indexOf(monthName);
-      if (mIdx !== -1) {
-        key = normalize(new Date(yearValue, mIdx, 1));
-      }
-    }
-    
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(item);
-    return acc;
-  }, {});
-
-  // Ensure current month exists in the list for calendar feel
-  if (!grouped[todayKey]) grouped[todayKey] = [];
-
-  // Sort chronologically
-  const sortedMonths = Object.keys(grouped)
-    .filter(k => k !== "Unknown")
-    .sort((a, b) => new Date(a) - new Date(b));
-  
-  if (grouped["Unknown"] && grouped["Unknown"].length > 0) sortedMonths.push("Unknown");
-
-  const index = sortedMonths.indexOf(todayKey);
-  
-  goalsState = { months: sortedMonths, grouped, currentIndex: index !== -1 ? index : 0 };
-  updateGoalsUI();
-}
-
-function updateGoalsUI() {
-  const target = document.getElementById("goals-container");
-  const { months, grouped, currentIndex } = goalsState;
-  const currentMonth = months[currentIndex];
-  const items = grouped[currentMonth] || [];
-  
-  const now = new Date();
-  const todayKey = now.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-  const isToday = currentMonth === todayKey;
-
-  target.innerHTML = `
-    <div class="goals-nav">
-      <button class="nav-btn" onclick="switchGoalMonth(-1)" ${currentIndex === 0 ? 'disabled' : ''}>&lt;</button>
-      <div class="current-month-display">
-        <span class="label">${isToday ? 'CURRENT FOCUS' : 'GOAL TIMELINE'}</span>
-        <span>${currentMonth}</span>
-      </div>
-      <button class="nav-btn" onclick="switchGoalMonth(1)" ${currentIndex === months.length - 1 ? 'disabled' : ''}>&gt;</button>
-    </div>
-    <div id="goals-slider" class="slider-container">
-      ${items.length > 0 ? `
-        <div class="grid ${getGridClass(items.length)}">
-          ${items.map(item => `
-            <article class="card">
-              <h3>${escapeHtml(item.title)}</h3>
-              <p class="meta">${escapeHtml(item.status)}</p>
-              <p>${escapeHtml(item.description)}</p>
-            </article>`).join("")}
+  target.className = "grid";
+  target.innerHTML = items.length > 0
+    ? items.map(item => `
+      <article class="card">
+        <p class="meta"><span class="badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></p>
+        <div class="content-col">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
         </div>
-      ` : `<p class="meta" style="text-align: center; padding: 2rem;">No goals set for this month.</p>`}
-    </div>`;
+      </article>`).join("")
+    : `<p class="meta" style="padding: 1rem 0;">No goals set.</p>`;
 }
-
-window.switchGoalMonth = (dir) => {
-  const next = goalsState.currentIndex + dir;
-  if (next >= 0 && next < goalsState.months.length) {
-    const slider = document.getElementById("goals-slider");
-    slider.classList.add("transitioning");
-    setTimeout(() => {
-      goalsState.currentIndex = next;
-      updateGoalsUI();
-      document.getElementById("goals-slider").classList.remove("transitioning");
-    }, 200);
-  }
-};
 
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
