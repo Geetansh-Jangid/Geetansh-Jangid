@@ -292,6 +292,8 @@ function setupMobileMenu() {
   const header = document.querySelector("header");
   if (!menuBtn || !navLinks || !header) return;
 
+  navLinks.querySelectorAll("a").forEach((a) => a.setAttribute("data-text", a.textContent));
+
   const positionPanel = () => {
     navLinks.style.top = `${header.getBoundingClientRect().bottom}px`;
   };

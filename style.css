@@ -35,7 +35,7 @@ html.light {
 
 html { scroll-behavior: smooth; }
 
-.section-block[id] { scroll-margin-top: var(--header-h); }
+.section-block[id] { scroll-margin-top: calc(var(--header-h) + 1.25rem); }
 
 body {
   background: var(--bg);
@@ -71,8 +71,9 @@ button { color: inherit; font: inherit; }
 header {
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 40;
-  width: 100%;
   transition: box-shadow 0.25s ease;
 }
 
@@ -169,6 +170,20 @@ header.scrolled .ltr.sq {
 }
 
 .nav-links a:hover { color: var(--text); }
+
+.nav-links a::before {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-weight: 700;
+  color: var(--text);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.nav-links a:hover::before { opacity: 1; }
 
 .nav-links a::after {
   content: "";
@@ -461,11 +476,13 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
 
   .nav-links a {
     width: 100%;
-    padding: 0.9rem 0;
-    font-size: 2rem;
+    padding: 0.5rem 0;
+    font-size: clamp(2.1rem, 10vw, 3.1rem);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
+
+  .nav-links a::before { content: none; }
 
   .nav-links a::after { display: none; }
 
