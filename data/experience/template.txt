@@ -1,6 +1,7 @@
-title: [Company/Organization Name]
-role: [Your Role]
-timeline: [Start Year - End Year or Present]
+title: Job / Role Title
+role: Position
+timeline: 2025-26
 summary:
-- [Key responsibility or achievement]
-- [Another responsibility or achievement]
+What you did, in one or two sentences.
+links:
+Website:https://example.com

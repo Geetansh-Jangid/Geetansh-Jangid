@@ -1,4 +1,6 @@
-institution: [Institution Name]
-location: [City, Country]
-timeline: [Start Year - End Year]
-details: [Degree or certification details, focus area, achievements]
+institution: School / College Name
+location: City, State
+timeline: 2024-2025
+details: One line about focus area or coursework.
+links:
+Website:https://example.com

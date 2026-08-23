@@ -1,6 +1,7 @@
 title: Tool Suite in Python
 role: Developer
-timeline : 2024-25
+timeline: 2024-25
 summary:
-- Github : https://github.com/Geetansh-Jangid/CS-Project
-- Simple but efficient tools made using python
+Simple but efficient tools made using python
+links:
+Github:https://github.com/Geetansh-Jangid/CS-Project

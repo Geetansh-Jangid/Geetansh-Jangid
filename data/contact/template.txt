@@ -1,4 +1,4 @@
 type: Email
+value: you@example.com
+label: you@example.com
 icon: fa-envelope
-value: your-email@example.com
-label: your-email@example.com

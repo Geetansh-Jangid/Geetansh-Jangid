@@ -1,3 +1,5 @@
-title: [Achievement Title]
-meta: [Award/Honour | Event Name | Year]
-description: [Brief description of what you achieved and its impact]
+title: Achievement Name
+meta: 2026
+description: One or two sentences about the achievement.
+links:
+Certificate:https://example.com

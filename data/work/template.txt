@@ -1,7 +1,7 @@
-title: [Your Title Here]
-role: [Your Role]
-timeline: [Start Year - End Year or Present]
+title: Project Name
+role: Developer
+timeline: 2025-26
 summary:
-- [Bullet point 1: Describe your responsibility or achievement]
-- [Bullet point 2: Describe your responsibility or achievement]
-- [Bullet point 3: Describe your responsibility or achievement]
+One or two sentence description of what this project does.
+links:
+Github:https://github.com/username/repo

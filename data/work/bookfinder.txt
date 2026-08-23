@@ -1,6 +1,7 @@
 title: Book Finder bot
 role: Developer
-timeline : 2021-22
+timeline: 2021-22
 summary:
-- Github : https://github.com/Geetansh-Jangid/Book-Finder
-- A scraper that scrapes books from the web.
+A scraper that scrapes books from the web.
+links:
+Github:https://github.com/Geetansh-Jangid/Book-Finder

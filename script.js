@@ -27,6 +27,13 @@ const sectionConfig = {
 
 const MANIFEST_PATH = "data/files.json";
 
+const KNOWN_KEYS = new Set([
+  "title", "role", "timeline", "summary", "links",
+  "institution", "location", "details",
+  "meta", "status", "month", "description",
+  "type", "value", "label", "icon"
+]);
+
 function parseDataFile(text) {
   const record = {};
   const lines = text.split("\n");
@@ -36,12 +43,15 @@ function parseDataFile(text) {
     const line = lineRaw.trim();
     if (!line) return;
 
-    if (line.startsWith("- ") && activeListKey) {
-      record[activeListKey].push(line.replace("- ", ""));
+    const firstColonIndex = line.indexOf(":");
+    const isNewKey = firstColonIndex !== -1 && KNOWN_KEYS.has(line.slice(0, firstColonIndex).trim().toLowerCase());
+
+    if (activeListKey && !isNewKey) {
+      const item = line.startsWith("- ") ? line.slice(2).trim() : line;
+      record[activeListKey].push(item);
       return;
     }
 
-    const firstColonIndex = line.indexOf(":");
     if (firstColonIndex === -1) return;
 
     const key = line.slice(0, firstColonIndex).trim();
@@ -152,45 +162,76 @@ async function loadSection(sectionName, files) {
   return items.filter(Boolean);
 }
 
+function getStatusClass(status) {
+  const s = (status || "").toLowerCase();
+  if (s.includes("progress")) return "status-progress";
+  if (s.includes("done") || s.includes("complete")) return "status-done";
+  if (s.includes("not started") || s.includes("pending")) return "status-pending";
+  return "";
+}
+
 function getGridClass(count) {
   if (count <= 1) return "grid-1";
   if (count === 2) return "grid-2";
   return "grid-3";
 }
 
+function renderLinksRow(links) {
+  if (!Array.isArray(links) || links.length === 0) return "";
+  const items = links.map((entry) => {
+    const idx = entry.indexOf(":");
+    if (idx === -1) return "";
+    const label = entry.slice(0, idx).trim();
+    const url = entry.slice(idx + 1).trim();
+    const href = isSafeUrl(url) ? url : "#";
+    return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+  }).filter(Boolean);
+  if (items.length === 0) return "";
+  return `<p class="links">${items.join(' <span class="sep">|</span> ')}</p>`;
+}
+
 function renderCardList(targetId, items) {
   const target = document.getElementById(targetId);
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => {
     const summary = Array.isArray(item.summary) ? item.summary : [item.summary];
     return `
       <article class="card">
-        <h3>${escapeHtml(item.title)}</h3>
-        <p class="meta">${escapeHtml(item.role)} | ${escapeHtml(item.timeline)}</p>
-        <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
+        <p class="meta"><span class="meta-cat">${escapeHtml(item.role)}</span><span class="meta-date">${escapeHtml(item.timeline)}</span></p>
+        <div class="content-col">
+          <h3>${escapeHtml(item.title)}</h3>
+          <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
+          ${renderLinksRow(item.links)}
+        </div>
       </article>`;
   }).join("");
 }
 
 function renderEducation(items) {
   const target = document.getElementById("education-timeline");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${escapeHtml(item.institution)}</h3>
-      <p class="meta">${escapeHtml(item.location)} | ${escapeHtml(item.timeline)}</p>
-      <p>${escapeHtml(item.details)}</p>
+      <p class="meta"><span class="meta-cat">${escapeHtml(item.location)}</span><span class="meta-date">${escapeHtml(item.timeline)}</span></p>
+      <div class="content-col">
+        <h3>${escapeHtml(item.institution)}</h3>
+        <p>${escapeHtml(item.details)}</p>
+        ${renderLinksRow(item.links)}
+      </div>
     </article>`).join("");
 }
 
 function renderAchievements(items) {
   const target = document.getElementById("achievement-grid");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => `
     <article class="card">
-      <h3>${escapeHtml(item.title)}</h3>
-      <p class="meta">${escapeHtml(item.meta)}</p>
-      <p>${escapeHtml(item.description)}</p>
+      <p class="meta"><span class="meta-cat">${escapeHtml(item.meta)}</span></p>
+      <div class="content-col">
+        <h3>${escapeHtml(item.title)}</h3>
+        <p>${escapeHtml(item.description)}</p>
+        ${renderLinksRow(item.links)}
+      </div>
     </article>`).join("");
 }
 
@@ -214,7 +255,7 @@ function getIconClass(iconStr) {
 
 function renderContact(items) {
   const target = document.getElementById("contact-grid");
-  target.className = `grid ${getGridClass(items.length)}`;
+  target.className = "grid";
   target.innerHTML = items.map((item) => {
     const typeLabel = item.type || '';
     const { iconHtml, iconType } = getIconClass(item.icon);
@@ -222,127 +263,31 @@ function renderContact(items) {
     const isEmail = (typeLabel || '').toLowerCase().includes('email');
     const rawHref = isEmail ? `mailto:${item.value}` : item.value;
     const href = isSafeUrl(rawHref) ? rawHref : '#';
-    
-    const typeDisplay = iconType === 'icon' && iconHtml 
-      ? `${iconHtml} ${escapeHtml(typeLabel)}` 
-      : escapeHtml(typeLabel);
-    
+
     return `
       <article class="card contact-card">
-        <p class="meta">${typeDisplay}</p>
-        <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
+        <p class="meta">${iconType === 'icon' ? iconHtml : ''}${escapeHtml(typeLabel)}</p>
+        <div class="content-col">
+          <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
+        </div>
       </article>`;
   }).join("");
 }
 
-let goalsState = { months: [], grouped: {}, currentIndex: 0 };
-
 function renderGoals(items) {
   const target = document.getElementById("goals-container");
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonthIdx = now.getMonth();
-
-  // Create a robust normalization function for "MMM YYYY"
-  const normalize = (date) => date.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-  const todayKey = normalize(new Date(currentYear, currentMonthIdx, 1));
-
-  const grouped = items.reduce((acc, item) => {
-    let rawMonth = item.month || "";
-    const filename = (item._path || "").split('/').pop();
-    
-    let monthName = "";
-    let yearValue = currentYear;
-
-    const monthNames = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
-    const monthShorts = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-
-    if (filename.includes('-')) {
-      const monthPart = filename.split('-')[0].toLowerCase();
-      if (monthNames.includes(monthPart) || monthShorts.includes(monthPart)) monthName = monthPart;
-    }
-
-    if (rawMonth) {
-      const mMatch = rawMonth.match(/(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i);
-      const yMatch = rawMonth.match(/\d{4}/);
-      if (mMatch) monthName = mMatch[0].toLowerCase();
-      if (yMatch) yearValue = parseInt(yMatch[0]);
-    }
-
-    let key = "Unknown";
-    if (monthName) {
-      const mIdx = monthNames.indexOf(monthName) !== -1 ? monthNames.indexOf(monthName) : monthShorts.indexOf(monthName);
-      if (mIdx !== -1) {
-        key = normalize(new Date(yearValue, mIdx, 1));
-      }
-    }
-    
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(item);
-    return acc;
-  }, {});
-
-  // Ensure current month exists in the list for calendar feel
-  if (!grouped[todayKey]) grouped[todayKey] = [];
-
-  // Sort chronologically
-  const sortedMonths = Object.keys(grouped)
-    .filter(k => k !== "Unknown")
-    .sort((a, b) => new Date(a) - new Date(b));
-  
-  if (grouped["Unknown"] && grouped["Unknown"].length > 0) sortedMonths.push("Unknown");
-
-  const index = sortedMonths.indexOf(todayKey);
-  
-  goalsState = { months: sortedMonths, grouped, currentIndex: index !== -1 ? index : 0 };
-  updateGoalsUI();
-}
-
-function updateGoalsUI() {
-  const target = document.getElementById("goals-container");
-  const { months, grouped, currentIndex } = goalsState;
-  const currentMonth = months[currentIndex];
-  const items = grouped[currentMonth] || [];
-  
-  const now = new Date();
-  const todayKey = now.toLocaleString('en-US', { month: 'short', year: 'numeric' });
-  const isToday = currentMonth === todayKey;
-
-  target.innerHTML = `
-    <div class="goals-nav">
-      <button class="nav-btn" onclick="switchGoalMonth(-1)" ${currentIndex === 0 ? 'disabled' : ''}>&lt;</button>
-      <div class="current-month-display">
-        <span class="label">${isToday ? 'CURRENT FOCUS' : 'GOAL TIMELINE'}</span>
-        <span>${currentMonth}</span>
-      </div>
-      <button class="nav-btn" onclick="switchGoalMonth(1)" ${currentIndex === months.length - 1 ? 'disabled' : ''}>&gt;</button>
-    </div>
-    <div id="goals-slider" class="slider-container">
-      ${items.length > 0 ? `
-        <div class="grid ${getGridClass(items.length)}">
-          ${items.map(item => `
-            <article class="card">
-              <h3>${escapeHtml(item.title)}</h3>
-              <p class="meta">${escapeHtml(item.status)}</p>
-              <p>${escapeHtml(item.description)}</p>
-            </article>`).join("")}
+  target.className = "grid";
+  target.innerHTML = items.length > 0
+    ? items.map(item => `
+      <article class="card">
+        <p class="meta"><span class="badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span></p>
+        <div class="content-col">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.description)}</p>
         </div>
-      ` : `<p class="meta" style="text-align: center; padding: 2rem;">No goals set for this month.</p>`}
-    </div>`;
+      </article>`).join("")
+    : `<p class="meta" style="padding: 1rem 0;">No goals set.</p>`;
 }
-
-window.switchGoalMonth = (dir) => {
-  const next = goalsState.currentIndex + dir;
-  if (next >= 0 && next < goalsState.months.length) {
-    const slider = document.getElementById("goals-slider");
-    slider.classList.add("transitioning");
-    setTimeout(() => {
-      goalsState.currentIndex = next;
-      updateGoalsUI();
-      document.getElementById("goals-slider").classList.remove("transitioning");
-    }, 200);
-  }
-};
 
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
@@ -368,6 +313,67 @@ function setupThemeToggle() {
   };
 }
 
+function setupMobileMenu() {
+  const menuBtn = document.getElementById("menu-toggle");
+  const navLinks = document.getElementById("nav-links");
+  const header = document.querySelector("header");
+  if (!menuBtn || !navLinks || !header) return;
+
+  navLinks.querySelectorAll("a").forEach((a) => a.setAttribute("data-text", a.textContent));
+
+  const positionPanel = () => {
+    navLinks.style.top = `${header.getBoundingClientRect().bottom}px`;
+  };
+
+  const setOpen = (open) => {
+    if (open) positionPanel();
+    navLinks.classList.toggle("open", open);
+    document.body.classList.toggle("menu-open", open);
+    menuBtn.setAttribute("aria-expanded", String(open));
+    menuBtn.innerHTML = open ? '<i class="fa-solid fa-xmark"></i>' : '<i class="fa-solid fa-bars"></i>';
+  };
+
+  menuBtn.addEventListener("click", () => {
+    setOpen(!navLinks.classList.contains("open"));
+  });
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setOpen(false));
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 860) setOpen(false);
+    else if (navLinks.classList.contains("open")) positionPanel();
+  });
+}
+
+function setupHeaderHeightVar() {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const set = () => {
+    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+  };
+  set();
+  window.addEventListener("resize", set);
+  window.addEventListener("load", set);
+  if (window.ResizeObserver) {
+    new ResizeObserver(set).observe(header);
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(set);
+  }
+}
+
+function setupScrollHeader() {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const onScroll = () => {
+    header.classList.toggle("scrolled", window.scrollY > 40);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+}
+
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -386,6 +392,9 @@ function setupNavHighlight() {
 
 async function init() {
   setupThemeToggle();
+  setupMobileMenu();
+  setupHeaderHeightVar();
+  setupScrollHeader();
   setupNavHighlight();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
