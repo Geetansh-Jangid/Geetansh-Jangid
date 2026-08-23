@@ -10,8 +10,9 @@
   --accent: #cda863;
   --accent-dim: #7d6839;
   --accent-soft: #ddc088;
-  --sans: "Inter", sans-serif;
-  --mono: "IBM Plex Mono", monospace;
+  --sans: "Plus Jakarta Sans", sans-serif;
+  --serif: "Instrument Serif", Georgia, serif;
+  --mono: "JetBrains Mono", "IBM Plex Mono", monospace;
   --page-pad: clamp(1.1rem, 3vw, 2.5rem);
   --content-inset: max(0px, calc((100vw - min(1180px, 94vw)) / 2));
   --header-h: 0px;
@@ -111,6 +112,8 @@ nav.row {
   display: inline-flex;
   align-items: center;
   line-height: 1;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .ltr {
@@ -164,26 +167,13 @@ header.scrolled .ltr.sq {
 
 .nav-links a {
   color: var(--text-2);
-  transition: color 0.15s ease;
+  font-weight: 500;
+  transition: color 0.15s ease, font-weight 0.1s ease;
   position: relative;
   padding-bottom: 0.2rem;
 }
 
 .nav-links a:hover { color: var(--text); }
-
-.nav-links a::before {
-  content: attr(data-text);
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-weight: 700;
-  color: var(--text);
-  opacity: 0;
-  transition: opacity 0.25s ease;
-  pointer-events: none;
-}
-
-.nav-links a:hover::before { opacity: 1; }
 
 .nav-links a::after {
   content: "";
@@ -203,7 +193,7 @@ header.scrolled .ltr.sq {
 .intro p {
   color: var(--text-2);
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -216,9 +206,12 @@ main { padding: 1.5rem 0 3.5rem; }
 .section-block { border: none; background: transparent; padding: 0; min-width: 0; overflow: visible; }
 
 h2 {
-  font-size: 1.7rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-family: var(--serif);
+  font-size: 2.15rem;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.15;
   border-bottom: 1px solid var(--line);
   padding-bottom: 0.85rem;
 }
@@ -251,21 +244,24 @@ h2 {
 
 .card > .meta .meta-cat {
   color: var(--text);
-  font-size: 0.86rem;
-  font-weight: 600;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
 .card > .meta .meta-date {
   color: var(--text-3);
   font-family: var(--mono);
-  font-size: 0.78rem;
-  letter-spacing: 0.01em;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
 }
 
 .card h3 {
+  font-family: var(--sans);
   font-size: 1.12rem;
-  font-weight: 700;
-  letter-spacing: -0.008em;
+  font-weight: 600;
+  letter-spacing: -0.006em;
   margin-bottom: 0.55rem;
 }
 
@@ -335,7 +331,7 @@ h2 {
   align-items: center;
   gap: 0.45rem;
   font-family: var(--mono);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   font-weight: 500;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -365,15 +361,16 @@ html.light .badge.status-done { color: #4a6b32; }
 
 /* ---------- Mono / toggle ---------- */
 
-.mono, .toggle { font-family: var(--mono); }
+.mono { font-family: var(--mono); }
 
 .toggle {
+  font-family: var(--sans);
   border: 1px solid var(--line);
   background: var(--surface);
   padding: 0.42rem 0.75rem;
   font-size: 0.76rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease;
 }
@@ -477,8 +474,9 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
   .nav-links a {
     width: 100%;
     padding: 0.5rem 0;
+    font-family: var(--serif);
     font-size: clamp(2.1rem, 10vw, 3.1rem);
-    font-weight: 600;
+    font-weight: 400;
     letter-spacing: -0.02em;
   }
 
@@ -492,10 +490,9 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
 }
 
 @media (max-width: 480px) {
-  body { padding-top: 1.6rem; }
   .stack { gap: 2.1rem; }
   .section-block.stack { gap: 0.7rem; }
-  h2 { font-size: 1.4rem; padding-bottom: 0.65rem; }
+  h2 { font-size: 1.85rem; padding-bottom: 0.65rem; }
   .site-title { font-size: 1.3rem; }
   .intro p { font-size: 0.72rem; letter-spacing: 0.06em; }
 }
