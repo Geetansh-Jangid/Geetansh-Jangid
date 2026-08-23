@@ -27,6 +27,13 @@ const sectionConfig = {
 
 const MANIFEST_PATH = "data/files.json";
 
+const KNOWN_KEYS = new Set([
+  "title", "role", "timeline", "summary", "links",
+  "institution", "location", "details",
+  "meta", "status", "month", "description",
+  "type", "value", "label", "icon"
+]);
+
 function parseDataFile(text) {
   const record = {};
   const lines = text.split("\n");
@@ -36,12 +43,15 @@ function parseDataFile(text) {
     const line = lineRaw.trim();
     if (!line) return;
 
-    if (line.startsWith("- ") && activeListKey) {
-      record[activeListKey].push(line.replace("- ", ""));
+    const firstColonIndex = line.indexOf(":");
+    const isNewKey = firstColonIndex !== -1 && KNOWN_KEYS.has(line.slice(0, firstColonIndex).trim().toLowerCase());
+
+    if (activeListKey && !isNewKey) {
+      const item = line.startsWith("- ") ? line.slice(2).trim() : line;
+      record[activeListKey].push(item);
       return;
     }
 
-    const firstColonIndex = line.indexOf(":");
     if (firstColonIndex === -1) return;
 
     const key = line.slice(0, firstColonIndex).trim();
@@ -166,6 +176,20 @@ function getGridClass(count) {
   return "grid-3";
 }
 
+function renderLinksRow(links) {
+  if (!Array.isArray(links) || links.length === 0) return "";
+  const items = links.map((entry) => {
+    const idx = entry.indexOf(":");
+    if (idx === -1) return "";
+    const label = entry.slice(0, idx).trim();
+    const url = entry.slice(idx + 1).trim();
+    const href = isSafeUrl(url) ? url : "#";
+    return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+  }).filter(Boolean);
+  if (items.length === 0) return "";
+  return `<p class="links">${items.join(' <span class="sep">|</span> ')}</p>`;
+}
+
 function renderCardList(targetId, items) {
   const target = document.getElementById(targetId);
   target.className = "grid";
@@ -177,6 +201,7 @@ function renderCardList(targetId, items) {
         <div class="content-col">
           <h3>${escapeHtml(item.title)}</h3>
           <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
+          ${renderLinksRow(item.links)}
         </div>
       </article>`;
   }).join("");
@@ -191,6 +216,7 @@ function renderEducation(items) {
       <div class="content-col">
         <h3>${escapeHtml(item.institution)}</h3>
         <p>${escapeHtml(item.details)}</p>
+        ${renderLinksRow(item.links)}
       </div>
     </article>`).join("");
 }
@@ -204,6 +230,7 @@ function renderAchievements(items) {
       <div class="content-col">
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
+        ${renderLinksRow(item.links)}
       </div>
     </article>`).join("");
 }

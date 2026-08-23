@@ -237,16 +237,9 @@ h2 {
   box-sizing: border-box;
   border-bottom: 1px solid var(--line-soft);
   overflow: hidden;
-  transition: background 0.15s ease;
 }
 
 .grid > .card:last-child { border-bottom: none; }
-
-.card:hover {
-  background: var(--surface);
-  margin-inline: -1.1rem;
-  padding-inline: 1.1rem;
-}
 
 .card > .meta {
   display: flex;
@@ -292,23 +285,30 @@ h2 {
 .card a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
 
 .card ul {
-  margin-left: 1.15rem;
+  margin-left: 0;
   padding-left: 0;
   list-style: none;
 }
 
 .card ul li {
-  position: relative;
-  padding-left: 0.1rem;
   margin-bottom: 0.4rem;
 }
 
-.card ul li::before {
-  content: "\2013";
-  position: absolute;
-  left: -1.15rem;
+.card .links {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-3);
 }
+
+.card .links a {
+  color: var(--text-2);
+  border-bottom: 1px solid var(--line);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.card .links a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
+
+.card .links .sep { color: var(--text-3); margin: 0 0.4rem; }
 
 @media (max-width: 640px) {
   .card { grid-template-columns: 1fr; gap: 0.35rem; }

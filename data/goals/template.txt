@@ -1,4 +1,4 @@
-title: [Goal Title]
-status: [Not Started | In Progress | Completed]
-month: [Month Year]
-description: [Description of what you want to achieve]
+title: Goal Name
+status: In Progress
+month: Aug 2026
+description: One line describing this goal.
