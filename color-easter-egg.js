@@ -31,7 +31,7 @@ const EGG_PALETTES = [
 
 let activeEgg = null;
 let clickTimes = [];
-const CLICK_THRESHOLD = 5;
+const CLICK_THRESHOLD = 3;
 const CLICK_WINDOW_MS = 1200;
 
 function isLight() {
