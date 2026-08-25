@@ -375,7 +375,7 @@ function setupScrollHeader() {
 }
 
 function setupNavHighlight() {
-  document.querySelectorAll('.nav-links a[href^="#"]').forEach((link) => {
+  document.querySelectorAll('.nav-links a[href^="#"], .heading-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
       const id = link.getAttribute('href').slice(1);
       const section = document.getElementById(id);

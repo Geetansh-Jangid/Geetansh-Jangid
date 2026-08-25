@@ -216,6 +216,44 @@ h2 {
   padding-bottom: 0.85rem;
 }
 
+.heading-link {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+}
+
+.heading-link::before {
+  content: "#";
+  position: absolute;
+  left: -1.05em;
+  top: 0;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.heading-link:hover::before,
+.heading-link:focus-visible::before {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.heading-link:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.section-highlight .heading-link:hover::before,
+.section-highlight .heading-link:focus-visible::before {
+  opacity: 0;
+  transform: translateX(4px);
+}
+
+@media (max-width: 480px) {
+  .heading-link::before { left: -0.9em; }
+}
+
 /* ---------- Row-list ---------- */
 
 .grid { display: block; }
