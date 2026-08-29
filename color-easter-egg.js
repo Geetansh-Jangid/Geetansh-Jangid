@@ -3,6 +3,11 @@
 
 const EGG_PALETTES = [
   {
+    name: "Ant",
+    dark: { "--bg": "#1a1a19", "--surface": "#232322", "--surface-2": "#2a2a29", "--text": "#d6d5d2", "--text-2": "#ffffff6e", "--text-3": "#ffffff40", "--line": "#ffffff14", "--line-soft": "#ffffff0a", "--accent": "#dc2626", "--accent-dim": "#dc262666", "--accent-soft": "#f2665a" },
+    light: { "--bg": "#f7f6f5", "--surface": "#ffffff", "--surface-2": "#efeeea", "--text": "#000000", "--text-2": "#1919198f", "--text-3": "#19191945", "--line": "#0000000f", "--line-soft": "#00000008", "--accent": "#dc2626", "--accent-dim": "#dc262666", "--accent-soft": "#b91c1c" }
+  },
+  {
     name: "Brass",
     dark: { "--bg": "#0c0b0a", "--surface": "#141210", "--surface-2": "#191712", "--text": "#f0ece3", "--text-2": "#a8a196", "--text-3": "#706a5f", "--line": "#2a2723", "--line-soft": "#1c1a16", "--accent": "#cda863", "--accent-dim": "#7d6839", "--accent-soft": "#ddc088" },
     light: { "--bg": "#fdfcfa", "--surface": "#ffffff", "--surface-2": "#f4f1ea", "--text": "#16140f", "--text-2": "#5c5648", "--text-3": "#8f8875", "--line": "#ded6c2", "--line-soft": "#eae4d4", "--accent": "#8a6a1f", "--accent-dim": "#b8975a", "--accent-soft": "#6b5218" }
@@ -28,6 +33,41 @@ const EGG_PALETTES = [
     light: { "--bg": "#f8f7fb", "--surface": "#ffffff", "--surface-2": "#efedf7", "--text": "#120f1c", "--text-2": "#5c5670", "--text-3": "#8f89a2", "--line": "#dfdaef", "--line-soft": "#ede9f7", "--accent": "#6247d8", "--accent-dim": "#8b7ae0", "--accent-soft": "#4a339c" }
   }
 ];
+
+// Beyond the curated set above, every trigger also rolls a fresh, never-repeating
+// hue so the palette pool is effectively unlimited.
+function randomPalette() {
+  const h = Math.floor(Math.random() * 360);
+  return {
+    name: `Random ${h}°`,
+    dark: {
+      "--bg": `hsl(${h} 15% 6%)`,
+      "--surface": `hsl(${h} 14% 9%)`,
+      "--surface-2": `hsl(${h} 13% 11%)`,
+      "--text": `hsl(${h} 20% 92%)`,
+      "--text-2": `hsla(${h}, 15%, 90%, 0.55)`,
+      "--text-3": `hsla(${h}, 15%, 90%, 0.3)`,
+      "--line": `hsla(${h}, 15%, 90%, 0.1)`,
+      "--line-soft": `hsla(${h}, 15%, 90%, 0.05)`,
+      "--accent": `hsl(${h} 75% 58%)`,
+      "--accent-dim": `hsla(${h}, 75%, 45%, 0.55)`,
+      "--accent-soft": `hsl(${h} 80% 70%)`
+    },
+    light: {
+      "--bg": `hsl(${h} 30% 96%)`,
+      "--surface": `hsl(0 0% 100%)`,
+      "--surface-2": `hsl(${h} 25% 93%)`,
+      "--text": `hsl(${h} 20% 8%)`,
+      "--text-2": `hsla(${h}, 15%, 10%, 0.6)`,
+      "--text-3": `hsla(${h}, 15%, 10%, 0.3)`,
+      "--line": `hsla(${h}, 15%, 10%, 0.08)`,
+      "--line-soft": `hsla(${h}, 15%, 10%, 0.04)`,
+      "--accent": `hsl(${h} 75% 45%)`,
+      "--accent-dim": `hsla(${h}, 75%, 45%, 0.5)`,
+      "--accent-soft": `hsl(${h} 80% 35%)`
+    }
+  };
+}
 
 let activeEgg = null;
 let clickTimes = [];
@@ -59,11 +99,18 @@ function pulseFeedback() {
 }
 
 function triggerEgg() {
-  const choices = EGG_PALETTES.filter((p) => p !== activeEgg);
-  activeEgg = choices[Math.floor(Math.random() * choices.length)];
+  // Mostly roll a brand new random hue (unlimited), occasionally surface one
+  // of the curated named palettes (including the site's own default).
+  const useCurated = Math.random() < 0.35;
+  if (useCurated) {
+    const choices = EGG_PALETTES.filter((p) => p !== activeEgg);
+    activeEgg = choices[Math.floor(Math.random() * choices.length)];
+  } else {
+    activeEgg = randomPalette();
+  }
   applyActiveEgg();
   pulseFeedback();
-  console.log(`%c✨ palette shuffled: ${activeEgg.name}`, "color:#cda863;font-weight:bold;");
+  console.log(`%c✨ palette shuffled: ${activeEgg.name}`, "color:#dc2626;font-weight:bold;");
 }
 
 function initEasterEgg() {
