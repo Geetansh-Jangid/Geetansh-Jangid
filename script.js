@@ -374,29 +374,6 @@ function setupScrollHeader() {
   onScroll();
 }
 
-function setupGreetingRotator() {
-  const el = document.getElementById("greeting");
-  if (!el) return;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  const greetings = [
-    { text: "HELLO", lang: "en" },
-    { text: "नमस्ते", lang: "hi" },
-    { text: "こんにちは", lang: "ja" }
-  ];
-  let i = 0;
-
-  setInterval(() => {
-    i = (i + 1) % greetings.length;
-    el.style.opacity = "0";
-    setTimeout(() => {
-      el.textContent = greetings[i].text;
-      el.setAttribute("lang", greetings[i].lang);
-      el.style.opacity = "1";
-    }, 350);
-  }, 2600);
-}
-
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"], .heading-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -419,7 +396,6 @@ async function init() {
   setupHeaderHeightVar();
   setupScrollHeader();
   setupNavHighlight();
-  setupGreetingRotator();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
