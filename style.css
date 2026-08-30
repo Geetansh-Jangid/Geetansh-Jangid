@@ -70,7 +70,7 @@ button { color: inherit; font: inherit; }
 .gap { gap: 1.8rem; }
 
 /* Section internals must NOT inherit the big inter-section gap */
-.section-block.stack { gap: 0.4rem; }
+.section-block.stack { gap: 0.2rem; }
 
 /* ---------- Header ---------- */
 
@@ -112,6 +112,7 @@ nav.row {
   font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: -0.015em;
+  font-family: var(--mono);
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -123,7 +124,7 @@ nav.row {
 }
 
 header.scrolled .site-title {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   letter-spacing: 0.02em;
 }
 
@@ -411,7 +412,7 @@ h2 {
   gap: clamp(1.2rem, 3vw, 2.6rem);
   border: none;
   background: none;
-  padding: 1.1rem 0;
+  padding: 0.65rem 0;
   box-sizing: border-box;
   border-bottom: 1px solid var(--line-soft);
   overflow: hidden;
@@ -422,9 +423,9 @@ h2 {
 .card > .meta {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
   margin: 0;
-  padding-top: 0.15rem;
+  padding-top: 0;
 }
 
 .card > .meta .meta-cat {
@@ -445,9 +446,9 @@ h2 {
 .card h3 {
   font-family: var(--sans);
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 100;
   letter-spacing: -0.008em;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.35rem;
 }
 
 .card p,
@@ -472,7 +473,7 @@ h2 {
 }
 
 .card ul li {
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.25rem;
 }
 
 .card .links {
@@ -690,9 +691,9 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
 }
 
 @media (max-width: 480px) {
-  .stack { gap: 1.4rem; }
-  .section-block.stack { gap: 0.5rem; }
-  h2 { font-size: 1.85rem; padding-bottom: 0.65rem; }
+  .stack { gap: 2.5rem; }
+  .section-block.stack { gap: 0.3rem; }
+  h2 { font-size: 2.2rem; padding-bottom: 0.65rem; }
   .site-title { font-size: 1.3rem; }
   .intro p { font-size: 0.8rem; letter-spacing: 0.06em; }
 }
