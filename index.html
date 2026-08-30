@@ -75,7 +75,39 @@
 
   <div class="page">
     <section class="stack intro">
-      <p class="mono">DATA • LINUX • MATHS • AI • WEB • PYTHON • NODE • DOCKER</p>
+      <div class="skills-demo" id="skills-demo">
+        <div class="skills-demo-switch" id="skills-switch" role="tablist" aria-label="Skills display preview">
+          <button type="button" class="active" data-variant="terminal">1 · Terminal</button>
+          <button type="button" data-variant="rotate">2 · Rotate</button>
+          <button type="button" data-variant="expand">3 · Expand</button>
+          <button type="button" data-variant="progress">4 · Progress</button>
+        </div>
+
+        <div class="skills-variant" data-variant="terminal">
+          <div class="skills-terminal">
+            <p class="skills-terminal-cmd"><span class="prompt">$</span> stack --list</p>
+            <p class="skills-terminal-out">DATA, LINUX, MATHS, AI, WEB, PYTHON, NODE, DOCKER</p>
+          </div>
+        </div>
+
+        <div class="skills-variant" data-variant="rotate" hidden>
+          <p class="mono skills-rotate">Skills: <span id="skills-rotate-word">DATA</span></p>
+        </div>
+
+        <div class="skills-variant" data-variant="expand" hidden>
+          <button type="button" class="skills-toggle mono" id="skills-toggle" aria-expanded="false">
+            Skills <span class="chev">›</span>
+          </button>
+          <div class="skills-tags" id="skills-tags" hidden>
+            <span class="skill-tag">DATA</span><span class="skill-tag">LINUX</span><span class="skill-tag">MATHS</span><span class="skill-tag">AI</span><span class="skill-tag">WEB</span><span class="skill-tag">PYTHON</span><span class="skill-tag">NODE</span><span class="skill-tag">DOCKER</span>
+          </div>
+        </div>
+
+        <div class="skills-variant" data-variant="progress" hidden>
+          <p class="mono skills-progress-word" id="skills-progress-word">DATA</p>
+          <div class="skills-progress-bar"><div class="skills-progress-fill" id="skills-progress-fill"></div></div>
+        </div>
+      </div>
     </section>
 
     <main class="stack">

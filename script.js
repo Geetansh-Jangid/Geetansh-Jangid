@@ -374,6 +374,83 @@ function setupScrollHeader() {
   onScroll();
 }
 
+function setupSkillsDemo() {
+  const root = document.getElementById("skills-demo");
+  if (!root) return;
+  const skills = ["DATA", "LINUX", "MATHS", "AI", "WEB", "PYTHON", "NODE", "DOCKER"];
+  const switchBtns = root.querySelectorAll(".skills-demo-switch button");
+  const panels = root.querySelectorAll(".skills-variant");
+  let rotateTimer = null;
+  let progressTimer = null;
+
+  function stopTimers() {
+    clearInterval(rotateTimer);
+    clearInterval(progressTimer);
+    rotateTimer = null;
+    progressTimer = null;
+  }
+
+  function startRotate() {
+    const word = document.getElementById("skills-rotate-word");
+    if (!word) return;
+    let i = 0;
+    rotateTimer = setInterval(() => {
+      i = (i + 1) % skills.length;
+      word.classList.add("fade-out");
+      setTimeout(() => {
+        word.textContent = skills[i];
+        word.classList.remove("fade-out");
+      }, 300);
+    }, 1600);
+  }
+
+  function startProgress() {
+    const word = document.getElementById("skills-progress-word");
+    const fill = document.getElementById("skills-progress-fill");
+    if (!word || !fill) return;
+    let i = 0;
+    const duration = 1800;
+    const step = 30;
+    let elapsed = 0;
+    word.textContent = skills[i];
+    fill.style.width = "0%";
+    progressTimer = setInterval(() => {
+      elapsed += step;
+      fill.style.width = `${Math.min(100, (elapsed / duration) * 100)}%`;
+      if (elapsed >= duration) {
+        elapsed = 0;
+        i = (i + 1) % skills.length;
+        word.textContent = skills[i];
+        fill.style.width = "0%";
+      }
+    }, step);
+  }
+
+  function showVariant(name) {
+    stopTimers();
+    panels.forEach((p) => { p.hidden = p.dataset.variant !== name; });
+    switchBtns.forEach((b) => b.classList.toggle("active", b.dataset.variant === name));
+    if (name === "rotate") startRotate();
+    if (name === "progress") startProgress();
+  }
+
+  switchBtns.forEach((btn) => {
+    btn.addEventListener("click", () => showVariant(btn.dataset.variant));
+  });
+
+  const toggleBtn = document.getElementById("skills-toggle");
+  const tags = document.getElementById("skills-tags");
+  if (toggleBtn && tags) {
+    toggleBtn.addEventListener("click", () => {
+      const open = toggleBtn.getAttribute("aria-expanded") === "true";
+      toggleBtn.setAttribute("aria-expanded", String(!open));
+      tags.hidden = open;
+    });
+  }
+
+  showVariant("terminal");
+}
+
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"], .heading-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -396,6 +473,7 @@ async function init() {
   setupHeaderHeightVar();
   setupScrollHeader();
   setupNavHighlight();
+  setupSkillsDemo();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
