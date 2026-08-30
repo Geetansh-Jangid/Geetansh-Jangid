@@ -294,15 +294,6 @@ function renderGoals(items) {
     : `<p class="meta" style="padding: 1rem 0;">No goals set.</p>`;
 }
 
-function setupTerminalToggle() {
-  const btn = document.getElementById("terminal-toggle");
-  if (!btn) return;
-  btn.onclick = () => {
-    const on = document.documentElement.classList.toggle("terminal-mode");
-    btn.setAttribute("aria-pressed", String(on));
-  };
-}
-
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
   const favicon = document.getElementById("site-favicon");
@@ -380,17 +371,61 @@ function setupHeaderHeightVar() {
 
 function setupScrollHeader() {
   const header = document.querySelector("header");
-  if (!header) return;
-  const onScroll = () => {
-    header.classList.toggle("scrolled", window.scrollY > 40);
+  const title = document.getElementById("site-title");
+  if (!header || !title) return;
+
+  let currentText = "GEETANSH JANGID";
+  const fullName = "GEETANSH JANGID";
+  const shortName = "</>";
+
+  const morphText = (target) => {
+    if (currentText === target) return;
+    currentText = target;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      title.textContent = target;
+      return;
+    }
+
+    const start = title.textContent;
+    const steps = 12;
+    let step = 0;
+
+    const interval = setInterval(() => {
+      if (step >= steps) {
+        clearInterval(interval);
+        title.textContent = target;
+        return;
+      }
+
+      const progress = step / steps;
+      const chars = "!<>-_\\/[]{}—=+*^?#";
+
+      title.textContent = target
+        .split("")
+        .map((char, i) => {
+          if (i < progress * target.length) return char;
+          return chars[Math.floor(Math.random() * chars.length)];
+        })
+        .join("");
+
+      step++;
+    }, 25);
   };
+
+  const onScroll = () => {
+    const scrolled = window.scrollY > 40;
+    header.classList.toggle("scrolled", scrolled);
+    morphText(scrolled ? shortName : fullName);
+  };
+
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 }
 
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"], .heading-link[href^="#"]').forEach((link) => {
-    link.addEventListener('click', (e) => {
+    link.addEventListener('click', () => {
       const id = link.getAttribute('href').slice(1);
       const section = document.getElementById(id);
       if (!section) return;
@@ -420,22 +455,7 @@ function buildSkillsDataset(records) {
     order.push(slug);
   });
 
-  // "all" can be authored explicitly (data/skills/all.txt) for a custom
-  // overview; otherwise it's derived automatically from every other file,
-  // so adding/removing a skill file keeps the ALL chip in sync on its own.
-  if (!map.all) {
-    const others = order.filter((k) => k !== "all");
-    const allTags = [...new Set(others.flatMap((k) => map[k].tags))];
-    map.all = {
-      name: "ALL",
-      target: "--all",
-      meta: `[${others.length} modules active]`,
-      desc: `Cross-disciplinary builder across ${others.map((k) => map[k].name).join(", ")}.`,
-      tags: allTags
-    };
-  }
-
-  const chipOrder = ["all", ...order.filter((k) => k !== "all")];
+  const chipOrder = order.filter((k) => k !== "all");
   return { map, chipOrder };
 }
 
@@ -482,8 +502,7 @@ function setupSkillsDeck(skillsData) {
   const statusEl = document.getElementById("skills-status-text");
 
   chipsRow.innerHTML = chipOrder.map((key) => {
-    const active = key === "all" ? " active" : "";
-    return `<button type="button" class="skill-chip mono${active}" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
+    return `<button type="button" class="skill-chip mono" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
   }).join("");
 
   const chips = chipsRow.querySelectorAll(".skill-chip");
@@ -528,12 +547,11 @@ function setupSkillsDeck(skillsData) {
     chip.addEventListener("click", () => selectSkill(skillKey, chip));
   });
 
-  selectSkill("all", chips[0], { silent: true });
+  selectSkill(chipOrder[0], chips[0], { silent: true });
 }
 
 async function init() {
   setupThemeToggle();
-  setupTerminalToggle();
   setupMobileMenu();
   setupHeaderHeightVar();
   setupScrollHeader();

@@ -64,13 +64,13 @@ button { color: inherit; font: inherit; }
   box-sizing: border-box;
 }
 
-.stack { display: grid; gap: 1.5rem; }
+.stack { display: grid; gap: 2.5rem; }
 .row { display: flex; align-items: center; }
 .between { justify-content: space-between; }
 .gap { gap: 1.8rem; }
 
 /* Section internals must NOT inherit the big inter-section gap */
-.section-block.stack { gap: 0.6rem; }
+.section-block.stack { gap: 0.4rem; }
 
 /* ---------- Header ---------- */
 
@@ -119,6 +119,12 @@ nav.row {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1), letter-spacing 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+header.scrolled .site-title {
+  font-size: 1.1rem;
+  letter-spacing: 0.02em;
 }
 
 .nav-links {
@@ -140,17 +146,17 @@ nav.row {
   display: none;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--line);
+  border: none;
   background: var(--surface);
   color: var(--text);
   width: 2.15rem;
   height: 2.15rem;
   font-size: 0.95rem;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease;
 }
 
-.menu-btn:hover { border-color: var(--accent-dim); color: var(--accent-soft); }
+.menu-btn:hover { color: var(--accent-soft); }
 
 .nav-links a {
   color: var(--text-2);
@@ -236,7 +242,7 @@ nav.row {
   letter-spacing: 0.06em;
   padding: 0.38rem 0.75rem;
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: none;
   color: var(--text-2);
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
@@ -247,25 +253,22 @@ nav.row {
 
 .skill-chip:hover {
   color: var(--accent-soft);
-  border-color: var(--accent-dim);
   background: var(--surface-2);
 }
 
 .skill-chip.active {
   color: var(--bg);
   background: var(--text);
-  border-color: var(--text);
 }
 
 html.light .skill-chip.active {
   color: var(--surface);
   background: var(--text);
-  border-color: var(--text);
 }
 
 .skills-inspector {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: none;
   padding: 1rem 1.25rem;
   display: flex;
   flex-direction: column;
@@ -325,14 +328,13 @@ html.light .skill-chip.active {
   letter-spacing: 0.04em;
   padding: 0.18rem 0.5rem;
   background: var(--surface-2);
-  border: 1px solid var(--line-soft);
+  border: none;
   color: var(--text-2);
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .inspector-tags .tag:hover {
   color: var(--accent-soft);
-  border-color: var(--accent-dim);
 }
 
 main { padding: 1rem 0 2.5rem; }
@@ -515,7 +517,6 @@ h2 {
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
-  text-transform: uppercase;
 }
 
 .contact-card > .meta { color: var(--accent-soft); }
@@ -564,17 +565,17 @@ html.light .badge.status-done { color: #4a6b32; }
 
 .toggle {
   font-family: var(--sans);
-  border: 1px solid var(--line);
+  border: none;
   background: var(--surface);
   padding: 0.42rem 0.75rem;
   font-size: 0.76rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition: color 0.15s ease;
 }
 
-.toggle:hover { border-color: var(--accent-dim); color: var(--accent-soft); }
+.toggle:hover { color: var(--accent-soft); }
 .toggle:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ---------- Footer ---------- */
@@ -694,105 +695,5 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
   h2 { font-size: 1.85rem; padding-bottom: 0.65rem; }
   .site-title { font-size: 1.3rem; }
   .intro p { font-size: 0.8rem; letter-spacing: 0.06em; }
-}
-
-/* ---------- Terminal preview mode ---------- */
-/* Real terminal aesthetic: monospace throughout, command-prompt headings
-   with a blinking cursor, list rows read like `ls` output. No boxes, no
-   borders, no dividers anywhere. */
-
-@keyframes term-blink {
-  50% { opacity: 0; }
-}
-
-html.terminal-mode body { font-family: var(--mono); }
-
-html.terminal-mode .sec-num { display: none; }
-
-html.terminal-mode h2 {
-  display: flex;
-  align-items: baseline;
-  gap: 0.4em;
-  font-family: var(--mono);
-  font-style: normal;
-  font-weight: 500;
-  font-size: 1.05rem;
-  letter-spacing: 0;
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-html.terminal-mode h2::before {
-  content: "cd";
-  color: var(--text-3);
-  font-weight: 400;
-}
-
-html.terminal-mode h2 .heading-link { text-transform: lowercase; }
-
-html.terminal-mode h2::after {
-  content: "▍";
-  color: var(--accent);
-  animation: term-blink 1s steps(1) infinite;
-  margin-left: 0.15em;
-}
-
-html.terminal-mode .section-block { border: none; padding-top: 0; }
-
-/* Rows read like a directory listing: dim meta column, bright name, dim comment */
-
-html.terminal-mode .card { border-bottom: none; }
-
-html.terminal-mode .card > .meta .meta-cat,
-html.terminal-mode .card > .meta .meta-date { color: var(--text-3); }
-
-html.terminal-mode .card h3 {
-  font-family: var(--mono);
-  font-weight: 500;
-  color: var(--accent-soft);
-}
-
-html.terminal-mode .card p,
-html.terminal-mode .card li {
-  color: var(--text-3);
-}
-
-html.terminal-mode .card p::before { content: "# "; }
-
-/* Skills deck: strip every box/border, keep it plain-text terminal output */
-
-html.terminal-mode .skills-inspector {
-  border: none;
-  background: transparent;
-  padding: 0;
-}
-
-html.terminal-mode .skill-chip {
-  border: none;
-  background: none;
-  padding: 0.15rem 0;
-}
-
-html.terminal-mode .skill-chip::before { content: "["; color: var(--text-3); }
-html.terminal-mode .skill-chip::after { content: "]"; color: var(--text-3); }
-
-html.terminal-mode .skill-chip.active {
-  color: var(--accent);
-  background: none;
-}
-
-html.terminal-mode .inspector-tags .tag {
-  border: none;
-  background: none;
-  padding: 0;
-  color: var(--text-2);
-}
-
-html.terminal-mode .inspector-tags .tag::before { content: "["; color: var(--text-3); }
-html.terminal-mode .inspector-tags .tag::after { content: "]"; color: var(--text-3); }
-
-html.terminal-mode footer p:first-child::before {
-  content: "$ ";
-  color: var(--accent);
 }
 
