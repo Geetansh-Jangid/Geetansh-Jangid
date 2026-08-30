@@ -52,11 +52,10 @@
     <div class="header-bg"></div>
     <div class="page">
       <nav class="row between" aria-label="Main navigation">
-        <h1 class="site-title" id="site-title">
-          <span class="ltr keep">G</span><span class="ltr sq">E</span><span class="ltr sq">E</span><span class="ltr sq">T</span><span class="ltr sq">A</span><span class="ltr sq">N</span><span class="ltr sq">S</span><span class="ltr sq">H</span><span class="ltr sq"> </span><span class="ltr keep">J</span><span class="ltr sq">A</span><span class="ltr sq">N</span><span class="ltr sq">G</span><span class="ltr sq">I</span><span class="ltr sq">D</span>
-        </h1>
+        <h1 class="site-title" id="site-title">GEETANSH JANGID</h1>
         <div class="nav-right">
           <div class="row nav-links" id="nav-links">
+            <a href="#skills">Skills</a>
             <a href="#work">Work</a>
             <a href="#experience">Experience</a>
             <a href="#goals">Goals</a>
@@ -74,42 +73,6 @@
   </header>
 
   <div class="page">
-    <section class="stack intro">
-      <div class="skills-demo" id="skills-demo">
-        <div class="skills-demo-switch" id="skills-switch" role="tablist" aria-label="Skills display preview">
-          <button type="button" class="active" data-variant="terminal">1 · Terminal</button>
-          <button type="button" data-variant="rotate">2 · Rotate</button>
-          <button type="button" data-variant="expand">3 · Expand</button>
-          <button type="button" data-variant="progress">4 · Progress</button>
-        </div>
-
-        <div class="skills-variant" data-variant="terminal">
-          <div class="skills-terminal">
-            <p class="skills-terminal-cmd"><span class="prompt">$</span> stack --list</p>
-            <p class="skills-terminal-out">DATA, LINUX, MATHS, AI, WEB, PYTHON, NODE, DOCKER</p>
-          </div>
-        </div>
-
-        <div class="skills-variant" data-variant="rotate" hidden>
-          <p class="mono skills-rotate">Skills: <span id="skills-rotate-word">DATA</span></p>
-        </div>
-
-        <div class="skills-variant" data-variant="expand" hidden>
-          <button type="button" class="skills-toggle mono" id="skills-toggle" aria-expanded="false">
-            Skills <span class="chev">›</span>
-          </button>
-          <div class="skills-tags" id="skills-tags" hidden>
-            <span class="skill-tag">DATA</span><span class="skill-tag">LINUX</span><span class="skill-tag">MATHS</span><span class="skill-tag">AI</span><span class="skill-tag">WEB</span><span class="skill-tag">PYTHON</span><span class="skill-tag">NODE</span><span class="skill-tag">DOCKER</span>
-          </div>
-        </div>
-
-        <div class="skills-variant" data-variant="progress" hidden>
-          <p class="mono skills-progress-word" id="skills-progress-word">DATA</p>
-          <div class="skills-progress-bar"><div class="skills-progress-fill" id="skills-progress-fill"></div></div>
-        </div>
-      </div>
-    </section>
-
     <main class="stack">
       <noscript>
         <section class="section-block">
@@ -117,6 +80,52 @@
           <p class="meta">Please enable JavaScript to view this portfolio.</p>
         </section>
       </noscript>
+
+      <!-- Interactive Skills Deck -->
+      <section class="skills-deck section-block" id="skills">
+        <p class="sec-num" aria-hidden="true">00</p>
+        <div class="row between skills-deck-title">
+          <h2><a class="heading-link" href="#skills">Skills</a></h2>
+          <div class="skills-status mono" aria-live="polite">
+            <span class="status-pulse" aria-hidden="true"></span>
+            <span id="skills-status-text">INTERACTIVE DECK</span>
+          </div>
+        </div>
+
+        <div class="skills-dock">
+          <div class="skills-chips-row" role="tablist" aria-label="Skills filter">
+            <button type="button" class="skill-chip active mono" data-skill="all" data-name="ALL">ALL</button>
+            <button type="button" class="skill-chip mono" data-skill="ai" data-name="AI / ML">AI / ML</button>
+            <button type="button" class="skill-chip mono" data-skill="python" data-name="PYTHON">PYTHON</button>
+            <button type="button" class="skill-chip mono" data-skill="data" data-name="DATA">DATA</button>
+            <button type="button" class="skill-chip mono" data-skill="linux" data-name="LINUX">LINUX</button>
+            <button type="button" class="skill-chip mono" data-skill="maths" data-name="MATHS">MATHS</button>
+            <button type="button" class="skill-chip mono" data-skill="docker" data-name="DOCKER">DOCKER</button>
+            <button type="button" class="skill-chip mono" data-skill="web" data-name="WEB">WEB</button>
+          </div>
+
+          <div class="skills-inspector" id="skills-inspector">
+            <div class="inspector-top mono">
+              <span class="inspector-prompt"><span class="accent-text">$</span> stack inspect <span id="inspector-target" class="inspector-highlight">--all</span></span>
+              <span class="inspector-meta" id="inspector-meta">[8 modules active]</span>
+            </div>
+            <div class="inspector-body">
+              <p class="inspector-desc" id="inspector-desc">Cross-disciplinary builder focusing on Artificial Intelligence, Data Engineering, and robust Linux tool development.</p>
+              <div class="inspector-tags mono" id="inspector-tags">
+                <span class="tag">PyTorch</span>
+                <span class="tag">NumPy</span>
+                <span class="tag">LLMs</span>
+                <span class="tag">Discord APIs</span>
+                <span class="tag">Web Scraping</span>
+                <span class="tag">Arch Linux</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">Docker</span>
+                <span class="tag">Calculus</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section id="work" class="stack section-block">
         <p class="sec-num" aria-hidden="true">01</p>
         <h2><a class="heading-link" href="#work">Work</a></h2>

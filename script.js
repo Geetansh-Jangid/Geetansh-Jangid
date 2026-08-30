@@ -374,83 +374,6 @@ function setupScrollHeader() {
   onScroll();
 }
 
-function setupSkillsDemo() {
-  const root = document.getElementById("skills-demo");
-  if (!root) return;
-  const skills = ["DATA", "LINUX", "MATHS", "AI", "WEB", "PYTHON", "NODE", "DOCKER"];
-  const switchBtns = root.querySelectorAll(".skills-demo-switch button");
-  const panels = root.querySelectorAll(".skills-variant");
-  let rotateTimer = null;
-  let progressTimer = null;
-
-  function stopTimers() {
-    clearInterval(rotateTimer);
-    clearInterval(progressTimer);
-    rotateTimer = null;
-    progressTimer = null;
-  }
-
-  function startRotate() {
-    const word = document.getElementById("skills-rotate-word");
-    if (!word) return;
-    let i = 0;
-    rotateTimer = setInterval(() => {
-      i = (i + 1) % skills.length;
-      word.classList.add("fade-out");
-      setTimeout(() => {
-        word.textContent = skills[i];
-        word.classList.remove("fade-out");
-      }, 300);
-    }, 1600);
-  }
-
-  function startProgress() {
-    const word = document.getElementById("skills-progress-word");
-    const fill = document.getElementById("skills-progress-fill");
-    if (!word || !fill) return;
-    let i = 0;
-    const duration = 1800;
-    const step = 30;
-    let elapsed = 0;
-    word.textContent = skills[i];
-    fill.style.width = "0%";
-    progressTimer = setInterval(() => {
-      elapsed += step;
-      fill.style.width = `${Math.min(100, (elapsed / duration) * 100)}%`;
-      if (elapsed >= duration) {
-        elapsed = 0;
-        i = (i + 1) % skills.length;
-        word.textContent = skills[i];
-        fill.style.width = "0%";
-      }
-    }, step);
-  }
-
-  function showVariant(name) {
-    stopTimers();
-    panels.forEach((p) => { p.hidden = p.dataset.variant !== name; });
-    switchBtns.forEach((b) => b.classList.toggle("active", b.dataset.variant === name));
-    if (name === "rotate") startRotate();
-    if (name === "progress") startProgress();
-  }
-
-  switchBtns.forEach((btn) => {
-    btn.addEventListener("click", () => showVariant(btn.dataset.variant));
-  });
-
-  const toggleBtn = document.getElementById("skills-toggle");
-  const tags = document.getElementById("skills-tags");
-  if (toggleBtn && tags) {
-    toggleBtn.addEventListener("click", () => {
-      const open = toggleBtn.getAttribute("aria-expanded") === "true";
-      toggleBtn.setAttribute("aria-expanded", String(!open));
-      tags.hidden = open;
-    });
-  }
-
-  showVariant("terminal");
-}
-
 function setupNavHighlight() {
   document.querySelectorAll('.nav-links a[href^="#"], .heading-link[href^="#"]').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -467,13 +390,149 @@ function setupNavHighlight() {
   });
 }
 
+const SKILLS_DATA = {
+  all: {
+    target: "--all",
+    meta: "[8 modules active]",
+    desc: "Cross-disciplinary builder focusing on Artificial Intelligence, Data Engineering, and robust Linux tool development.",
+    tags: ["PyTorch", "NumPy", "LLMs", "Discord APIs", "Web Scraping", "Arch Linux", "Docker", "Linear Algebra", "Calculus", "Node.js", "FastAPI"]
+  },
+  ai: {
+    target: "ai-ml",
+    meta: "[core focus]",
+    desc: "Building autonomous agents, LLM integrations, Discord bot brains, neural net experimentation, and fine-tuning workflows.",
+    tags: ["PyTorch", "LLM APIs", "Prompt Engineering", "Transformers", "NLP", "Neural Nets", "Model Evaluation"]
+  },
+  python: {
+    target: "python",
+    meta: "[primary language]",
+    desc: "Go-to language for bot architectures, web scrapers, data manipulation, algorithm implementations, and CLI tools.",
+    tags: ["AsyncIO", "FastAPI", "BeautifulSoup", "Discord.py", "Requests", "OOP", "Scripting"]
+  },
+  data: {
+    target: "data-science",
+    meta: "[analytics & pipeline]",
+    desc: "Extracting web data, structure parsing, tensor manipulation, and statistical data processing pipelines.",
+    tags: ["NumPy", "Data Scraping", "Data Parsing", "Automation", "ETL Pipelines"]
+  },
+  linux: {
+    target: "linux-systems",
+    meta: "[environment]",
+    desc: "Daily driver operating system, kernel familiarity, bash/zsh automation, CLI workflows, and system optimization.",
+    tags: ["Arch Linux", "Zsh / Bash", "Systemd", "Vim / NeoVim", "Git CLI", "Process Mgmt"]
+  },
+  maths: {
+    target: "mathematics",
+    meta: "[theoretical foundation]",
+    desc: "Foundational mathematics driving machine learning, algorithmic optimization, and data modeling.",
+    tags: ["Linear Algebra", "Calculus", "Probability", "Discrete Math", "Matrix Ops"]
+  },
+  docker: {
+    target: "containerization",
+    meta: "[devops]",
+    desc: "Containerizing autonomous bots, isolation environments, microservices, and reproducible deployments.",
+    tags: ["Dockerfiles", "Containers", "Image Optimization", "Compose", "CLI"]
+  },
+  web: {
+    target: "web-dev",
+    meta: "[frontend & api]",
+    desc: "Clean performant interfaces, vanilla JavaScript architectures, REST APIs, and minimal responsive design.",
+    tags: ["Vanilla JS", "HTML5", "Modern CSS", "DOM APIs", "Node.js", "Responsive Layouts"]
+  }
+};
+
+function scrambleText(element, finalString, duration = 280) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    element.textContent = finalString;
+    return;
+  }
+  const chars = "!<>-_\\/[]{}—=+*^?#________";
+  const length = finalString.length;
+  let iteration = 0;
+  const totalIterations = Math.max(6, Math.floor(duration / 25));
+  clearInterval(element._scrambleTimer);
+
+  element._scrambleTimer = setInterval(() => {
+    element.textContent = finalString
+      .split("")
+      .map((char, index) => {
+        if (index < (iteration / totalIterations) * length) {
+          return char;
+        }
+        return chars[Math.floor(Math.random() * chars.length)];
+      })
+      .join("");
+
+    iteration++;
+    if (iteration > totalIterations) {
+      clearInterval(element._scrambleTimer);
+      element.textContent = finalString;
+    }
+  }, 25);
+}
+
+function setupSkillsDeck() {
+  const deck = document.getElementById("skills");
+  if (!deck) return;
+
+  const chips = deck.querySelectorAll(".skill-chip");
+  const targetEl = document.getElementById("inspector-target");
+  const metaEl = document.getElementById("inspector-meta");
+  const descEl = document.getElementById("inspector-desc");
+  const tagsEl = document.getElementById("inspector-tags");
+  const statusEl = document.getElementById("skills-status-text");
+
+  function selectSkill(key, chipEl) {
+    const data = SKILLS_DATA[key];
+    if (!data) return;
+
+    chips.forEach(c => c.classList.remove("active"));
+    if (chipEl) chipEl.classList.add("active");
+
+    if (targetEl) {
+      scrambleText(targetEl, data.target, 220);
+    }
+    if (metaEl) {
+      metaEl.textContent = data.meta;
+    }
+    if (descEl) {
+      descEl.style.opacity = "0";
+      setTimeout(() => {
+        descEl.textContent = data.desc;
+        descEl.style.opacity = "1";
+      }, 150);
+    }
+    if (tagsEl) {
+      tagsEl.innerHTML = data.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+    }
+    if (statusEl) {
+      statusEl.textContent = `INSPECTING [${key.toUpperCase()}]`;
+    }
+  }
+
+  chips.forEach(chip => {
+    const skillKey = chip.dataset.skill;
+    const name = chip.dataset.name || chip.textContent;
+
+    chip.addEventListener("mouseenter", () => {
+      if (!chip.classList.contains("active")) {
+        scrambleText(chip, name, 180);
+      }
+    });
+
+    chip.addEventListener("click", () => {
+      selectSkill(skillKey, chip);
+    });
+  });
+}
+
 async function init() {
   setupThemeToggle();
   setupMobileMenu();
   setupHeaderHeightVar();
   setupScrollHeader();
   setupNavHighlight();
-  setupSkillsDemo();
+  setupSkillsDeck();
   try {
     const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
