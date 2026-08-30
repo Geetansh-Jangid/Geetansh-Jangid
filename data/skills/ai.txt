@@ -1,0 +1,12 @@
+name: AI / ML
+target: ai-ml
+meta: [core focus]
+description: Building autonomous agents, LLM integrations, Discord bot brains, neural net experimentation, and fine-tuning workflows.
+tags:
+- PyTorch
+- LLM APIs
+- Prompt Engineering
+- Transformers
+- NLP
+- Neural Nets
+- Model Evaluation

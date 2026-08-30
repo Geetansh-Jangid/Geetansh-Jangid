@@ -1,0 +1,10 @@
+name: DATA
+target: data-science
+meta: [analytics & pipeline]
+description: Extracting web data, structure parsing, tensor manipulation, and statistical data processing pipelines.
+tags:
+- NumPy
+- Data Scraping
+- Data Parsing
+- Automation
+- ETL Pipelines

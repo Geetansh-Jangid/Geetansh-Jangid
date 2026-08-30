@@ -1,0 +1,11 @@
+name: WEB
+target: web-dev
+meta: [frontend & api]
+description: Clean performant interfaces, vanilla JavaScript architectures, REST APIs, and minimal responsive design.
+tags:
+- Vanilla JS
+- HTML5
+- Modern CSS
+- DOM APIs
+- Node.js
+- Responsive Layouts

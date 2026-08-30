@@ -1,0 +1,11 @@
+name: LINUX
+target: linux-systems
+meta: [environment]
+description: Daily driver operating system, kernel familiarity, bash/zsh automation, CLI workflows, and system optimization.
+tags:
+- Arch Linux
+- Zsh / Bash
+- Systemd
+- Vim / NeoVim
+- Git CLI
+- Process Mgmt

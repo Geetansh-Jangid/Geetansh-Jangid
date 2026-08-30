@@ -1,0 +1,10 @@
+name: MATHS
+target: mathematics
+meta: [theoretical foundation]
+description: Foundational mathematics driving machine learning, algorithmic optimization, and data modeling.
+tags:
+- Linear Algebra
+- Calculus
+- Probability
+- Discrete Math
+- Matrix Ops

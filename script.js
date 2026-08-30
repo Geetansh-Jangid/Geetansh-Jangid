@@ -1,4 +1,8 @@
 const sectionConfig = {
+  skills: {
+    path: "data/skills/",
+    requiredKeys: ["name", "target", "meta", "description", "tags"]
+  },
   work: {
     path: "data/work/",
     requiredKeys: ["title", "role", "timeline", "summary"]
@@ -31,7 +35,8 @@ const KNOWN_KEYS = new Set([
   "title", "role", "timeline", "summary", "links",
   "institution", "location", "details",
   "meta", "status", "month", "description",
-  "type", "value", "label", "icon"
+  "type", "value", "label", "icon",
+  "name", "target", "tags"
 ]);
 
 function parseDataFile(text) {
@@ -289,6 +294,15 @@ function renderGoals(items) {
     : `<p class="meta" style="padding: 1rem 0;">No goals set.</p>`;
 }
 
+function setupTerminalToggle() {
+  const btn = document.getElementById("terminal-toggle");
+  if (!btn) return;
+  btn.onclick = () => {
+    const on = document.documentElement.classList.toggle("terminal-mode");
+    btn.setAttribute("aria-pressed", String(on));
+  };
+}
+
 function setupThemeToggle() {
   const btn = document.getElementById("theme-toggle");
   const favicon = document.getElementById("site-favicon");
@@ -390,56 +404,40 @@ function setupNavHighlight() {
   });
 }
 
-const SKILLS_DATA = {
-  all: {
-    target: "--all",
-    meta: "[8 modules active]",
-    desc: "Cross-disciplinary builder focusing on Artificial Intelligence, Data Engineering, and robust Linux tool development.",
-    tags: ["PyTorch", "NumPy", "LLMs", "Discord APIs", "Web Scraping", "Arch Linux", "Docker", "Linear Algebra", "Calculus", "Node.js", "FastAPI"]
-  },
-  ai: {
-    target: "ai-ml",
-    meta: "[core focus]",
-    desc: "Building autonomous agents, LLM integrations, Discord bot brains, neural net experimentation, and fine-tuning workflows.",
-    tags: ["PyTorch", "LLM APIs", "Prompt Engineering", "Transformers", "NLP", "Neural Nets", "Model Evaluation"]
-  },
-  python: {
-    target: "python",
-    meta: "[primary language]",
-    desc: "Go-to language for bot architectures, web scrapers, data manipulation, algorithm implementations, and CLI tools.",
-    tags: ["AsyncIO", "FastAPI", "BeautifulSoup", "Discord.py", "Requests", "OOP", "Scripting"]
-  },
-  data: {
-    target: "data-science",
-    meta: "[analytics & pipeline]",
-    desc: "Extracting web data, structure parsing, tensor manipulation, and statistical data processing pipelines.",
-    tags: ["NumPy", "Data Scraping", "Data Parsing", "Automation", "ETL Pipelines"]
-  },
-  linux: {
-    target: "linux-systems",
-    meta: "[environment]",
-    desc: "Daily driver operating system, kernel familiarity, bash/zsh automation, CLI workflows, and system optimization.",
-    tags: ["Arch Linux", "Zsh / Bash", "Systemd", "Vim / NeoVim", "Git CLI", "Process Mgmt"]
-  },
-  maths: {
-    target: "mathematics",
-    meta: "[theoretical foundation]",
-    desc: "Foundational mathematics driving machine learning, algorithmic optimization, and data modeling.",
-    tags: ["Linear Algebra", "Calculus", "Probability", "Discrete Math", "Matrix Ops"]
-  },
-  docker: {
-    target: "containerization",
-    meta: "[devops]",
-    desc: "Containerizing autonomous bots, isolation environments, microservices, and reproducible deployments.",
-    tags: ["Dockerfiles", "Containers", "Image Optimization", "Compose", "CLI"]
-  },
-  web: {
-    target: "web-dev",
-    meta: "[frontend & api]",
-    desc: "Clean performant interfaces, vanilla JavaScript architectures, REST APIs, and minimal responsive design.",
-    tags: ["Vanilla JS", "HTML5", "Modern CSS", "DOM APIs", "Node.js", "Responsive Layouts"]
+function buildSkillsDataset(records) {
+  const map = {};
+  const order = [];
+
+  records.forEach((r) => {
+    const slug = r._path.split("/").pop().replace(/\.txt$/, "").toLowerCase();
+    map[slug] = {
+      name: r.name,
+      target: r.target,
+      meta: r.meta,
+      desc: r.description,
+      tags: Array.isArray(r.tags) ? r.tags : [r.tags].filter(Boolean)
+    };
+    order.push(slug);
+  });
+
+  // "all" can be authored explicitly (data/skills/all.txt) for a custom
+  // overview; otherwise it's derived automatically from every other file,
+  // so adding/removing a skill file keeps the ALL chip in sync on its own.
+  if (!map.all) {
+    const others = order.filter((k) => k !== "all");
+    const allTags = [...new Set(others.flatMap((k) => map[k].tags))];
+    map.all = {
+      name: "ALL",
+      target: "--all",
+      meta: `[${others.length} modules active]`,
+      desc: `Cross-disciplinary builder across ${others.map((k) => map[k].name).join(", ")}.`,
+      tags: allTags
+    };
   }
-};
+
+  const chipOrder = ["all", ...order.filter((k) => k !== "all")];
+  return { map, chipOrder };
+}
 
 function scrambleText(element, finalString, duration = 280) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -471,81 +469,89 @@ function scrambleText(element, finalString, duration = 280) {
   }, 25);
 }
 
-function setupSkillsDeck() {
+function setupSkillsDeck(skillsData) {
   const deck = document.getElementById("skills");
-  if (!deck) return;
+  const chipsRow = document.getElementById("skills-chips-row");
+  if (!deck || !chipsRow || !skillsData) return;
 
-  const chips = deck.querySelectorAll(".skill-chip");
+  const { map, chipOrder } = skillsData;
   const targetEl = document.getElementById("inspector-target");
   const metaEl = document.getElementById("inspector-meta");
   const descEl = document.getElementById("inspector-desc");
   const tagsEl = document.getElementById("inspector-tags");
   const statusEl = document.getElementById("skills-status-text");
 
-  function selectSkill(key, chipEl) {
-    const data = SKILLS_DATA[key];
+  chipsRow.innerHTML = chipOrder.map((key) => {
+    const active = key === "all" ? " active" : "";
+    return `<button type="button" class="skill-chip mono${active}" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
+  }).join("");
+
+  const chips = chipsRow.querySelectorAll(".skill-chip");
+
+  function selectSkill(key, chipEl, opts = {}) {
+    const data = map[key];
     if (!data) return;
 
-    chips.forEach(c => c.classList.remove("active"));
+    chips.forEach((c) => c.classList.remove("active"));
     if (chipEl) chipEl.classList.add("active");
 
     if (targetEl) {
-      scrambleText(targetEl, data.target, 220);
+      if (opts.silent) targetEl.textContent = data.target;
+      else scrambleText(targetEl, data.target, 220);
     }
-    if (metaEl) {
-      metaEl.textContent = data.meta;
-    }
+    if (metaEl) metaEl.textContent = data.meta;
     if (descEl) {
-      descEl.style.opacity = "0";
-      setTimeout(() => {
+      if (opts.silent) {
         descEl.textContent = data.desc;
-        descEl.style.opacity = "1";
-      }, 150);
+      } else {
+        descEl.style.opacity = "0";
+        setTimeout(() => {
+          descEl.textContent = data.desc;
+          descEl.style.opacity = "1";
+        }, 150);
+      }
     }
     if (tagsEl) {
-      tagsEl.innerHTML = data.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+      tagsEl.innerHTML = data.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
     }
-    if (statusEl) {
-      statusEl.textContent = `INSPECTING [${key.toUpperCase()}]`;
-    }
+    if (statusEl && !opts.silent) statusEl.textContent = `INSPECTING [${key.toUpperCase()}]`;
   }
 
-  chips.forEach(chip => {
+  chips.forEach((chip) => {
     const skillKey = chip.dataset.skill;
     const name = chip.dataset.name || chip.textContent;
 
     chip.addEventListener("mouseenter", () => {
-      if (!chip.classList.contains("active")) {
-        scrambleText(chip, name, 180);
-      }
+      if (!chip.classList.contains("active")) scrambleText(chip, name, 180);
     });
 
-    chip.addEventListener("click", () => {
-      selectSkill(skillKey, chip);
-    });
+    chip.addEventListener("click", () => selectSkill(skillKey, chip));
   });
+
+  selectSkill("all", chips[0], { silent: true });
 }
 
 async function init() {
   setupThemeToggle();
+  setupTerminalToggle();
   setupMobileMenu();
   setupHeaderHeightVar();
   setupScrollHeader();
   setupNavHighlight();
-  setupSkillsDeck();
   try {
-    const sections = ["work", "experience", "goals", "education", "achievements", "contact"];
+    const sections = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
     const fileLists = await Promise.all(sections.map(s => getSectionFiles(s, manifest)));
     const data = await Promise.all(sections.map((s, i) => loadSection(s, fileLists[i])));
-    
+
     requestAnimationFrame(() => {
-      renderCardList("work-grid", data[0].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
-      renderCardList("experience-grid", data[1].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
-      renderGoals(data[2]);
-      renderEducation(data[3].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
-      renderAchievements(data[4].sort((a, b) => parseMetaYear(b.meta) - parseMetaYear(a.meta)));
-      renderContact(data[5]);
+      setupSkillsDeck(buildSkillsDataset(data[0]));
+      renderCardList("work-grid", data[1].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderCardList("experience-grid", data[2].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderGoals(data[3]);
+      renderEducation(data[4].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
+      renderAchievements(data[5].sort((a, b) => parseMetaYear(b.meta) - parseMetaYear(a.meta)));
+      renderContact(data[6]);
     });
   } catch (err) {
     const errBox = document.createElement("section");

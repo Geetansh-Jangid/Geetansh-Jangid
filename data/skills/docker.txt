@@ -1,0 +1,10 @@
+name: DOCKER
+target: containerization
+meta: [devops]
+description: Containerizing autonomous bots, isolation environments, microservices, and reproducible deployments.
+tags:
+- Dockerfiles
+- Containers
+- Image Optimization
+- Compose
+- CLI

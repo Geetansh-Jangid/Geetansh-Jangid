@@ -1,4 +1,13 @@
 {
+  "skills": [
+    "data/skills/ai.txt",
+    "data/skills/data.txt",
+    "data/skills/docker.txt",
+    "data/skills/linux.txt",
+    "data/skills/maths.txt",
+    "data/skills/python.txt",
+    "data/skills/web.txt"
+  ],
   "work": [
     "data/work/bookfinder.txt",
     "data/work/jarvis-bot.txt",

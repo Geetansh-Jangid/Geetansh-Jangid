@@ -1,0 +1,12 @@
+name: PYTHON
+target: python
+meta: [primary language]
+description: Go-to language for bot architectures, web scrapers, data manipulation, algorithm implementations, and CLI tools.
+tags:
+- AsyncIO
+- FastAPI
+- BeautifulSoup
+- Discord.py
+- Requests
+- OOP
+- Scripting

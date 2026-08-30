@@ -274,16 +274,6 @@ html.light .skill-chip.active {
   overflow: hidden;
 }
 
-.skills-inspector::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--accent);
-}
-
 .inspector-top {
   display: flex;
   justify-content: space-between;
@@ -705,3 +695,104 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
   .site-title { font-size: 1.3rem; }
   .intro p { font-size: 0.8rem; letter-spacing: 0.06em; }
 }
+
+/* ---------- Terminal preview mode ---------- */
+/* Real terminal aesthetic: monospace throughout, command-prompt headings
+   with a blinking cursor, list rows read like `ls` output. No boxes, no
+   borders, no dividers anywhere. */
+
+@keyframes term-blink {
+  50% { opacity: 0; }
+}
+
+html.terminal-mode body { font-family: var(--mono); }
+
+html.terminal-mode .sec-num { display: none; }
+
+html.terminal-mode h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  font-family: var(--mono);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+html.terminal-mode h2::before {
+  content: "cd";
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+html.terminal-mode h2 .heading-link { text-transform: lowercase; }
+
+html.terminal-mode h2::after {
+  content: "▍";
+  color: var(--accent);
+  animation: term-blink 1s steps(1) infinite;
+  margin-left: 0.15em;
+}
+
+html.terminal-mode .section-block { border: none; padding-top: 0; }
+
+/* Rows read like a directory listing: dim meta column, bright name, dim comment */
+
+html.terminal-mode .card { border-bottom: none; }
+
+html.terminal-mode .card > .meta .meta-cat,
+html.terminal-mode .card > .meta .meta-date { color: var(--text-3); }
+
+html.terminal-mode .card h3 {
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--accent-soft);
+}
+
+html.terminal-mode .card p,
+html.terminal-mode .card li {
+  color: var(--text-3);
+}
+
+html.terminal-mode .card p::before { content: "# "; }
+
+/* Skills deck: strip every box/border, keep it plain-text terminal output */
+
+html.terminal-mode .skills-inspector {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+html.terminal-mode .skill-chip {
+  border: none;
+  background: none;
+  padding: 0.15rem 0;
+}
+
+html.terminal-mode .skill-chip::before { content: "["; color: var(--text-3); }
+html.terminal-mode .skill-chip::after { content: "]"; color: var(--text-3); }
+
+html.terminal-mode .skill-chip.active {
+  color: var(--accent);
+  background: none;
+}
+
+html.terminal-mode .inspector-tags .tag {
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--text-2);
+}
+
+html.terminal-mode .inspector-tags .tag::before { content: "["; color: var(--text-3); }
+html.terminal-mode .inspector-tags .tag::after { content: "]"; color: var(--text-3); }
+
+html.terminal-mode footer p:first-child::before {
+  content: "$ ";
+  color: var(--accent);
+}
+

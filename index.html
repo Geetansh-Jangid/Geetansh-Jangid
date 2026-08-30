@@ -64,6 +64,7 @@
             <a href="#contact">Contact</a>
           </div>
           <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle theme" aria-pressed="false">LIGHT</button>
+          <button id="terminal-toggle" class="toggle" type="button" aria-label="Toggle terminal preview" aria-pressed="false">TERMINAL</button>
           <button id="menu-toggle" class="menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
             <i class="fa-solid fa-bars"></i>
           </button>
@@ -93,35 +94,16 @@
         </div>
 
         <div class="skills-dock">
-          <div class="skills-chips-row" role="tablist" aria-label="Skills filter">
-            <button type="button" class="skill-chip active mono" data-skill="all" data-name="ALL">ALL</button>
-            <button type="button" class="skill-chip mono" data-skill="ai" data-name="AI / ML">AI / ML</button>
-            <button type="button" class="skill-chip mono" data-skill="python" data-name="PYTHON">PYTHON</button>
-            <button type="button" class="skill-chip mono" data-skill="data" data-name="DATA">DATA</button>
-            <button type="button" class="skill-chip mono" data-skill="linux" data-name="LINUX">LINUX</button>
-            <button type="button" class="skill-chip mono" data-skill="maths" data-name="MATHS">MATHS</button>
-            <button type="button" class="skill-chip mono" data-skill="docker" data-name="DOCKER">DOCKER</button>
-            <button type="button" class="skill-chip mono" data-skill="web" data-name="WEB">WEB</button>
-          </div>
+          <div class="skills-chips-row" id="skills-chips-row" role="tablist" aria-label="Skills filter"></div>
 
           <div class="skills-inspector" id="skills-inspector">
             <div class="inspector-top mono">
               <span class="inspector-prompt"><span class="accent-text">$</span> stack inspect <span id="inspector-target" class="inspector-highlight">--all</span></span>
-              <span class="inspector-meta" id="inspector-meta">[8 modules active]</span>
+              <span class="inspector-meta" id="inspector-meta"></span>
             </div>
             <div class="inspector-body">
-              <p class="inspector-desc" id="inspector-desc">Cross-disciplinary builder focusing on Artificial Intelligence, Data Engineering, and robust Linux tool development.</p>
-              <div class="inspector-tags mono" id="inspector-tags">
-                <span class="tag">PyTorch</span>
-                <span class="tag">NumPy</span>
-                <span class="tag">LLMs</span>
-                <span class="tag">Discord APIs</span>
-                <span class="tag">Web Scraping</span>
-                <span class="tag">Arch Linux</span>
-                <span class="tag">FastAPI</span>
-                <span class="tag">Docker</span>
-                <span class="tag">Calculus</span>
-              </div>
+              <p class="inspector-desc" id="inspector-desc"></p>
+              <div class="inspector-tags mono" id="inspector-tags"></div>
             </div>
           </div>
         </div>
