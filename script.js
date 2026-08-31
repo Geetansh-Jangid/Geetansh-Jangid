@@ -429,6 +429,15 @@ function setupNavHighlight() {
       const id = link.getAttribute('href').slice(1);
       const section = document.getElementById(id);
       if (!section) return;
+
+      const heading = section.querySelector('h2');
+      if (heading) {
+        const headingLink = heading.querySelector('.heading-link');
+        const targetEl = headingLink || heading;
+        const originalText = targetEl.textContent;
+        scrambleText(targetEl, originalText, 650);
+      }
+
       section.classList.remove('section-highlight');
       void section.offsetWidth;
       section.classList.add('section-highlight');
@@ -496,7 +505,6 @@ function setupSkillsDeck(skillsData) {
 
   const { map, chipOrder } = skillsData;
   const targetEl = document.getElementById("inspector-target");
-  const metaEl = document.getElementById("inspector-meta");
   const descEl = document.getElementById("inspector-desc");
   const tagsEl = document.getElementById("inspector-tags");
 
@@ -517,7 +525,6 @@ function setupSkillsDeck(skillsData) {
       if (opts.silent) targetEl.textContent = data.target;
       else scrambleText(targetEl, data.target, 220);
     }
-    if (metaEl) metaEl.textContent = data.meta;
     if (descEl) {
       if (opts.silent) {
         descEl.textContent = data.desc;

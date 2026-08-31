@@ -293,21 +293,7 @@ html.light .skill-chip.active {
 .inspector-prompt {
   color: var(--text-2);
   letter-spacing: 0.02em;
-}
-
-.inspector-prompt .accent-text {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.inspector-highlight {
-  color: var(--accent-soft);
-  font-weight: 600;
-}
-
-.inspector-meta {
-  color: var(--text-3);
-  font-size: 0.74rem;
+  flex: 1;
 }
 
 .inspector-desc {
@@ -401,7 +387,18 @@ h2 {
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
-.heading-link:hover::before,
+@media (hover: hover) and (pointer: fine) {
+  .heading-link:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .section-highlight .heading-link:hover::before {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+}
+
 .heading-link:focus-visible::before {
   opacity: 1;
   transform: translateX(0);
@@ -412,8 +409,12 @@ h2 {
   outline-offset: 4px;
 }
 
-.section-highlight .heading-link:hover::before,
 .section-highlight .heading-link:focus-visible::before {
+  opacity: 0;
+  transform: translateX(4px);
+}
+
+.heading-link:focus:not(:focus-visible)::before {
   opacity: 0;
   transform: translateX(4px);
 }
