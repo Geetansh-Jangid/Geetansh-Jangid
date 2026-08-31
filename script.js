@@ -374,8 +374,8 @@ function setupScrollHeader() {
   const title = document.getElementById("site-title");
   if (!header || !title) return;
 
-  let currentText = "GEETANSH JANGID";
-  const fullName = "GEETANSH JANGID";
+  let currentText = title.textContent;
+  const fullName = title.textContent;
   const shortName = "</>";
 
   const morphText = (target) => {
@@ -387,7 +387,6 @@ function setupScrollHeader() {
       return;
     }
 
-    const start = title.textContent;
     const steps = 12;
     let step = 0;
 

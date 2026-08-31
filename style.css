@@ -110,9 +110,9 @@ nav.row {
 
 .site-title {
   font-size: 1.55rem;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: -0.015em;
-  font-family: var(--mono);
+  font-family: "Space Mono", monospace;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -120,11 +120,12 @@ nav.row {
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1), letter-spacing 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1), letter-spacing 0.3s cubic-bezier(0.4, 0, 0.2, 1), font-weight 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 header.scrolled .site-title {
   font-size: 1.3rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
