@@ -499,7 +499,6 @@ function setupSkillsDeck(skillsData) {
   const metaEl = document.getElementById("inspector-meta");
   const descEl = document.getElementById("inspector-desc");
   const tagsEl = document.getElementById("inspector-tags");
-  const statusEl = document.getElementById("skills-status-text");
 
   chipsRow.innerHTML = chipOrder.map((key) => {
     return `<button type="button" class="skill-chip mono" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
@@ -533,7 +532,6 @@ function setupSkillsDeck(skillsData) {
     if (tagsEl) {
       tagsEl.innerHTML = data.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
     }
-    if (statusEl && !opts.silent) statusEl.textContent = `INSPECTING [${key.toUpperCase()}]`;
   }
 
   chips.forEach((chip) => {
