@@ -387,7 +387,8 @@ function setupScrollHeader() {
       return;
     }
 
-    const steps = 12;
+    const minSteps = 18;
+    const steps = Math.max(minSteps, Math.floor(target.length * 1.5));
     let step = 0;
 
     const interval = setInterval(() => {
