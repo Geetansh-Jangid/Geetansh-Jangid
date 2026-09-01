@@ -125,7 +125,6 @@ nav.row {
 
 header.scrolled .site-title {
   font-size: 1.3rem;
-  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
@@ -277,23 +276,6 @@ html.light .skill-chip.active {
   gap: 0.75rem;
   position: relative;
   overflow: hidden;
-}
-
-.inspector-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.78rem;
-  border-bottom: 1px solid var(--line-soft);
-  padding-bottom: 0.5rem;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.inspector-prompt {
-  color: var(--text-2);
-  letter-spacing: 0.02em;
-  flex: 1;
 }
 
 .inspector-desc {
