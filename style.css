@@ -263,13 +263,13 @@ header.scrolled .site-title {
 }
 
 .skill-chip.active {
-  color: var(--bg);
-  background: var(--text);
+  color: #fff;
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
 }
 
 html.light .skill-chip.active {
-  color: var(--surface);
-  background: var(--text);
+  color: #000;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
 }
 
 .skills-inspector {
