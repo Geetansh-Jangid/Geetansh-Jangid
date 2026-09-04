@@ -359,10 +359,7 @@ function setupThemeToggle() {
       favicon.href = isLight ? "./logo-light.svg" : "./logo-dark.svg";
     }
   };
-  const isLight = localStorage.getItem("theme") === "light";
-  if (isLight) {
-    document.documentElement.classList.add("light");
-  }
+  const isLight = document.documentElement.classList.contains("light");
   btn.textContent = isLight ? "DARK" : "LIGHT";
   btn.setAttribute("aria-pressed", isLight);
   updateFavicon(isLight);

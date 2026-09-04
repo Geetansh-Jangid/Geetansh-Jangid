@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script>if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light")</script>
+  <script>(function(){var s=localStorage.getItem("theme");var light=s?s==="light":!window.matchMedia("(prefers-color-scheme: dark)").matches;if(light)document.documentElement.classList.add("light")})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#0b0b0b">

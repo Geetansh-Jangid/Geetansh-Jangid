@@ -51,6 +51,26 @@ const EGG_PALETTES = [
     name: "Noir",
     dark: { "--bg": "#050505", "--surface": "#0d0d0d", "--surface-2": "#161616", "--text": "#ebebea", "--text-2": "#8a8a88", "--text-3": "#5a5a57", "--line": "#1a1a1a", "--line-soft": "#111111", "--accent": "#e6b540", "--accent-dim": "#c49a35", "--accent-soft": "#f0d26a" },
     light: { "--bg": "#f6f5f3", "--surface": "#ffffff", "--surface-2": "#edeceb", "--text": "#0a0a0a", "--text-2": "#555555", "--text-3": "#808080", "--line": "#d9d9d7", "--line-soft": "#ecebe9", "--accent": "#c49a2a", "--accent-dim": "#a3811f", "--accent-soft": "#e6b540" }
+  },
+  {
+    name: "Fog",
+    dark: { "--bg": "#1c1c1c", "--surface": "#242424", "--surface-2": "#2c2c2c", "--text": "#eaeaea", "--text-2": "#a0a0a0", "--text-3": "#707070", "--line": "#333333", "--line-soft": "#262626", "--accent": "#22d3ee", "--accent-dim": "#0e9fb8", "--accent-soft": "#67e8f9" },
+    light: { "--bg": "#f0f0f0", "--surface": "#ffffff", "--surface-2": "#e4e4e4", "--text": "#141414", "--text-2": "#5c5c5c", "--text-3": "#8a8a8a", "--line": "#d6d6d6", "--line-soft": "#e8e8e8", "--accent": "#0891a8", "--accent-dim": "#076f81", "--accent-soft": "#22d3ee" }
+  },
+  {
+    name: "Steel",
+    dark: { "--bg": "#16181c", "--surface": "#1e2126", "--surface-2": "#262a30", "--text": "#e6e8ea", "--text-2": "#9aa0a6", "--text-3": "#666d74", "--line": "#2c3138", "--line-soft": "#1e2126", "--accent": "#f97316", "--accent-dim": "#c2570c", "--accent-soft": "#fb923c" },
+    light: { "--bg": "#f3f4f6", "--surface": "#ffffff", "--surface-2": "#e7e9ec", "--text": "#101215", "--text-2": "#595e64", "--text-3": "#878d94", "--line": "#dadde1", "--line-soft": "#ebedf0", "--accent": "#c2410c", "--accent-dim": "#9a340a", "--accent-soft": "#f97316" }
+  },
+  {
+    name: "Stone",
+    dark: { "--bg": "#1a1815", "--surface": "#221f1b", "--surface-2": "#2a2622", "--text": "#ece8e2", "--text-2": "#a39d94", "--text-3": "#726c62", "--line": "#322d27", "--line-soft": "#221f1b", "--accent": "#eab308", "--accent-dim": "#b58a06", "--accent-soft": "#fbd34d" },
+    light: { "--bg": "#f5f4f1", "--surface": "#ffffff", "--surface-2": "#e9e7e2", "--text": "#151310", "--text-2": "#5e5952", "--text-3": "#8c877e", "--line": "#dcd9d2", "--line-soft": "#ede9e4", "--accent": "#a16207", "--accent-dim": "#804e05", "--accent-soft": "#eab308" }
+  },
+  {
+    name: "Silver",
+    dark: { "--bg": "#232323", "--surface": "#2b2b2b", "--surface-2": "#333333", "--text": "#f0f0f0", "--text-2": "#a8a8a8", "--text-3": "#787878", "--line": "#3d3d3d", "--line-soft": "#2e2e2e", "--accent": "#f472b6", "--accent-dim": "#c34d8e", "--accent-soft": "#f9a8d4" },
+    light: { "--bg": "#ececec", "--surface": "#ffffff", "--surface-2": "#dedede", "--text": "#181818", "--text-2": "#5e5e5e", "--text-3": "#8c8c8c", "--line": "#d2d2d2", "--line-soft": "#e2e2e2", "--accent": "#be185d", "--accent-dim": "#9d1650", "--accent-soft": "#f472b6" }
   }
 ];
 
@@ -89,7 +109,28 @@ function triggerEgg() {
   activeEgg = choices[Math.floor(Math.random() * choices.length)];
   applyActiveEgg();
   pulseFeedback();
+  sessionStorage.setItem("eggPalette", activeEgg.name);
   console.log(`%c✨ palette: ${activeEgg.name}`, "font-weight:bold;color:var(--accent);");
+}
+
+function restoreEgg() {
+  const saved = sessionStorage.getItem("eggPalette");
+  if (!saved) return;
+  const found = EGG_PALETTES.find((p) => p.name === saved);
+  if (found) {
+    activeEgg = found;
+    applyActiveEgg();
+  }
+}
+
+function resetEgg() {
+  if (!activeEgg) return;
+  activeEgg = null;
+  sessionStorage.removeItem("eggPalette");
+  const root = document.documentElement.style;
+  Object.keys(EGG_PALETTES[0].dark).forEach((key) => root.removeProperty(key));
+  pulseFeedback();
+  console.log("%c↺ theme reset to default", "font-weight:bold;color:var(--accent);");
 }
 
 function initEasterEgg() {
@@ -108,6 +149,19 @@ function initEasterEgg() {
     }
   });
 
+  let holdTimer = null;
+  const HOLD_MS = 900;
+  const startHold = () => {
+    clearTimeout(holdTimer);
+    holdTimer = setTimeout(resetEgg, HOLD_MS);
+  };
+  const cancelHold = () => clearTimeout(holdTimer);
+
+  trigger.addEventListener("pointerdown", startHold);
+  trigger.addEventListener("pointerup", cancelHold);
+  trigger.addEventListener("pointerleave", cancelHold);
+  trigger.addEventListener("pointercancel", cancelHold);
+
   new MutationObserver(applyActiveEgg).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ["class"]
@@ -115,3 +169,4 @@ function initEasterEgg() {
 }
 
 initEasterEgg();
+restoreEgg();
