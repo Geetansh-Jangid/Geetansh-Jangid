@@ -1,3 +1,21 @@
+@font-face {
+  font-family: "Libre Caslon Condensed";
+  src: url("./fonts/LibreCaslonCondensed[wght].woff2") format("woff2-variations"),
+       url("./fonts/LibreCaslonCondensed[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Libre Caslon Condensed";
+  src: url("./fonts/LibreCaslonCondensed-Italic[wght].woff2") format("woff2-variations"),
+       url("./fonts/LibreCaslonCondensed-Italic[wght].woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 :root {
   --bg: #14120B;
   --surface: #1B1913;
@@ -11,7 +29,7 @@
   --accent-dim: #ff5a0066;
   --accent-soft: #ff7a33;
   --sans: "Inter", -apple-system, "Segoe UI", Roboto, sans-serif;
-  --serif: "Instrument Serif", Georgia, serif;
+  --serif: "Libre Caslon Condensed", Georgia, serif;
   --mono: "JetBrains Mono", "IBM Plex Mono", monospace;
   --page-pad: clamp(1.1rem, 3vw, 2.5rem);
   --content-inset: max(0px, calc((100vw - min(1180px, 94vw)) / 2));
