@@ -352,21 +352,32 @@ function renderGoals(items) {
 }
 
 function setupThemeToggle() {
+  const btn = document.getElementById("theme-toggle");
   const favicon = document.getElementById("site-favicon");
   const updateFavicon = (isLight) => {
     if (favicon) {
       favicon.href = isLight ? "./logo-light.svg" : "./logo-dark.svg";
     }
   };
-  const applySystemTheme = (isLight) => {
+  const applyTheme = (isLight) => {
     document.documentElement.classList.toggle("light", isLight);
+    if (btn) {
+      btn.textContent = isLight ? "DARK" : "LIGHT";
+      btn.setAttribute("aria-pressed", isLight);
+    }
     updateFavicon(isLight);
   };
 
-  applySystemTheme(document.documentElement.classList.contains("light"));
+  applyTheme(document.documentElement.classList.contains("light"));
+
+  if (btn) {
+    btn.onclick = () => {
+      applyTheme(!document.documentElement.classList.contains("light"));
+    };
+  }
 
   const mq = window.matchMedia("(prefers-color-scheme: dark)");
-  const onChange = (e) => applySystemTheme(!e.matches);
+  const onChange = (e) => applyTheme(!e.matches);
   if (mq.addEventListener) mq.addEventListener("change", onChange);
   else if (mq.addListener) mq.addListener(onChange);
 }

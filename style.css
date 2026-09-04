@@ -264,12 +264,12 @@ header.scrolled .site-title {
 
 .skill-chip.active {
   color: #fff;
-  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  background: var(--surface-2);
 }
 
 html.light .skill-chip.active {
   color: #000;
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  background: var(--surface-2);
 }
 
 .skills-inspector {
