@@ -700,10 +700,14 @@ footer a:hover { color: var(--accent-soft); border-color: var(--accent-dim); }
   body.menu-open { overflow: hidden; }
 }
 
+@media (max-width: 1045px) {
+  h2 { font-size: 1.85rem; }
+}
+
 @media (max-width: 480px) {
   .stack { gap: 2.5rem; }
   .section-block.stack { gap: 0.3rem; }
-  h2 { font-size: 2.2rem; padding-bottom: 0.65rem; }
+  h2 { font-size: 1.6rem; padding-bottom: 0.65rem; }
   .site-title { font-size: 1.3rem; }
   .intro p { font-size: 0.8rem; letter-spacing: 0.06em; }
 }

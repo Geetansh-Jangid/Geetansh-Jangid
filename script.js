@@ -352,24 +352,23 @@ function renderGoals(items) {
 }
 
 function setupThemeToggle() {
-  const btn = document.getElementById("theme-toggle");
   const favicon = document.getElementById("site-favicon");
   const updateFavicon = (isLight) => {
     if (favicon) {
       favicon.href = isLight ? "./logo-light.svg" : "./logo-dark.svg";
     }
   };
-  const isLight = document.documentElement.classList.contains("light");
-  btn.textContent = isLight ? "DARK" : "LIGHT";
-  btn.setAttribute("aria-pressed", isLight);
-  updateFavicon(isLight);
-  btn.onclick = () => {
-    const nowLight = document.documentElement.classList.toggle("light");
-    btn.textContent = nowLight ? "DARK" : "LIGHT";
-    btn.setAttribute("aria-pressed", nowLight);
-    localStorage.setItem("theme", nowLight ? "light" : "dark");
-    updateFavicon(nowLight);
+  const applySystemTheme = (isLight) => {
+    document.documentElement.classList.toggle("light", isLight);
+    updateFavicon(isLight);
   };
+
+  applySystemTheme(document.documentElement.classList.contains("light"));
+
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  const onChange = (e) => applySystemTheme(!e.matches);
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else if (mq.addListener) mq.addListener(onChange);
 }
 
 function setupMobileMenu() {
@@ -431,6 +430,26 @@ function setupScrollHeader() {
   let currentText = title.textContent;
   const fullName = title.textContent;
   const shortName = "</>";
+
+  const lockTitleWidth = () => {
+    const clone = title.cloneNode(true);
+    clone.textContent = fullName;
+    clone.style.position = "absolute";
+    clone.style.visibility = "hidden";
+    clone.style.pointerEvents = "none";
+    clone.style.minWidth = "0";
+    clone.style.width = "auto";
+    document.body.appendChild(clone);
+    const width = clone.getBoundingClientRect().width;
+    document.body.removeChild(clone);
+    title.style.minWidth = `${Math.ceil(width)}px`;
+  };
+
+  lockTitleWidth();
+  window.addEventListener("resize", lockTitleWidth);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(lockTitleWidth);
+  }
 
   const morphText = (target) => {
     if (currentText === target) return;

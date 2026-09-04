@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <script>(function(){var s=localStorage.getItem("theme");var light=s?s==="light":!window.matchMedia("(prefers-color-scheme: dark)").matches;if(light)document.documentElement.classList.add("light")})()</script>
+  <script>if(!window.matchMedia("(prefers-color-scheme: dark)").matches)document.documentElement.classList.add("light")</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark light">
   <meta name="theme-color" content="#0b0b0b">
@@ -63,7 +63,6 @@
             <a href="#achievements">Achievements</a>
             <a href="#contact">Contact</a>
           </div>
-          <button id="theme-toggle" class="toggle" type="button" aria-label="Toggle theme" aria-pressed="false">LIGHT</button>
           <button id="menu-toggle" class="menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-links">
             <i class="fa-solid fa-bars"></i>
           </button>
