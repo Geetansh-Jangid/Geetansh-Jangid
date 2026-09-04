@@ -36,7 +36,7 @@ const KNOWN_KEYS = new Set([
   "institution", "location", "details",
   "meta", "status", "month", "description",
   "type", "value", "label", "icon",
-  "name", "target", "tags"
+  "name", "target", "tags", "more_info"
 ]);
 
 function parseDataFile(text) {
@@ -85,6 +85,54 @@ function escapeHtml(str) {
 
 function isSafeUrl(href) {
   return /^(https?:\/\/|mailto:)/i.test(href);
+}
+
+const moreInfoRegistry = {};
+let moreInfoCounter = 0;
+
+function renderMoreInfoTrigger(title, info) {
+  const list = Array.isArray(info) ? info.filter(Boolean) : [info].filter(Boolean);
+  if (list.length === 0) return null;
+  const id = `mi-${moreInfoCounter++}`;
+  moreInfoRegistry[id] = { title: title || "", info: list };
+  return `<button type="button" class="more-link" data-more-id="${id}">More</button>`;
+}
+
+function setupMoreInfoModal() {
+  const overlay = document.createElement("div");
+  overlay.className = "modal-overlay";
+  overlay.innerHTML = `
+    <div class="modal-card">
+      <button type="button" class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <h3 id="modal-title"></h3>
+      <div id="modal-body"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const titleEl = overlay.querySelector("#modal-title");
+  const bodyEl = overlay.querySelector("#modal-body");
+
+  function openModal(title, info) {
+    titleEl.textContent = title;
+    bodyEl.innerHTML = info.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
+    overlay.classList.add("open");
+    document.body.classList.add("modal-open");
+  }
+
+  function closeModal() {
+    overlay.classList.remove("open");
+    document.body.classList.remove("modal-open");
+  }
+
+  overlay.querySelector(".modal-close").addEventListener("click", closeModal);
+  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".more-link");
+    if (!btn) return;
+    const data = moreInfoRegistry[btn.dataset.moreId];
+    if (data) openModal(data.title, data.info);
+  });
 }
 
 function parseTimelineYear(timeline) {
@@ -181,18 +229,25 @@ function getGridClass(count) {
   return "grid-3";
 }
 
-function renderLinksRow(links) {
-  if (!Array.isArray(links) || links.length === 0) return "";
-  const items = links.map((entry) => {
+function renderLinksRow(links, moreTrigger) {
+  const linkEntries = Array.isArray(links) ? links : [];
+  const parsed = linkEntries.map((entry) => {
     const idx = entry.indexOf(":");
-    if (idx === -1) return "";
+    if (idx === -1) return null;
     const label = entry.slice(0, idx).trim();
     const url = entry.slice(idx + 1).trim();
     const href = isSafeUrl(url) ? url : "#";
-    return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>`;
+    return { isGithub: label.toLowerCase().includes("github"), html: `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(label)}</a>` };
   }).filter(Boolean);
-  if (items.length === 0) return "";
-  return `<p class="links">${items.join(' <span class="sep">|</span> ')}</p>`;
+
+  if (moreTrigger) {
+    const githubIdx = parsed.findIndex((p) => p.isGithub);
+    const insertAt = githubIdx === -1 ? parsed.length : githubIdx;
+    parsed.splice(insertAt, 0, { isGithub: false, html: moreTrigger });
+  }
+
+  if (parsed.length === 0) return "";
+  return `<p class="links">${parsed.map((p) => p.html).join(' <span class="sep">|</span> ')}</p>`;
 }
 
 function renderCardList(targetId, items) {
@@ -206,7 +261,7 @@ function renderCardList(targetId, items) {
         <div class="content-col">
           <h3>${escapeHtml(item.title)}</h3>
           <ul>${summary.map(pt => `<li>${escapeHtml(pt)}</li>`).join("")}</ul>
-          ${renderLinksRow(item.links)}
+          ${renderLinksRow(item.links, renderMoreInfoTrigger(item.title, item.more_info))}
         </div>
       </article>`;
   }).join("");
@@ -221,7 +276,7 @@ function renderEducation(items) {
       <div class="content-col">
         <h3>${escapeHtml(item.institution)}</h3>
         <p>${escapeHtml(item.details)}</p>
-        ${renderLinksRow(item.links)}
+        ${renderLinksRow(item.links, renderMoreInfoTrigger(item.institution, item.more_info))}
       </div>
     </article>`).join("");
 }
@@ -235,7 +290,7 @@ function renderAchievements(items) {
       <div class="content-col">
         <h3>${escapeHtml(item.title)}</h3>
         <p>${escapeHtml(item.description)}</p>
-        ${renderLinksRow(item.links)}
+        ${renderLinksRow(item.links, renderMoreInfoTrigger(item.title, item.more_info))}
       </div>
     </article>`).join("");
 }
@@ -274,6 +329,7 @@ function renderContact(items) {
         <p class="meta">${iconType === 'icon' ? iconHtml : ''}${escapeHtml(typeLabel)}</p>
         <div class="content-col">
           <a href="${escapeHtml(href)}" ${isEmail ? '' : 'target="_blank" rel="noopener"'}>${escapeHtml(label)}</a>
+          ${renderLinksRow(null, renderMoreInfoTrigger(label, item.more_info))}
         </div>
       </article>`;
   }).join("");
@@ -289,6 +345,7 @@ function renderGoals(items) {
         <div class="content-col">
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.description)}</p>
+          ${renderLinksRow(null, renderMoreInfoTrigger(item.title, item.more_info))}
         </div>
       </article>`).join("")
     : `<p class="meta" style="padding: 1rem 0;">No goals set.</p>`;
@@ -347,7 +404,7 @@ function setupMobileMenu() {
   });
 
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 860) setOpen(false);
+    if (window.innerWidth > 1045) setOpen(false);
     else if (navLinks.classList.contains("open")) positionPanel();
   });
 }
@@ -561,6 +618,7 @@ async function init() {
   setupHeaderHeightVar();
   setupScrollHeader();
   setupNavHighlight();
+  setupMoreInfoModal();
   try {
     const sections = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
