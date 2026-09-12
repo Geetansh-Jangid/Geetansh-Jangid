@@ -30,13 +30,15 @@ const sectionConfig = {
 };
 
 const MANIFEST_PATH = "data/files.json";
+const INFO_PATH = "data/info.txt";
 
 const KNOWN_KEYS = new Set([
   "title", "role", "timeline", "summary", "links",
   "institution", "location", "details",
   "meta", "status", "month", "description",
   "type", "value", "label", "icon",
-  "name", "target", "tags", "more_info"
+  "name", "target", "tags", "more_info",
+  "source"
 ]);
 
 function parseDataFile(text) {
@@ -170,6 +172,34 @@ async function readManifest() {
   }
 }
 
+async function loadInfo() {
+  try {
+    const response = await fetch(INFO_PATH, { cache: "no-store" });
+    if (!response.ok) return null;
+    const text = await response.text();
+    return parseDataFile(text);
+  } catch (err) {
+    return null;
+  }
+}
+
+function applySiteMeta(record) {
+  if (!record) return;
+
+  if (record.name) {
+    const titleEl = document.getElementById("site-title");
+    if (titleEl) titleEl.textContent = record.name;
+
+    const footerNameEl = document.getElementById("footer-name");
+    if (footerNameEl) footerNameEl.textContent = record.name;
+  }
+
+  if (record.source && isSafeUrl(record.source)) {
+    const sourceLinkEl = document.getElementById("footer-source-link");
+    if (sourceLinkEl) sourceLinkEl.href = record.source;
+  }
+}
+
 async function discoverSectionFilesFromDirectory(basePath) {
   try {
     const response = await fetch(basePath);
@@ -299,15 +329,15 @@ function getIconClass(iconStr) {
   if (!iconStr) {
     return { iconHtml: '', iconType: 'none' };
   }
-  
+
   const iconId = iconStr.trim();
   const brands = ['fa-github', 'fa-github-alt', 'fa-github-square', 'fa-twitter', 'fa-twitter-square', 'fa-linkedin', 'fa-linkedin-in', 'fa-instagram', 'fa-discord', 'fa-youtube', 'fa-youtube-square', 'fa-tiktok', 'fa-snapchat', 'fa-reddit', 'fa-reddit-alien', 'fa-stack-overflow', 'fa-codepen', 'fa-gitlab', 'fa-bitbucket', 'fa-bitbucket-square', 'fa-npm', 'fa-docker', 'fa-aws', 'fa-google', 'fa-facebook', 'fa-facebook-f', 'fa-mastodon', 'fa-mysql', 'fa-postgres', 'fa-linux', 'fa-windows', 'fa-apple', 'fa-android'];
   const regulars = ['fa-envelope', 'fa-envelope-open', 'fa-file', 'fa-folder', 'fa-folder-open', 'fa-image', 'fa-user', 'fa-user-circle', 'fa-calendar', 'fa-clock', 'fa-bookmark', 'fa-star', 'fa-heart', 'fa-comment', 'fa-share-square', 'fa-book', 'fa-newspaper', 'fa-clipboard', 'fa-chart-bar', 'fa-chart-line', 'fa-map', 'fa-flag', 'fa-bell', 'fa-building', 'fa-money-bill', 'fa-credit-card', 'fa-phone', 'fa-phone-square'];
-  
+
   if (!brands.includes(iconId) && !regulars.includes(iconId)) {
     return { iconHtml: '', iconType: 'none' };
   }
-  
+
   const prefix = brands.includes(iconId) ? 'fa-brands' : 'fa-regular';
   const iconClass = `${prefix} ${iconId}`;
   return { iconHtml: `<i class="${iconClass}"></i>`, iconType: 'icon' };
@@ -643,9 +673,13 @@ async function init() {
   setupThemeToggle();
   setupMobileMenu();
   setupHeaderHeightVar();
-  setupScrollHeader();
   setupNavHighlight();
   setupMoreInfoModal();
+
+  const info = await loadInfo();
+  applySiteMeta(info);
+  setupScrollHeader();
+
   try {
     const sections = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
     const manifest = await readManifest();
