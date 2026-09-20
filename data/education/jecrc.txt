@@ -1,0 +1,4 @@
+institution: JECRC Foundation
+location: Jaipur, Rajasthan
+timeline: 2026-2030
+details: B.Tech. in Artificial Intelligence and Data Science.
