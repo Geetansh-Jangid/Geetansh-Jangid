@@ -20,10 +20,27 @@ function getTxtFiles(section) {
     .sort((a, b) => a.localeCompare(b));
 }
 
-const manifest = sections.reduce((acc, section) => {
-  acc[section] = getTxtFiles(section);
-  return acc;
-}, {});
+function generate() {
+  const manifest = sections.reduce((acc, section) => {
+    acc[section] = getTxtFiles(section);
+    return acc;
+  }, {});
 
-fs.writeFileSync(outputFile, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-console.log(`Generated ${path.relative(root, outputFile)}`);
+  fs.writeFileSync(outputFile, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  console.log(`Generated ${path.relative(root, outputFile)}`);
+}
+
+generate();
+
+if (process.argv.includes('--watch')) {
+  console.log('Watching data/ for changes...');
+  let debounce = null;
+  fs.watch(dataDir, { recursive: true }, (eventType, filename) => {
+    if (!filename || !filename.endsWith('.txt') || filename.endsWith('template.txt')) return;
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      console.log(`Change detected: ${filename}`);
+      generate();
+    }, 100);
+  });
+}

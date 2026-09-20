@@ -13,11 +13,11 @@
   <meta property="og:description" content="Portfolio of Geetansh Jangid - AI, Data Science, Development and Projects.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://geetansh.vercel.app/">
-  <meta property="og:image" content="https://geetansh.vercel.app/logo-dark.svg">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="https://geetansh.vercel.app/thumb.png">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Geetansh Jangid | Portfolio">
   <meta name="twitter:description" content="Portfolio of Geetansh Jangid - AI, Data Science, Development and Projects.">
-  <meta name="twitter:image" content="https://geetansh.vercel.app/logo-dark.svg">
+  <meta name="twitter:image" content="https://geetansh.vercel.app/thumb.png">
   <meta name="application-name" content="Geetansh Jangid">
   <meta name="apple-mobile-web-app-title" content="Geetansh Jangid">
   <meta name="author" content="Geetansh Jangid">
@@ -25,7 +25,7 @@
   <meta name="google-site-verification" content="_jqhdAhRiJvhMh4ff_9Q8yGc469J4TVFHu-KiNSEiiA" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Space+Mono:wght@400;700&family=Fira+Code:wght@400;500;600;700&family=Source+Code+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=Lora:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Poppins:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700;800&family=Rubik:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="./logo-dark.svg" id="site-favicon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="./style.css">
@@ -90,7 +90,7 @@
         <div class="skills-dock">
           <div class="skills-chips-row" id="skills-chips-row" role="tablist" aria-label="Skills filter"></div>
 
-          <div class="skills-inspector" id="skills-inspector">
+          <div class="skills-inspector" id="skills-inspector" role="tabpanel" aria-labelledby="skills-chips-row">
             <div class="inspector-body">
               <p class="inspector-desc" id="inspector-desc"></p>
               <div class="inspector-tags mono" id="inspector-tags"></div>
@@ -100,7 +100,7 @@
       </section>
       <section id="work" class="stack section-block">
         <h2><a class="heading-link" href="#work">Work</a></h2>
-        <div id="work-grid" class="grid"></div>
+        <div id="work-grid" class="grid"><div class="card skeleton"></div><div class="card skeleton"></div></div>
       </section>
 
       <section id="experience" class="stack section-block">
@@ -110,12 +110,12 @@
 
       <section id="goals" class="stack section-block">
         <h2><a class="heading-link" href="#goals">Goals</a></h2>
-        <div id="goals-container" class="stack" aria-live="polite"></div>
+        <div id="goals-container" class="stack" aria-live="polite"><div class="card skeleton"></div></div>
       </section>
 
       <section id="education" class="stack section-block">
         <h2><a class="heading-link" href="#education">Education</a></h2>
-        <div id="education-timeline" class="stack"></div>
+        <div id="education-timeline" class="stack"><div class="card skeleton"></div></div>
       </section>
 
       <section id="achievements" class="stack section-block">
@@ -125,12 +125,12 @@
 
       <section id="contact" class="stack section-block">
         <h2><a class="heading-link" href="#contact">Contact</a></h2>
-        <div id="contact-grid" class="grid"></div>
+        <div id="contact-grid" class="grid"><div class="card skeleton"></div></div>
       </section>
     </main>
 
     <footer>
-      <p>Crafted by Geetansh Jangid — <a href="https://github.com/Geetansh-Jangid/Geetansh-Jangid" target="_blank" rel="noopener noreferrer">Source Code</a></p>
+      <p>Crafted by <span id="footer-name">Geetansh Jangid</span> — <a id="footer-source-link" href="https://github.com/Geetansh-Jangid/Geetansh-Jangid" target="_blank" rel="noopener noreferrer">Source Code</a></p>
     </footer>
   </div>
 

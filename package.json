@@ -3,6 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "description": "Raw minimal grayscale portfolio",
+  "scripts": {
+    "build": "node scripts/generate-data-manifest.js",
+    "watch": "node scripts/generate-data-manifest.js --watch",
+    "dev": "node scripts/generate-data-manifest.js --watch"
+  },
   "dependencies": {
     "@vercel/analytics": "^1.3.1"
   }

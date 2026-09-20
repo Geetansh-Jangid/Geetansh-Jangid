@@ -47,15 +47,31 @@ function parseDataFile(text) {
   let activeListKey = null;
 
   lines.forEach((lineRaw) => {
+    // Preserve checking if line is indented / list item
+    const isIndented = /^\s+/.test(lineRaw);
     const line = lineRaw.trim();
     if (!line) return;
 
+    // Explicit list item marker
+    if (line.startsWith("- ")) {
+      if (activeListKey) {
+        record[activeListKey].push(line.slice(2).trim());
+      }
+      return;
+    }
+
+    // If indented and we have an active list, treat as list item
+    if (isIndented && activeListKey) {
+      record[activeListKey].push(line);
+      return;
+    }
+
     const firstColonIndex = line.indexOf(":");
-    const isNewKey = firstColonIndex !== -1 && KNOWN_KEYS.has(line.slice(0, firstColonIndex).trim().toLowerCase());
+    const potentialKey = firstColonIndex !== -1 ? line.slice(0, firstColonIndex).trim().toLowerCase() : null;
+    const isNewKey = potentialKey && KNOWN_KEYS.has(potentialKey);
 
     if (activeListKey && !isNewKey) {
-      const item = line.startsWith("- ") ? line.slice(2).trim() : line;
-      record[activeListKey].push(item);
+      record[activeListKey].push(line);
       return;
     }
 
@@ -103,9 +119,12 @@ function renderMoreInfoTrigger(title, info) {
 function setupMoreInfoModal() {
   const overlay = document.createElement("div");
   overlay.className = "modal-overlay";
+  overlay.setAttribute("role", "dialog");
+  overlay.setAttribute("aria-modal", "true");
+  overlay.setAttribute("aria-labelledby", "modal-title");
   overlay.innerHTML = `
     <div class="modal-card">
-      <button type="button" class="modal-close" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+      <button type="button" class="modal-close" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
       <h3 id="modal-title"></h3>
       <div id="modal-body"></div>
     </div>`;
@@ -113,22 +132,50 @@ function setupMoreInfoModal() {
 
   const titleEl = overlay.querySelector("#modal-title");
   const bodyEl = overlay.querySelector("#modal-body");
+  const closeBtn = overlay.querySelector(".modal-close");
+  let lastFocusedEl = null;
 
   function openModal(title, info) {
+    lastFocusedEl = document.activeElement;
     titleEl.textContent = title;
     bodyEl.innerHTML = info.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
     overlay.classList.add("open");
     document.body.classList.add("modal-open");
+    closeBtn.focus();
   }
 
   function closeModal() {
     overlay.classList.remove("open");
     document.body.classList.remove("modal-open");
+    if (lastFocusedEl) {
+      lastFocusedEl.focus();
+      lastFocusedEl = null;
+    }
   }
 
-  overlay.querySelector(".modal-close").addEventListener("click", closeModal);
+  closeBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+  document.addEventListener("keydown", (e) => {
+    if (!overlay.classList.contains("open")) return;
+    if (e.key === "Escape") {
+      closeModal();
+      return;
+    }
+    // Trap focus inside modal
+    if (e.key === "Tab") {
+      const focusables = overlay.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".more-link");
     if (!btn) return;
@@ -152,20 +199,9 @@ function parseMetaYear(meta) {
   return match ? parseInt(match[1]) : 0;
 }
 
-function resolveRelativePath(basePath, href) {
-  if (href.startsWith("http://") || href.startsWith("https://")) {
-    const url = new URL(href);
-    return `${url.pathname}${url.search}`.replace(/^\//, "");
-  }
-  if (href.startsWith("/")) {
-    return href.replace(/^\//, "");
-  }
-  return `${basePath}${href.replace(/^\.?\/?/, "")}`;
-}
-
 async function readManifest() {
   try {
-    const response = await fetch(MANIFEST_PATH, { cache: "no-store" });
+    const response = await fetch(MANIFEST_PATH);
     return response.ok ? await response.json() : null;
   } catch (err) {
     return null;
@@ -174,7 +210,7 @@ async function readManifest() {
 
 async function loadInfo() {
   try {
-    const response = await fetch(INFO_PATH, { cache: "no-store" });
+    const response = await fetch(INFO_PATH);
     if (!response.ok) return null;
     const text = await response.text();
     return parseDataFile(text);
@@ -200,26 +236,7 @@ function applySiteMeta(record) {
   }
 }
 
-async function discoverSectionFilesFromDirectory(basePath) {
-  try {
-    const response = await fetch(basePath);
-    if (!response.ok) return [];
-    const html = await response.text();
-    const parser = new DOMParser();
-    const directoryDocument = parser.parseFromString(html, "text/html");
-    const files = Array.from(directoryDocument.querySelectorAll("a[href]"))
-      .map((link) => link.getAttribute("href")?.trim() || "")
-      .filter((href) => href && href.endsWith(".txt") && !href.endsWith("template.txt"))
-      .map((href) => resolveRelativePath(basePath, href));
-    return [...new Set(files)].sort((a, b) => a.localeCompare(b));
-  } catch (err) {
-    return [];
-  }
-}
-
 async function getSectionFiles(sectionName, manifest) {
-  const discovered = await discoverSectionFilesFromDirectory(sectionConfig[sectionName].path);
-  if (discovered.length > 0) return discovered;
   if (manifest && manifest[sectionName] && manifest[sectionName].length > 0) {
     return manifest[sectionName];
   }
@@ -251,12 +268,6 @@ function getStatusClass(status) {
   if (s.includes("done") || s.includes("complete")) return "status-done";
   if (s.includes("not started") || s.includes("pending")) return "status-pending";
   return "";
-}
-
-function getGridClass(count) {
-  if (count <= 1) return "grid-1";
-  if (count === 2) return "grid-2";
-  return "grid-3";
 }
 
 function renderLinksRow(links, moreTrigger) {
@@ -449,14 +460,24 @@ function setupMobileMenu() {
 function setupHeaderHeightVar() {
   const header = document.querySelector("header");
   if (!header) return;
+  let debounceTimer = null;
+  let lockedHeight = null;
   const set = () => {
-    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    const h = Math.ceil(header.getBoundingClientRect().height);
+    // Avoid jitter: only update when height changes by >2px from locked value
+    if (lockedHeight !== null && Math.abs(h - lockedHeight) <= 2) return;
+    lockedHeight = h;
+    document.documentElement.style.setProperty("--header-h", `${h}px`);
+  };
+  const debouncedSet = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(set, 80);
   };
   set();
   window.addEventListener("resize", set);
   window.addEventListener("load", set);
   if (window.ResizeObserver) {
-    new ResizeObserver(set).observe(header);
+    new ResizeObserver(debouncedSet).observe(header);
   }
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(set);
@@ -496,8 +517,13 @@ function setupScrollHeader() {
     if (currentText === target) return;
     currentText = target;
 
+    // Lock title height to prevent header resize during morph
+    const titleHeight = title.getBoundingClientRect().height;
+    title.style.minHeight = `${titleHeight}px`;
+
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       title.textContent = target;
+      title.style.minHeight = "";
       return;
     }
 
@@ -509,6 +535,7 @@ function setupScrollHeader() {
       if (step >= steps) {
         clearInterval(interval);
         title.textContent = target;
+        title.style.minHeight = "";
         return;
       }
 
@@ -618,12 +645,11 @@ function setupSkillsDeck(skillsData) {
   if (!deck || !chipsRow || !skillsData) return;
 
   const { map, chipOrder } = skillsData;
-  const targetEl = document.getElementById("inspector-target");
   const descEl = document.getElementById("inspector-desc");
   const tagsEl = document.getElementById("inspector-tags");
 
-  chipsRow.innerHTML = chipOrder.map((key) => {
-    return `<button type="button" class="skill-chip mono" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
+  chipsRow.innerHTML = chipOrder.map((key, i) => {
+    return `<button type="button" role="tab" id="tab-${escapeHtml(key)}" aria-selected="false" tabindex="${i === 0 ? '0' : '-1'}" class="skill-chip mono" data-skill="${escapeHtml(key)}" data-name="${escapeHtml(map[key].name)}">${escapeHtml(map[key].name)}</button>`;
   }).join("");
 
   const chips = chipsRow.querySelectorAll(".skill-chip");
@@ -632,13 +658,20 @@ function setupSkillsDeck(skillsData) {
     const data = map[key];
     if (!data) return;
 
-    chips.forEach((c) => c.classList.remove("active"));
-    if (chipEl) chipEl.classList.add("active");
-
-    if (targetEl) {
-      if (opts.silent) targetEl.textContent = data.target;
-      else scrambleText(targetEl, data.target, 220);
+    chips.forEach((c) => {
+      c.classList.remove("active");
+      c.setAttribute("aria-selected", "false");
+      c.setAttribute("tabindex", "-1");
+    });
+    if (chipEl) {
+      chipEl.classList.add("active");
+      chipEl.setAttribute("aria-selected", "true");
+      chipEl.setAttribute("tabindex", "0");
+      if (!opts.silent) {
+        chipEl.focus();
+      }
     }
+
     if (descEl) {
       if (opts.silent) {
         descEl.textContent = data.desc;
@@ -655,7 +688,7 @@ function setupSkillsDeck(skillsData) {
     }
   }
 
-  chips.forEach((chip) => {
+  chips.forEach((chip, index) => {
     const skillKey = chip.dataset.skill;
     const name = chip.dataset.name || chip.textContent;
 
@@ -664,6 +697,20 @@ function setupSkillsDeck(skillsData) {
     });
 
     chip.addEventListener("click", () => selectSkill(skillKey, chip));
+
+    chip.addEventListener("keydown", (e) => {
+      let nextIndex = null;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        nextIndex = (index + 1) % chips.length;
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        nextIndex = (index - 1 + chips.length) % chips.length;
+      }
+      if (nextIndex !== null) {
+        e.preventDefault();
+        const nextChip = chips[nextIndex];
+        selectSkill(nextChip.dataset.skill, nextChip);
+      }
+    });
   });
 
   selectSkill(chipOrder[0], chips[0], { silent: true });
@@ -694,6 +741,18 @@ async function init() {
       renderEducation(data[4].sort((a, b) => parseTimelineYear(b.timeline) - parseTimelineYear(a.timeline)));
       renderAchievements(data[5].sort((a, b) => parseMetaYear(b.meta) - parseMetaYear(a.meta)));
       renderContact(data[6]);
+
+      // Hide sections with no data
+      const sectionIds = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
+      sectionIds.forEach((id, i) => {
+        const section = document.getElementById(id);
+        if (section && data[i] && data[i].length === 0) {
+          section.style.display = "none";
+          // Also hide corresponding nav link
+          const navLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+          if (navLink) navLink.style.display = "none";
+        }
+      });
     });
   } catch (err) {
     const errBox = document.createElement("section");

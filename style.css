@@ -249,12 +249,18 @@ header.scrolled .site-title {
   padding: 0.38rem 0.75rem;
   background: var(--surface);
   border: none;
+  outline: none;
   color: var(--text-2);
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+.skill-chip:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .skill-chip:hover {
@@ -310,6 +316,19 @@ html.light .skill-chip.active {
 
 .inspector-tags .tag:hover {
   color: var(--accent-soft);
+}
+
+/* ---------- Skeletons ---------- */
+
+.skeleton {
+  background: var(--surface);
+  animation: pulse-bg 1.5s ease-in-out infinite;
+  min-height: 4.5rem;
+}
+
+@keyframes pulse-bg {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.25; }
 }
 
 main { padding: 1rem 0 2.5rem; }
