@@ -5,3 +5,4 @@ summary:
 A portfolio that takes txt file and updates the data on web automatically using javascript.
 links:
 Github:https://github.com/Geetansh-Jangid/Geetansh-Jangid
+Website:https://geetansh.vercel.app/
