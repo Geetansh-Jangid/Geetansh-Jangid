@@ -5,3 +5,6 @@ summary:
 A discord bot that can search the web and summarise live data.
 links:
 Github:https://github.com/Geetansh-Jangid/orion
+more_info: 
+- A Discord AI assistant designed to provide concise answers using Gemini with built-in Google Search for up-to-date information. 
+- Supports conversational memory, web-grounded responses, code execution, slash commands, channel activation, and response streaming.
