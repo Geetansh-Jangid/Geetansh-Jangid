@@ -5,3 +5,6 @@ summary:
 A scraper that scrapes books from the web.
 links:
 Github:https://github.com/Geetansh-Jangid/Book-Finder
+more_info: 
+- A Discord bot that searches online book databases and presents results through interactive Discord menus. 
+- Supports book-format filtering, pagination, download-link extraction, and academic paper searches through arXiv.
