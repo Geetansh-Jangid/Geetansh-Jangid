@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://geetansh.vercel.app/sitemap.xml
+Sitemap: https://geetansh.tech/sitemap.xml
