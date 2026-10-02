@@ -6,3 +6,6 @@ All in one information and useful tools platform for Section V(my college sectio
 links:
 Github:https://github.com/Geetansh-Jangid/Section-V
 Website:https://v.geetansh.tech/
+more_info: 
+- An all-in-one academic dashboard for Section V (AI & DS), bringing timetables, faculty information, notes, announcements, tasks, useful links, and attendance tools into one platform. 
+- Built with React, TypeScript, Vite, Tailwind CSS, Zustand, and Zod, with a data-driven content pipeline that converts editable source files into validated JSON.
