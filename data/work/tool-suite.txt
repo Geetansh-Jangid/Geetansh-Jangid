@@ -6,5 +6,5 @@ Simple but efficient tools made using python
 links:
 Github:https://github.com/Geetansh-Jangid/CS-Project
 more_info:
-- extra detail one
-- extra detail two
+  - A command-line dashboard combining an AI chatbot, AI image generator, CSV editor, file organizer, and password generator.
+  - Built with Python using Gemini API, Pollinations AI, CSV handling, file management, and password generation utilities.
