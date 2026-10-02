@@ -5,4 +5,4 @@ summary:
 All in one information and useful tools platform for Section V(my college section)
 links:
 Github:https://github.com/Geetansh-Jangid/Section-V
-Website:https://sectionv.vercel.app/
+Website:https://v.geetansh.tech/
