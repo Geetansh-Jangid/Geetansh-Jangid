@@ -6,3 +6,6 @@ A portfolio that takes txt file and updates the data on web automatically using 
 links:
 Github:https://github.com/Geetansh-Jangid/Geetansh-Jangid
 Website:https://geetansh.tech/
+more_info: 
+- A data-driven personal portfolio built to separate website content from the frontend code. 
+- Uses structured text files and JavaScript to automatically generate and render sections such as work, skills, education, goals, and achievements.
