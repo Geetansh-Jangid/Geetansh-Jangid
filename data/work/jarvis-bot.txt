@@ -5,3 +5,6 @@ summary:
 A very simple bot that serves as a seamless llm on any discord server or dm.
 links:
 Github:https://github.com/Geetansh-Jangid/Jarvis
+more_info: 
+- A Discord-based AI assistant powered by Google Gemini, supporting both traditional commands and natural conversation. 
+- Includes conversation memory, image understanding/generation, slash commands, logging, and a lightweight Flask health server for deployment.
