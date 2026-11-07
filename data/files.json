@@ -12,6 +12,7 @@
     "data/work/bookfinder.txt",
     "data/work/jarvis-bot.txt",
     "data/work/orion-bot.txt",
+    "data/work/sectionwebsite.txt",
     "data/work/thiswebsite.txt",
     "data/work/tool-suite.txt"
   ],
@@ -22,7 +23,8 @@
     "data/goals/torch.txt"
   ],
   "education": [
-    "data/education/high-school.txt"
+    "data/education/high-school.txt",
+    "data/education/jecrc.txt"
   ],
   "achievements": [],
   "contact": [
