@@ -1,2 +1,3 @@
 name: Geetansh Jangid
+tagline: developer & researcher building ai systems, bots, and small tools.
 source: https://github.com/Geetansh-Jangid/Geetansh-Jangid
