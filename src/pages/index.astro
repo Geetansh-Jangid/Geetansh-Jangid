@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import SkillsSection from "../components/SkillsSection.astro";
+import EntrySection from "../components/EntrySection.astro";
+---
+
+<BaseLayout>
+  <Hero />
+
+  <noscript>
+    <p class="lede">this portfolio needs javascript to load its content.</p>
+  </noscript>
+
+  <EntrySection id="work" title="work" listId="work-list" />
+  <SkillsSection />
+  <EntrySection id="experience" title="experience" listId="experience-list" />
+  <EntrySection id="goals" title="goals" listId="goals-list" />
+  <EntrySection id="education" title="education" listId="education-list" />
+  <EntrySection id="achievements" title="achievements" listId="achievements-list" />
+</BaseLayout>
+
+<script>
+  import "../scripts/portfolio.js";
+  import "../scripts/color-easter-egg.js";
+</script>

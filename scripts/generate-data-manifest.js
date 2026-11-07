@@ -1,11 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+import fs from "node:fs";
+import path from "node:path";
 
 const root = process.cwd();
-const dataDir = path.join(root, 'data');
-const outputFile = path.join(dataDir, 'files.json');
+const dataDir = path.join(root, "public", "data");
+const outputFile = path.join(dataDir, "files.json");
 
-const sections = ['skills', 'work', 'experience', 'goals', 'education', 'achievements', 'contact'];
+const sections = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
 
 function getTxtFiles(section) {
   const sectionPath = path.join(dataDir, section);
@@ -15,7 +15,7 @@ function getTxtFiles(section) {
 
   return fs
     .readdirSync(sectionPath, { withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name.endsWith('.txt') && entry.name !== 'template.txt')
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".txt") && entry.name !== "template.txt")
     .map((entry) => `data/${section}/${entry.name}`)
     .sort((a, b) => a.localeCompare(b));
 }
@@ -26,17 +26,17 @@ function generate() {
     return acc;
   }, {});
 
-  fs.writeFileSync(outputFile, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(outputFile, `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   console.log(`Generated ${path.relative(root, outputFile)}`);
 }
 
 generate();
 
-if (process.argv.includes('--watch')) {
-  console.log('Watching data/ for changes...');
+if (process.argv.includes("--watch")) {
+  console.log("Watching public/data/ for changes...");
   let debounce = null;
   fs.watch(dataDir, { recursive: true }, (eventType, filename) => {
-    if (!filename || !filename.endsWith('.txt') || filename.endsWith('template.txt')) return;
+    if (!filename || !filename.endsWith(".txt") || filename.endsWith("template.txt")) return;
     clearTimeout(debounce);
     debounce = setTimeout(() => {
       console.log(`Change detected: ${filename}`);

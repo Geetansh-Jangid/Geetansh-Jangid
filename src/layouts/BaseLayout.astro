@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "geetansh jangid — portfolio",
+  description = "developer & researcher building ai systems, bots, and small tools."
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const personSchema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Geetansh Jangid",
+  url: "https://geetansh.tech/",
+  jobTitle: "Developer",
+  description,
+  sameAs: [
+    "https://github.com/Geetansh-Jangid",
+    "https://logbook.geetansh.tech/"
+  ]
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem("theme");
+          const theme = stored === "light" || stored === "dark" ? stored : "dark";
+          document.documentElement.classList.add(theme);
+          document.documentElement.dataset.theme = theme;
+        } catch (err) {
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#14120B" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:site_name" content="Geetansh Jangid" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content="https://geetansh.tech/thumb.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://geetansh.tech/thumb.png" />
+    <meta name="application-name" content="Geetansh Jangid" />
+    <meta name="apple-mobile-web-app-title" content="Geetansh Jangid" />
+    <meta name="author" content="Geetansh Jangid" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="_jqhdAhRiJvhMh4ff_9Q8yGc469J4TVFHu-KiNSEiiA" />
+    <link rel="icon" type="image/svg+xml" href="/logo-dark.svg" id="site-favicon" />
+    <link rel="canonical" href={canonical} />
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+  </head>
+  <body>
+    <a href="#main" class="skip-link">skip to content</a>
+
+    <div class="page">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <!-- Vercel Web Analytics -->
+    <script is:inline>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script is:inline src="/_vercel/insights/script.js"></script>
+  </body>
+</html>
