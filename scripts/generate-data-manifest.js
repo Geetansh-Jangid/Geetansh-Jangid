@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const dataDir = path.join(root, "public", "data");
+const dataDir = path.join(root, "content", "portfolio");
 const outputFile = path.join(dataDir, "files.json");
 
 const sections = ["skills", "work", "experience", "goals", "education", "achievements", "contact"];
@@ -33,7 +33,7 @@ function generate() {
 generate();
 
 if (process.argv.includes("--watch")) {
-  console.log("Watching public/data/ for changes...");
+  console.log("Watching content/portfolio/ for changes...");
   let debounce = null;
   fs.watch(dataDir, { recursive: true }, (eventType, filename) => {
     if (!filename || !filename.endsWith(".txt") || filename.endsWith("template.txt")) return;

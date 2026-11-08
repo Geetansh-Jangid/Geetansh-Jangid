@@ -1,0 +1,219 @@
+<script>
+  let mermaidModule: any = null;
+
+  async function getMermaid() {
+    if (!mermaidModule) {
+      const mod = await import('mermaid');
+      mermaidModule = mod.default;
+    }
+    return mermaidModule;
+  }
+
+  async function renderMermaidDiagrams() {
+    const isDark =
+      document.documentElement.classList.contains('dark') &&
+      !document.documentElement.classList.contains('light');
+
+    const rootStyle = getComputedStyle(document.documentElement);
+    const bg = rootStyle.getPropertyValue('--bg').trim() || (isDark ? '#14120B' : '#F7F7F4');
+    const surface = rootStyle.getPropertyValue('--surface').trim() || (isDark ? '#1B1913' : '#FFFFFF');
+    const surface2 = rootStyle.getPropertyValue('--surface-2').trim() || (isDark ? '#26241E' : '#F2F1ED');
+    const text = rootStyle.getPropertyValue('--text').trim() || (isDark ? '#F5F3EB' : '#171611');
+    const accent = rootStyle.getPropertyValue('--accent').trim() || '#FF5A00';
+    const line = rootStyle.getPropertyValue('--line').trim() || (isDark ? '#302E27' : '#DAD9D4');
+
+    // 1. Convert any unrendered pre blocks to wrapper elements with data-mermaid-code
+    const mermaidPres = document.querySelectorAll<HTMLElement>(
+      'pre[data-language="mermaid"], pre.mermaid, code.language-mermaid'
+    );
+
+    mermaidPres.forEach((targetEl) => {
+      const pre = targetEl.tagName === 'PRE' ? targetEl : targetEl.closest('pre');
+      if (!pre || !pre.parentElement) return;
+
+      const codeEl = pre.querySelector('code');
+      let codeText = (codeEl ? codeEl.textContent : pre.textContent) || '';
+      codeText = codeText.replace(/\bCopy\b$/i, '').trim();
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mermaid-diagram';
+      wrapper.dataset.mermaidCode = codeText;
+      pre.replaceWith(wrapper);
+    });
+
+    // 2. Render all diagram wrappers
+    const wrappers = document.querySelectorAll<HTMLElement>('.mermaid-diagram[data-mermaid-code]');
+    if (!wrappers.length) return;
+
+    try {
+      const mermaid = await getMermaid();
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: {
+          darkMode: isDark,
+          background: bg,
+          primaryColor: surface,
+          primaryTextColor: text,
+          primaryBorderColor: accent,
+          lineColor: accent,
+          secondaryColor: surface2,
+          tertiaryColor: surface,
+          mainBkg: surface,
+          nodeBorder: accent,
+          clusterBkg: surface2,
+          clusterBorder: line,
+          titleColor: text,
+          edgeLabelBackground: surface,
+          nodeTextColor: text,
+          fontFamily: '"Uncut Sans", -apple-system, BlinkMacSystemFont, sans-serif',
+        },
+        securityLevel: 'loose',
+      });
+
+      for (let i = 0; i < wrappers.length; i++) {
+        const wrapper = wrappers[i];
+        const code = wrapper.dataset.mermaidCode;
+        if (!code) continue;
+
+        try {
+          const id = `mermaid-${Date.now()}-${i}`;
+          const { svg } = await mermaid.render(id, code);
+          wrapper.innerHTML = svg;
+          wrapper.classList.remove('diagram-error');
+        } catch (err) {
+          console.error('Mermaid render error:', err);
+          wrapper.classList.add('diagram-error');
+        }
+      }
+    } catch (err) {
+      console.error('Mermaid load error:', err);
+    }
+  }
+
+  function setupEnhancements() {
+    // 1. Mermaid rendering
+    renderMermaidDiagrams();
+
+    // 2. Copyable code blocks - explicitly EXCLUDE mermaid blocks
+    document.querySelectorAll<HTMLElement>('pre').forEach((pre) => {
+      if (
+        pre.getAttribute('data-language') === 'mermaid' ||
+        pre.classList.contains('mermaid') ||
+        pre.classList.contains('mermaid-diagram') ||
+        pre.querySelector('code.language-mermaid')
+      ) {
+        return;
+      }
+
+      if (pre.querySelector('.copy-code')) return;
+
+      const button = document.createElement('button');
+      button.className = 'copy-code';
+      button.type = 'button';
+      button.textContent = 'Copy';
+
+      button.addEventListener('click', async () => {
+        const code = pre.querySelector('code')?.textContent || '';
+        try {
+          await navigator.clipboard.writeText(code);
+          button.textContent = 'Copied';
+          setTimeout(() => (button.textContent = 'Copy'), 1400);
+        } catch {
+          button.textContent = 'Unavailable';
+        }
+      });
+
+      pre.append(button);
+    });
+
+    // 3. Copy direct links to headings.
+    document
+      .querySelectorAll<HTMLElement>('.prose h2[id], .prose h3[id], .prose h4[id]')
+      .forEach((heading) => {
+        if (heading.dataset.anchored === 'true') return;
+        heading.dataset.anchored = 'true';
+        heading.classList.add('anchored-heading');
+
+        heading.addEventListener('click', (event) => {
+          const target = event.target as HTMLElement;
+          if (target.closest('a')) return;
+          const url = `${location.origin}${location.pathname}#${heading.id}`;
+          history.replaceState(null, '', `#${heading.id}`);
+          navigator.clipboard?.writeText(url).catch(() => {});
+        });
+      });
+  }
+
+  setupEnhancements();
+  document.addEventListener('astro:page-load', setupEnhancements);
+  document.addEventListener('astro:after-swap', setupEnhancements);
+  window.addEventListener('theme-change', () => {
+    renderMermaidDiagrams();
+  });
+</script>
+
+<style is:global>
+  .mermaid-diagram {
+    margin: 1.75rem 0;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0;
+    overflow-x: auto;
+  }
+
+  .mermaid-diagram svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Contrast styling for Mermaid diagrams */
+  html.light .mermaid-diagram svg text,
+  html.light .mermaid-diagram svg span,
+  html.light .mermaid-diagram svg .label,
+  html.light .mermaid-diagram svg .edgeLabel,
+  html.dark .mermaid-diagram svg text,
+  html.dark .mermaid-diagram svg span,
+  html.dark .mermaid-diagram svg .label,
+  html.dark .mermaid-diagram svg .edgeLabel {
+    fill: var(--text) !important;
+    color: var(--text) !important;
+    font-weight: 500;
+  }
+
+  .mermaid-diagram svg .node rect,
+  .mermaid-diagram svg .node circle,
+  .mermaid-diagram svg .node ellipse,
+  .mermaid-diagram svg .node polygon,
+  .mermaid-diagram svg .node path {
+    fill: var(--surface) !important;
+    stroke: var(--accent) !important;
+    stroke-width: 1.5px !important;
+  }
+
+  /* Connectors and markers */
+  .mermaid-diagram svg .edgePath path,
+  .mermaid-diagram svg path.flowchart-link {
+    stroke: var(--accent) !important;
+    stroke-width: 1.5px !important;
+  }
+
+  .mermaid-diagram svg .marker,
+  .mermaid-diagram svg marker path {
+    fill: var(--accent) !important;
+    stroke: var(--accent) !important;
+  }
+
+  .diagram-error {
+    opacity: 0.7;
+    border: 1px dashed var(--line);
+  }
+
+  .anchored-heading {
+    cursor: pointer;
+  }
+</style>

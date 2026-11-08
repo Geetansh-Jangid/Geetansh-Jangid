@@ -1,3 +1,30 @@
+---
+import { withBase } from '../utils/site';
+
+interface FooterLink {
+  label: string;
+  url: string;
+  external?: boolean;
+}
+
+const footerLinks: FooterLink[] = [
+  { label: 'github', url: 'https://github.com/Geetansh-Jangid', external: true },
+  { label: 'email', url: 'mailto:work@geetansh.tech' },
+  { label: 'rss', url: withBase('rss.xml') },
+  { label: 'source', url: 'https://github.com/Geetansh-Jangid/Geetansh-Jangid', external: true },
+];
+---
+
 <footer>
-  <nav id="footer-links" class="footer-links" aria-label="Elsewhere"></nav>
+  <nav class="footer-links" aria-label="Elsewhere">
+    {footerLinks.map((link) => (
+      <a
+        href={link.url}
+        target={link.external ? '_blank' : undefined}
+        rel={link.external ? 'noopener noreferrer' : undefined}
+      >
+        {link.label}
+      </a>
+    ))}
+  </nav>
 </footer>

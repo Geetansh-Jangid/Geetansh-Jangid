@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ObservationCard from '../../components/ObservationCard.astro';
+
+const observations = (await getCollection('observations', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title="observations"
+  description="short observations on ai, software craft, and systems."
+>
+  <div class="flex flex-col w-full gap-10">
+    <header>
+      <h1 class="type-page-title" data-theme-trigger="true">observations</h1>
+    </header>
+
+    <div class="flex flex-col w-full gap-6">
+      {observations.map((obs, i) => (
+        <ObservationCard
+          category={obs.data.category}
+          content={obs.data.description}
+          date={obs.data.date}
+          slug={obs.id}
+          index={i}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>

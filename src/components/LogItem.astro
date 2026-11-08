@@ -1,0 +1,24 @@
+---
+import FormattedDate from './FormattedDate.astro';
+import { withBase } from '../utils/site';
+
+interface Props {
+  title: string;
+  date: Date;
+  slug: string;
+  description?: string;
+}
+
+const { title, date, slug } = Astro.props;
+---
+
+<a href={withBase(`logbook/${slug}/`)} class="group block w-full py-2 transition-colors">
+  <article class="flex flex-row items-baseline justify-between w-full gap-4">
+    <h3 class="text-base sm:text-lg font-medium min-w-0 flex-1 text-pretty text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+      {title}
+    </h3>
+    <span class="text-sm text-[var(--color-text-secondary)] tabular-nums shrink-0">
+      <FormattedDate date={date} />
+    </span>
+  </article>
+</a>

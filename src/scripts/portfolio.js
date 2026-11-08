@@ -464,47 +464,7 @@ function renderFooter(contactItems) {
 }
 
 function setupThemeToggle() {
-  const button = document.getElementById("theme-toggle");
-  const favicon = document.getElementById("site-favicon");
-
-  function applyTheme(theme, persist = false) {
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(theme);
-    document.documentElement.dataset.theme = theme;
-
-    if (button) {
-      button.setAttribute(
-        "aria-label",
-        theme === "dark" ? "switch to light theme" : "switch to dark theme"
-      );
-    }
-
-    if (favicon) {
-      favicon.href = theme === "light" ? "/logo-light.svg" : "/logo-dark.svg";
-    }
-
-    const themeColor = document.querySelector('meta[name="theme-color"]');
-    if (themeColor) {
-      themeColor.setAttribute("content", theme === "light" ? "#F7F7F4" : "#14120B");
-    }
-
-    if (persist) {
-      try {
-        localStorage.setItem("theme", theme);
-      } catch (err) {
-        /* storage unavailable */
-      }
-    }
-  }
-
-  applyTheme(document.documentElement.classList.contains("light") ? "light" : "dark");
-
-  if (button) {
-    button.addEventListener("click", () => {
-      const current = document.documentElement.classList.contains("light") ? "light" : "dark";
-      applyTheme(current === "dark" ? "light" : "dark", true);
-    });
-  }
+  // Theme toggle and persistence handled globally by ThemeToggle and ThemeManager
 }
 
 function revealSection(id) {

@@ -1,0 +1,15 @@
+---
+import ObservationCard from './ObservationCard.astro';
+
+interface Props {
+  category: string;
+  content: string;
+  date: Date;
+  index: number;
+  slug: string;
+}
+
+const props = Astro.props;
+---
+
+<ObservationCard {...props} />

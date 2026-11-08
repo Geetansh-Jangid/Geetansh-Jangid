@@ -1,0 +1,47 @@
+---
+import { clsx, withBase } from '../utils/site';
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'> & {
+  href: string;
+  external?: boolean;
+};
+
+const { href, external, class: className, ...props } = Astro.props;
+
+const isExternal = external || href.startsWith('http://') || href.startsWith('https://');
+
+const targetUrl = isExternal ? href : withBase(href);
+const normalizedCurrent = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const normalizedTarget = targetUrl.replace(/\/+$/, '') || '/';
+
+const isExactRoot = normalizedTarget === '/' || normalizedTarget === (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
+const isLogbookTarget = normalizedTarget === '/logbook' || normalizedTarget.endsWith('/logbook');
+const isObsTarget = normalizedTarget === '/observations' || normalizedTarget.endsWith('/observations');
+
+const isRootCurrent = normalizedCurrent === '/' || normalizedCurrent === (import.meta.env.BASE_URL || '/').replace(/\/+$/, '');
+const isObsCurrent = normalizedCurrent.startsWith('/observations') || normalizedCurrent.startsWith('/thoughts');
+const isLogbookCurrent = !isRootCurrent && !isObsCurrent;
+
+const isActive = !isExternal && (
+  (isExactRoot && isRootCurrent) ||
+  (isLogbookTarget && isLogbookCurrent) ||
+  (isObsTarget && isObsCurrent)
+);
+---
+
+<a
+  href={targetUrl}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+  class={clsx(
+    'nav-link',
+    isActive && 'active',
+    className
+  )}
+  aria-current={isActive ? 'page' : undefined}
+  {...props}
+>
+  <slot />
+  {isExternal && <span class="arrow" aria-hidden="true">↗</span>}
+</a>

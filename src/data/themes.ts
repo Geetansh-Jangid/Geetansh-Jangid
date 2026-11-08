@@ -1,0 +1,115 @@
+export interface ThemePaletteColors {
+  '--bg': string;
+  '--surface': string;
+  '--surface-2': string;
+  '--text': string;
+  '--text-2': string;
+  '--text-3': string;
+  '--line': string;
+  '--line-soft': string;
+  '--accent': string;
+  '--accent-dim': string;
+  '--accent-soft': string;
+}
+
+export interface ThemePalette {
+  name: string;
+  dark: ThemePaletteColors;
+  light: ThemePaletteColors;
+}
+
+export const THEME_PALETTES: ThemePalette[] = [
+  {
+    name: "Cursor",
+    dark: { "--bg": "#14120B", "--surface": "#1B1913", "--surface-2": "#26241E", "--text": "#F5F3EB", "--text-2": "#A9A69D", "--text-3": "#77746C", "--line": "#302E27", "--line-soft": "#25231D", "--accent": "#FF5A00", "--accent-dim": "#ff5a0066", "--accent-soft": "#ff7a33" },
+    light: { "--bg": "#F7F7F4", "--surface": "#F2F1ED", "--surface-2": "#E6E5E0", "--text": "#171611", "--text-2": "#68665F", "--text-3": "#96938B", "--line": "#DAD9D4", "--line-soft": "#edece8", "--accent": "#FF5A00", "--accent-dim": "#ff5a0066", "--accent-soft": "#cc4800" }
+  },
+  {
+    name: "Slate",
+    dark: { "--bg": "#1a1a19", "--surface": "#232322", "--surface-2": "#2a2a29", "--text": "#d6d5d2", "--text-2": "#ffffff6e", "--text-3": "#ffffff40", "--line": "#ffffff14", "--line-soft": "#ffffff0a", "--accent": "#dc2626", "--accent-dim": "#dc262666", "--accent-soft": "#f2665a" },
+    light: { "--bg": "#f7f6f5", "--surface": "#ffffff", "--surface-2": "#efeeea", "--text": "#000000", "--text-2": "#1919198f", "--text-3": "#19191945", "--line": "#0000000f", "--line-soft": "#00000008", "--accent": "#dc2626", "--accent-dim": "#dc262666", "--accent-soft": "#b91c1c" }
+  },
+  {
+    name: "Void",
+    dark: { "--bg": "#080808", "--surface": "#101010", "--surface-2": "#171717", "--text": "#e8e8e6", "--text-2": "#8f8f8a", "--text-3": "#64645e", "--line": "#1d1d1d", "--line-soft": "#141414", "--accent": "#0fa47a", "--accent-dim": "#0b7558", "--accent-soft": "#4eccb0" },
+    light: { "--bg": "#f7f7f4", "--surface": "#f2f2ee", "--surface-2": "#e8e8e2", "--text": "#0f0f0f", "--text-2": "#5c5c54", "--text-3": "#8a8a81", "--line": "#d8d7d2", "--line-soft": "#ecebe7", "--accent": "#0d8060", "--accent-dim": "#0a6b50", "--accent-soft": "#0fa47a" }
+  },
+  {
+    name: "Obsidian",
+    dark: { "--bg": "#0a0a0a", "--surface": "#131313", "--surface-2": "#1b1b1b", "--text": "#e7e7e3", "--text-2": "#9a9a93", "--text-3": "#666662", "--line": "#202020", "--line-soft": "#161616", "--accent": "#5e7cff", "--accent-dim": "#445ad9", "--accent-soft": "#8ea1ff" },
+    light: { "--bg": "#f7f6f3", "--surface": "#ffffff", "--surface-2": "#ece9e4", "--text": "#11100e", "--text-2": "#5e5b56", "--text-3": "#87837e", "--line": "#dfddd9", "--line-soft": "#efedeb", "--accent": "#3551ea", "--accent-dim": "#2a41c0", "--accent-soft": "#5e7cff" }
+  },
+  {
+    name: "Ash",
+    dark: { "--bg": "#12100f", "--surface": "#1a1816", "--surface-2": "#211e1c", "--text": "#eee8e0", "--text-2": "#a89f94", "--text-3": "#736e68", "--line": "#2a2725", "--line-soft": "#1f1d1b", "--accent": "#d6a243", "--accent-dim": "#b08636", "--accent-soft": "#e9c46a" },
+    light: { "--bg": "#fbfaf8", "--surface": "#ffffff", "--surface-2": "#f0ece6", "--text": "#1a1512", "--text-2": "#665e57", "--text-3": "#928a82", "--line": "#e5ded5", "--line-soft": "#f1ece6", "--accent": "#b5881c", "--accent-dim": "#9a7620", "--accent-soft": "#d6a243" }
+  },
+  {
+    name: "Charcoal",
+    dark: { "--bg": "#101214", "--surface": "#171a1d", "--surface-2": "#1e2125", "--text": "#e8eaec", "--text-2": "#9ca0a6", "--text-3": "#676a6e", "--line": "#272a2e", "--line-soft": "#1c1e21", "--accent": "#4ecdc4", "--accent-dim": "#3baaa3", "--accent-soft": "#7de8e0" },
+    light: { "--bg": "#f6f7f7", "--surface": "#ffffff", "--surface-2": "#eceeef", "--text": "#0f1417", "--text-2": "#596069", "--text-3": "#858d96", "--line": "#dde0e4", "--line-soft": "#edeff1", "--accent": "#2eb8ae", "--accent-dim": "#249a93", "--accent-soft": "#4ecdc4" }
+  },
+  {
+    name: "Graphite",
+    dark: { "--bg": "#0e0e10", "--surface": "#161618", "--surface-2": "#1d1d1f", "--text": "#ebeae8", "--text-2": "#9c9b98", "--text-3": "#666563", "--line": "#262628", "--line-soft": "#1b1b1d", "--accent": "#9d66ff", "--accent-dim": "#7a4ed6", "--accent-soft": "#bf99ff" },
+    light: { "--bg": "#f7f7f6", "--surface": "#ffffff", "--surface-2": "#eceaea", "--text": "#131314", "--text-2": "#5e5d5c", "--text-3": "#8a8987", "--line": "#dddcdc", "--line-soft": "#ececec", "--accent": "#7c3bdb", "--accent-dim": "#6530b3", "--accent-soft": "#9d66ff" }
+  },
+  {
+    name: "Sepia",
+    dark: { "--bg": "#120f0b", "--surface": "#1a1611", "--surface-2": "#211d17", "--text": "#ede6db", "--text-2": "#a79e91", "--text-3": "#726c64", "--line": "#2a2520", "--line-soft": "#1e1c19", "--accent": "#2a9e66", "--accent-dim": "#1f7a4e", "--accent-soft": "#55c48a" },
+    light: { "--bg": "#fbf8f2", "--surface": "#ffffff", "--surface-2": "#f3ece1", "--text": "#181209", "--text-2": "#645e53", "--text-3": "#938a7b", "--line": "#e4d9c7", "--line-soft": "#efe7da", "--accent": "#1d8050", "--accent-dim": "#15643c", "--accent-soft": "#2a9e66" }
+  },
+  {
+    name: "Sable",
+    dark: { "--bg": "#0f0d0c", "--surface": "#181512", "--surface-2": "#1f1c19", "--text": "#ece7e0", "--text-2": "#a8a39d", "--text-3": "#6f6b67", "--line": "#272422", "--line-soft": "#1d1b1a", "--accent": "#b5449c", "--accent-dim": "#8f317c", "--accent-soft": "#d470b8" },
+    light: { "--bg": "#faf8f5", "--surface": "#ffffff", "--surface-2": "#f0eae3", "--text": "#171210", "--text-2": "#615c56", "--text-3": "#928b84", "--line": "#e2d9cf", "--line-soft": "#ece6de", "--accent": "#9a327f", "--accent-dim": "#7d2868", "--accent-soft": "#b5449c" }
+  },
+  {
+    name: "Noir",
+    dark: { "--bg": "#050505", "--surface": "#0d0d0d", "--surface-2": "#161616", "--text": "#ebebea", "--text-2": "#8a8a88", "--text-3": "#5a5a57", "--line": "#1a1a1a", "--line-soft": "#111111", "--accent": "#e6b540", "--accent-dim": "#c49a35", "--accent-soft": "#f0d26a" },
+    light: { "--bg": "#f6f5f3", "--surface": "#ffffff", "--surface-2": "#edeceb", "--text": "#0a0a0a", "--text-2": "#555555", "--text-3": "#808080", "--line": "#d9d9d7", "--line-soft": "#ecebe9", "--accent": "#c49a2a", "--accent-dim": "#a3811f", "--accent-soft": "#e6b540" }
+  },
+  {
+    name: "Fog",
+    dark: { "--bg": "#1c1c1c", "--surface": "#242424", "--surface-2": "#2c2c2c", "--text": "#eaeaea", "--text-2": "#a0a0a0", "--text-3": "#707070", "--line": "#333333", "--line-soft": "#262626", "--accent": "#22d3ee", "--accent-dim": "#0e9fb8", "--accent-soft": "#67e8f9" },
+    light: { "--bg": "#f0f0f0", "--surface": "#ffffff", "--surface-2": "#e4e4e4", "--text": "#141414", "--text-2": "#5c5c5c", "--text-3": "#8a8a8a", "--line": "#d6d6d6", "--line-soft": "#e8e8e8", "--accent": "#0891a8", "--accent-dim": "#076f81", "--accent-soft": "#22d3ee" }
+  },
+  {
+    name: "Steel",
+    dark: { "--bg": "#16181c", "--surface": "#1e2126", "--surface-2": "#262a30", "--text": "#e6e8ea", "--text-2": "#9aa0a6", "--text-3": "#666d74", "--line": "#2c3138", "--line-soft": "#1e2126", "--accent": "#f97316", "--accent-dim": "#c2570c", "--accent-soft": "#fb923c" },
+    light: { "--bg": "#f3f4f6", "--surface": "#ffffff", "--surface-2": "#e7e9ec", "--text": "#101215", "--text-2": "#595e64", "--text-3": "#878d94", "--line": "#dadde1", "--line-soft": "#ebedf0", "--accent": "#c2410c", "--accent-dim": "#9a340a", "--accent-soft": "#f97316" }
+  },
+  {
+    name: "Stone",
+    dark: { "--bg": "#1a1815", "--surface": "#221f1b", "--surface-2": "#2a2622", "--text": "#ece8e2", "--text-2": "#a39d94", "--text-3": "#726c62", "--line": "#322d27", "--line-soft": "#221f1b", "--accent": "#eab308", "--accent-dim": "#b58a06", "--accent-soft": "#fbd34d" },
+    light: { "--bg": "#f5f4f1", "--surface": "#ffffff", "--surface-2": "#e9e7e2", "--text": "#151310", "--text-2": "#5e5952", "--text-3": "#8c877e", "--line": "#dcd9d2", "--line-soft": "#ede9e4", "--accent": "#a16207", "--accent-dim": "#804e05", "--accent-soft": "#eab308" }
+  },
+  {
+    name: "Silver",
+    dark: { "--bg": "#232323", "--surface": "#2b2b2b", "--surface-2": "#333333", "--text": "#f0f0f0", "--text-2": "#a8a8a8", "--text-3": "#787878", "--line": "#3d3d3d", "--line-soft": "#2e2e2e", "--accent": "#f472b6", "--accent-dim": "#c34d8e", "--accent-soft": "#f9a8d4" },
+    light: { "--bg": "#ececec", "--surface": "#ffffff", "--surface-2": "#dedede", "--text": "#181818", "--text-2": "#5e5e5e", "--text-3": "#8c8c8c", "--line": "#d2d2d2", "--line-soft": "#e2e2e2", "--accent": "#be185d", "--accent-dim": "#9d1650", "--accent-soft": "#f472b6" }
+  },
+  {
+    name: "Monochrome",
+    dark: { "--bg": "#000000", "--surface": "#121212", "--surface-2": "#1e1e1e", "--text": "#ffffff", "--text-2": "#a0a0a0", "--text-3": "#666666", "--line": "#262626", "--line-soft": "#181818", "--accent": "#ffffff", "--accent-dim": "#ffffff40", "--accent-soft": "#e5e5e5" },
+    light: { "--bg": "#ffffff", "--surface": "#f5f5f5", "--surface-2": "#e8e8e8", "--text": "#000000", "--text-2": "#555555", "--text-3": "#888888", "--line": "#dcdcdc", "--line-soft": "#ebebeb", "--accent": "#000000", "--accent-dim": "#00000040", "--accent-soft": "#333333" }
+  }
+];
+
+export function getPaletteCss(palette: ThemePalette): string {
+  const darkVars = Object.entries(palette.dark)
+    .map(([k, v]) => `  ${k}: ${v};`)
+    .join('\n');
+  const lightVars = Object.entries(palette.light)
+    .map(([k, v]) => `  ${k}: ${v};`)
+    .join('\n');
+
+  return `
+html.dark {
+${darkVars}
+}
+html.light {
+${lightVars}
+}
+`;
+}

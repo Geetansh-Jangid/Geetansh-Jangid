@@ -1,3 +1,6 @@
+---
+---
+
 <button id="theme-toggle" class="theme-toggle" type="button" aria-label="switch to light theme">
   <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="4"></circle>
@@ -14,3 +17,71 @@
     <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
   </svg>
 </button>
+
+<script>
+  function applyThemeMode(nextTheme: string) {
+    if (nextTheme === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+    document.documentElement.dataset.theme = nextTheme;
+    try {
+      localStorage.setItem('theme', nextTheme);
+      localStorage.setItem('theme-mode', nextTheme);
+    } catch (err) {}
+
+    syncThemeUI(nextTheme);
+
+    window.dispatchEvent(
+      new CustomEvent('theme-change', {
+        detail: { theme: nextTheme, mode: nextTheme },
+      })
+    );
+  }
+
+  function syncThemeUI(currentTheme?: string) {
+    const isDark = currentTheme
+      ? currentTheme === 'dark'
+      : document.documentElement.classList.contains('dark') && !document.documentElement.classList.contains('light');
+    const theme = isDark ? 'dark' : 'light';
+
+    const button = document.getElementById('theme-toggle');
+    if (button) {
+      button.setAttribute(
+        'aria-label',
+        theme === 'dark' ? 'switch to light theme' : 'switch to dark theme'
+      );
+    }
+
+    const favicon = document.getElementById('site-favicon') as HTMLLinkElement | null;
+    if (favicon) {
+      favicon.href = theme === 'light' ? '/logo-light.svg' : '/logo-dark.svg';
+    }
+
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) {
+      themeColor.setAttribute('content', theme === 'light' ? '#F7F7F4' : '#14120B');
+    }
+  }
+
+  function setupThemeToggle() {
+    const toggle = document.getElementById('theme-toggle');
+    if (!toggle || toggle.dataset.listenerAttached === 'true') return;
+    toggle.dataset.listenerAttached = 'true';
+
+    syncThemeUI();
+
+    toggle.addEventListener('click', () => {
+      const isCurrentlyDark = document.documentElement.classList.contains('dark') && !document.documentElement.classList.contains('light');
+      const next = isCurrentlyDark ? 'light' : 'dark';
+      applyThemeMode(next);
+    });
+  }
+
+  setupThemeToggle();
+  document.addEventListener('astro:after-swap', setupThemeToggle);
+  window.addEventListener('theme-change', () => syncThemeUI());
+</script>

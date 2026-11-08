@@ -1,0 +1,12 @@
+---
+import { getCollection } from 'astro:content';
+import { withBase } from '../../utils/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('logbook', ({ data }) => !data.draft);
+  return posts.map((entry) => ({ params: { slug: entry.id } }));
+}
+
+const { slug } = Astro.params;
+return Astro.redirect(withBase(`logbook/${slug}/`));
+---

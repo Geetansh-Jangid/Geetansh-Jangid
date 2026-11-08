@@ -1,0 +1,327 @@
+---
+import { THEME_PALETTES } from '../data/themes';
+
+const serializedPalettes = JSON.stringify(THEME_PALETTES);
+---
+
+<style id="theme-palette-styles" is:inline></style>
+
+<div
+  id="theme-toast"
+  role="status"
+  aria-live="polite"
+  class="fixed bottom-6 left-1/2 -translate-x-1/2 px-3 py-1.5 text-xs font-mono select-none pointer-events-none opacity-0 transition-opacity duration-200 z-50 rounded-none bg-[var(--surface-2)] text-[var(--text)] border border-[var(--line)] shadow-sm"
+>
+</div>
+
+<script is:inline define:vars={{ serializedPalettes }}>
+  (function () {
+    const palettes = JSON.parse(serializedPalettes);
+    window.__PALETTES__ = palettes;
+
+    // Helper to generate CSS rules for a palette
+    function generateCss(palette) {
+      if (!palette) return '';
+      const darkVars = Object.entries(palette.dark)
+        .map(([k, v]) => `  ${k}: ${v};`)
+        .join('\n');
+      const lightVars = Object.entries(palette.light)
+        .map(([k, v]) => `  ${k}: ${v};`)
+        .join('\n');
+
+      return `html.dark {\n${darkVars}\n}\nhtml.light {\n${lightVars}\n}`;
+    }
+
+    // Determine dark / light mode preference
+    function resolveMode() {
+      const savedMode = localStorage.getItem('theme-mode') || localStorage.getItem('theme');
+      if (savedMode === 'light' || savedMode === 'dark') {
+        return savedMode;
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+      }
+      return 'dark'; // Dark is default
+    }
+
+    // Apply color mode class
+    const mode = resolveMode();
+    if (mode === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    }
+    document.documentElement.dataset.theme = mode;
+
+    // Apply palette CSS
+    const savedPaletteName = localStorage.getItem('theme-palette') || 'Cursor';
+    const activePalette = palettes.find((p) => p.name.toLowerCase() === savedPaletteName.toLowerCase()) || palettes[0];
+    
+    let styleTag = document.getElementById('theme-palette-styles');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'theme-palette-styles';
+      document.head.appendChild(styleTag);
+    }
+    // Only inject override if not default Cursor or to ensure variables match
+    styleTag.textContent = generateCss(activePalette);
+    document.documentElement.dataset.palette = activePalette.name;
+
+    // Watch for system dark / light preference changes
+    if (window.matchMedia) {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleMediaChange = (e) => {
+        // Only automatically follow system preference if user hasn't explicitly locked a mode
+        const explicitMode = localStorage.getItem('theme-mode') || localStorage.getItem('theme');
+        if (!explicitMode) {
+          const newMode = e.matches ? 'dark' : 'light';
+          if (newMode === 'light') {
+            document.documentElement.classList.add('light');
+            document.documentElement.classList.remove('dark');
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+          document.documentElement.dataset.theme = newMode;
+          window.dispatchEvent(new CustomEvent('theme-change', { detail: { mode: newMode } }));
+        }
+      };
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', handleMediaChange);
+      }
+    }
+  })();
+</script>
+
+<script>
+  import { THEME_PALETTES, getPaletteCss } from '../data/themes';
+
+  let toastTimer: any = null;
+
+  function showToast(message: string) {
+    const toast = document.getElementById('theme-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.style.opacity = '0';
+    }, 1500);
+  }
+
+  function applyPalette(paletteName: string, showNotification = true) {
+    const palette =
+      THEME_PALETTES.find((p) => p.name.toLowerCase() === paletteName.toLowerCase()) ||
+      THEME_PALETTES[0];
+
+    let styleTag = document.getElementById('theme-palette-styles');
+    if (!styleTag) {
+      styleTag = document.createElement('style');
+      styleTag.id = 'theme-palette-styles';
+      document.head.appendChild(styleTag);
+    }
+
+    styleTag.textContent = getPaletteCss(palette);
+    document.documentElement.dataset.palette = palette.name;
+    localStorage.setItem('theme-palette', palette.name);
+
+    if (showNotification) {
+      showToast(`theme: ${palette.name.toLowerCase()}`);
+    }
+
+    window.dispatchEvent(
+      new CustomEvent('theme-change', {
+        detail: {
+          palette: palette.name,
+          mode: document.documentElement.classList.contains('light') ? 'light' : 'dark',
+        },
+      })
+    );
+  }
+
+  function cycleToNextPalette() {
+    const currentName = localStorage.getItem('theme-palette') || 'Cursor';
+    const currentIndex = THEME_PALETTES.findIndex(
+      (p) => p.name.toLowerCase() === currentName.toLowerCase()
+    );
+    const nextIndex = (currentIndex + 1) % THEME_PALETTES.length;
+    const nextPalette = THEME_PALETTES[nextIndex];
+    applyPalette(nextPalette.name, true);
+  }
+
+  function resetToOriginalTheme() {
+    // 1. Reset palette back to Cursor (the original theme)
+    applyPalette('Cursor', false);
+    localStorage.removeItem('theme-palette');
+
+    // 2. Clear manual dark/light toggle so the website follows the browser dark/light theme
+    localStorage.removeItem('theme-mode');
+    localStorage.removeItem('theme');
+
+    let browserMode = 'dark';
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      browserMode = 'light';
+    }
+
+    if (browserMode === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+    }
+    document.documentElement.dataset.theme = browserMode;
+
+    if (navigator.vibrate) {
+      try {
+        navigator.vibrate(30);
+      } catch {}
+    }
+
+    showToast('theme reset: original (cursor)');
+
+    window.dispatchEvent(
+      new CustomEvent('theme-change', {
+        detail: {
+          palette: 'Cursor',
+          mode: browserMode,
+        },
+      })
+    );
+  }
+
+  function setupThemeGestures() {
+    let tapCount = 0;
+    let lastTapTime = 0;
+    let holdTimer: any = null;
+    let isHolding = false;
+    let startX = 0;
+    let startY = 0;
+
+    function isTargetWordElement(target: EventTarget | null): boolean {
+      if (!(target instanceof HTMLElement)) return false;
+      
+      // Match explicit triggers or titles across all three sections
+      const candidate = target.closest(
+        '[data-theme-trigger], #site-title, .type-page-title, h1, h2, h3, header nav a'
+      );
+      if (!candidate) return false;
+
+      const text = (candidate.textContent || '').trim().toLowerCase();
+      return (
+        text.includes('geetansh') ||
+        text.includes('logbook') ||
+        text.includes('observations') ||
+        candidate.id === 'site-title' ||
+        candidate.hasAttribute('data-theme-trigger')
+      );
+    }
+
+    // Tap handling (click / pointerup)
+    document.addEventListener('click', (e) => {
+      if (!isTargetWordElement(e.target)) return;
+
+      if (isHolding) {
+        // Long press was just triggered, ignore click & prevent navigation if on link
+        isHolding = false;
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastTapTime < 450) {
+        tapCount++;
+      } else {
+        tapCount = 1;
+      }
+      lastTapTime = now;
+
+      if (tapCount >= 4) {
+        e.preventDefault();
+        e.stopPropagation();
+        tapCount = 0;
+        cycleToNextPalette();
+      }
+    });
+
+    // Touch and hold / Long press handling
+    function onPointerDown(e: PointerEvent | TouchEvent) {
+      const target = e.target;
+      if (!isTargetWordElement(target)) return;
+
+      isHolding = false;
+      if ('clientX' in e) {
+        startX = e.clientX;
+        startY = e.clientY;
+      } else if (e.touches && e.touches[0]) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      }
+
+      if (holdTimer) clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => {
+        isHolding = true;
+        resetToOriginalTheme();
+      }, 550);
+    }
+
+    function cancelHold() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+    }
+
+    function onPointerMove(e: PointerEvent | TouchEvent) {
+      if (!holdTimer) return;
+      let curX = 0;
+      let curY = 0;
+      if ('clientX' in e) {
+        curX = e.clientX;
+        curY = e.clientY;
+      } else if (e.touches && e.touches[0]) {
+        curX = e.touches[0].clientX;
+        curY = e.touches[0].clientY;
+      }
+      const dist = Math.hypot(curX - startX, curY - startY);
+      if (dist > 10) {
+        cancelHold();
+      }
+    }
+
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('pointerup', cancelHold, { passive: true });
+    window.addEventListener('pointercancel', cancelHold, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+    window.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchend', cancelHold, { passive: true });
+    window.addEventListener('touchcancel', cancelHold, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+
+    document.addEventListener('contextmenu', (e) => {
+      if (isHolding && isTargetWordElement(e.target)) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  setupThemeGestures();
+  document.addEventListener('astro:after-swap', setupThemeGestures);
+
+  // Synchronize theme across multiple open tabs/windows
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'theme' || e.key === 'theme-mode') {
+      const newMode = (e.newValue === 'light' || e.newValue === 'dark') ? e.newValue : 'dark';
+      document.documentElement.classList.toggle('light', newMode === 'light');
+      document.documentElement.classList.toggle('dark', newMode === 'dark');
+      document.documentElement.dataset.theme = newMode;
+      window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: newMode, mode: newMode } }));
+    } else if (e.key === 'theme-palette' && e.newValue) {
+      applyPalette(e.newValue, false);
+    }
+  });
+</script>

@@ -1,0 +1,380 @@
+---
+// MediaLightbox.astro - Fullscreen modal with subtle minimal animation and interactive zoom/pan
+---
+
+<div
+  id="media-lightbox"
+  class="media-lightbox hidden fixed inset-0 z-[100] items-center justify-center select-none"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Media viewer and zoom modal"
+>
+  <!-- Backdrop (click to close) -->
+  <div
+    id="lightbox-backdrop"
+    class="absolute inset-0 bg-black/85 backdrop-blur-sm cursor-pointer transition-opacity duration-150"
+  ></div>
+
+  <!-- Minimal Close Button (top right, no guidelines or pill) -->
+  <button
+    id="lightbox-close"
+    type="button"
+    class="absolute top-4 right-4 sm:top-6 sm:right-6 z-[115] w-9 h-9 flex items-center justify-center text-[var(--color-text-secondary)] hover:text-[var(--color-text)] transition cursor-pointer text-xl"
+    aria-label="Close viewer"
+    title="Close (ESC)"
+  >
+    ✕
+  </button>
+
+  <!-- Zoomable Viewport -->
+  <div
+    id="lightbox-viewport"
+    class="relative z-[105] w-full h-full flex items-center justify-center overflow-hidden p-4 sm:p-10 cursor-grab active:cursor-grabbing touch-none"
+  >
+    <div
+      id="lightbox-content"
+      class="relative max-w-full max-h-full flex items-center justify-center origin-center transition-transform duration-75"
+    >
+      <!-- Cloned image or SVG diagram inserted dynamically here -->
+    </div>
+  </div>
+</div>
+
+<script>
+  function setupLightbox() {
+    const lightbox = document.getElementById('media-lightbox');
+    const backdrop = document.getElementById('lightbox-backdrop');
+    const viewport = document.getElementById('lightbox-viewport');
+    const content = document.getElementById('lightbox-content');
+    const btnClose = document.getElementById('lightbox-close');
+
+    if (!lightbox || !viewport || !content) return;
+
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let initialTranslateX = 0;
+    let initialTranslateY = 0;
+    let hasDragged = false;
+    let isOpen = false;
+
+    // Multi-touch pinch zoom state
+    let initialPinchDistance = 0;
+    let initialPinchScale = 1;
+
+    function updateTransform(smooth = false) {
+      if (smooth) {
+        content!.style.transition = 'transform 0.16s ease-out';
+        setTimeout(() => {
+          if (content) content.style.transition = 'transform 0.04s linear';
+        }, 160);
+      }
+      content!.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+      viewport!.style.cursor = scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in';
+    }
+
+    function resetZoom(smooth = true) {
+      scale = 1;
+      translateX = 0;
+      translateY = 0;
+      updateTransform(smooth);
+    }
+
+    function zoomBy(delta: number, smooth = true) {
+      const nextScale = Math.min(Math.max(scale + delta, 0.5), 5);
+      scale = Math.round(nextScale * 100) / 100;
+      if (scale <= 1) {
+        translateX = 0;
+        translateY = 0;
+      }
+      updateTransform(smooth);
+    }
+
+    function openLightboxWithElement(targetEl: HTMLElement) {
+      content!.innerHTML = '';
+      resetZoom(false);
+
+      if (targetEl.tagName === 'IMG') {
+        const sourceImg = targetEl as HTMLImageElement;
+        const img = document.createElement('img');
+        img.src = sourceImg.src;
+        img.alt = sourceImg.alt || 'Expanded image preview';
+        img.className = 'max-w-[88vw] max-h-[84vh] object-contain rounded-none border border-[var(--line)] shadow-2xl pointer-events-none select-none';
+        img.draggable = false;
+        content!.appendChild(img);
+      } else {
+        // Find SVG in diagram or target
+        const svg = targetEl.tagName === 'SVG' ? targetEl : targetEl.querySelector('svg');
+        if (svg) {
+          const clone = svg.cloneNode(true) as SVGSVGElement;
+          clone.style.width = 'auto';
+          clone.style.maxWidth = '88vw';
+          clone.style.maxHeight = '80vh';
+          clone.style.height = 'auto';
+          clone.classList.add('pointer-events-none');
+
+          const card = document.createElement('div');
+          card.className =
+            'p-6 sm:p-10 bg-[var(--surface)] border border-[var(--line)] rounded-none shadow-2xl flex items-center justify-center max-w-[92vw] max-h-[84vh] overflow-visible';
+          card.appendChild(clone);
+          content!.appendChild(card);
+        } else {
+          // Fallback clone
+          const clone = targetEl.cloneNode(true) as HTMLElement;
+          clone.className = 'max-w-[88vw] max-h-[84vh] overflow-auto rounded-none border border-[var(--line)] shadow-2xl';
+          content!.appendChild(clone);
+        }
+      }
+
+      lightbox!.classList.remove('hidden');
+      lightbox!.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      isOpen = true;
+
+      // Trigger subtle minimal fade-in scale animation
+      content!.classList.remove('lightbox-minimal-enter');
+      void content!.offsetWidth; // Force reflow
+      content!.classList.add('lightbox-minimal-enter');
+
+      const onAnimEnd = () => {
+        content!.classList.remove('lightbox-minimal-enter');
+        content!.removeEventListener('animationend', onAnimEnd);
+      };
+      content!.addEventListener('animationend', onAnimEnd);
+    }
+
+    function closeLightbox() {
+      if (!isOpen) return;
+      lightbox!.classList.add('hidden');
+      lightbox!.classList.remove('flex');
+      content!.innerHTML = '';
+      document.body.style.overflow = '';
+      isOpen = false;
+      resetZoom(false);
+    }
+
+    btnClose?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeLightbox();
+    });
+
+    backdrop?.addEventListener('click', closeLightbox);
+
+    // Mouse wheel zoom inside viewport
+    viewport.addEventListener(
+      'wheel',
+      (e) => {
+        if (!isOpen) return;
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+        const nextScale = Math.min(Math.max(scale * factor, 0.5), 5);
+        scale = Math.round(nextScale * 100) / 100;
+        if (scale <= 1) {
+          translateX = 0;
+          translateY = 0;
+        }
+        updateTransform(false);
+      },
+      { passive: false }
+    );
+
+    // Double-click toggle (1x <-> 2x)
+    viewport.addEventListener('dblclick', (e) => {
+      if (!isOpen) return;
+      e.preventDefault();
+      if (scale <= 1) {
+        scale = 2;
+      } else {
+        scale = 1;
+        translateX = 0;
+        translateY = 0;
+      }
+      updateTransform(true);
+    });
+
+    // Mouse drag to pan
+    viewport.addEventListener('mousedown', (e) => {
+      if (!isOpen || e.button !== 0) return;
+      isDragging = true;
+      hasDragged = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      initialTranslateX = translateX;
+      initialTranslateY = translateY;
+      viewport.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+        hasDragged = true;
+      }
+      translateX = initialTranslateX + dx;
+      translateY = initialTranslateY + dy;
+      updateTransform(false);
+    });
+
+    window.addEventListener('mouseup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+
+      // If user clicked without dragging, close lightbox
+      if (!hasDragged && (e.target === viewport || e.target === backdrop)) {
+        closeLightbox();
+      }
+    });
+
+    // Touch support (drag & pinch-zoom)
+    viewport.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!isOpen) return;
+        if (e.touches.length === 1) {
+          isDragging = true;
+          hasDragged = false;
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          initialTranslateX = translateX;
+          initialTranslateY = translateY;
+        } else if (e.touches.length === 2) {
+          isDragging = false;
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          initialPinchDistance = Math.hypot(dx, dy);
+          initialPinchScale = scale;
+        }
+      },
+      { passive: true }
+    );
+
+    viewport.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!isOpen) return;
+        if (e.touches.length === 1 && isDragging) {
+          const dx = e.touches[0].clientX - startX;
+          const dy = e.touches[0].clientY - startY;
+          if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+          translateX = initialTranslateX + dx;
+          translateY = initialTranslateY + dy;
+          updateTransform(false);
+        } else if (e.touches.length === 2 && initialPinchDistance > 0) {
+          const dx = e.touches[0].clientX - e.touches[1].clientX;
+          const dy = e.touches[0].clientY - e.touches[1].clientY;
+          const dist = Math.hypot(dx, dy);
+          const factor = dist / initialPinchDistance;
+          scale = Math.min(Math.max(initialPinchScale * factor, 0.5), 5);
+          updateTransform(false);
+        }
+      },
+      { passive: true }
+    );
+
+    viewport.addEventListener('touchend', (e) => {
+      if (!isOpen) return;
+      if (e.touches.length === 0) {
+        isDragging = false;
+        initialPinchDistance = 0;
+        if (!hasDragged && (e.target === viewport || e.target === backdrop)) {
+          closeLightbox();
+        }
+      }
+    });
+
+    // Keyboard shortcuts
+    window.addEventListener('keydown', (e) => {
+      if (!isOpen) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeLightbox();
+      } else if (e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        zoomBy(0.25);
+      } else if (e.key === '-' || e.key === '_') {
+        e.preventDefault();
+        zoomBy(-0.25);
+      } else if (e.key === '0') {
+        e.preventDefault();
+        resetZoom();
+      }
+    });
+
+    // Event delegation: click any image or mermaid diagram in content
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target) return;
+
+      if (target.closest('#media-lightbox')) return;
+
+      // 1. Check if an image in article / content was clicked
+      const img = target.closest<HTMLImageElement>('.prose img, article img');
+      if (img && !img.closest('a')) {
+        e.preventDefault();
+        e.stopPropagation();
+        openLightboxWithElement(img);
+        return;
+      }
+
+      // 2. Check if a mermaid diagram was clicked
+      const diagram = target.closest<HTMLElement>('.mermaid-diagram');
+      if (diagram && !target.closest('button')) {
+        e.preventDefault();
+        e.stopPropagation();
+        openLightboxWithElement(diagram);
+        return;
+      }
+    });
+  }
+
+  setupLightbox();
+  document.addEventListener('astro:page-load', setupLightbox);
+</script>
+
+<style is:global>
+  /* Subtle minimal animation for modal entrance */
+  @keyframes minimalModalFadeIn {
+    0% {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .lightbox-minimal-enter {
+    animation: minimalModalFadeIn 0.15s ease-out forwards;
+  }
+
+  @keyframes fadeInBackdrop {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .media-lightbox:not(.hidden) #lightbox-backdrop {
+    animation: fadeInBackdrop 0.15s ease-out forwards;
+  }
+
+  /* Images and diagrams: perfect square corners, cursor indicator, NO hover borders */
+  .prose img,
+  article img {
+    cursor: zoom-in;
+    border-radius: 0 !important;
+  }
+
+  .mermaid-diagram {
+    cursor: zoom-in;
+    border-radius: 0 !important;
+  }
+</style>

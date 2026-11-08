@@ -1,7 +1,14 @@
-/* ——— Uncut Sans — self-hosted, matching logbook ——— */
+@import "tailwindcss";
+@config "../../tailwind.config.mjs";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ——— @font-face — Uncut Sans ——— */
 @font-face {
   font-family: "Uncut Sans";
-  src: url("/fonts/uncut/woff2/UncutSans-Regular.woff2") format("woff2");
+  src: url("/fonts/uncut/woff2/UncutSans-Regular.woff2") format("woff2"),
+    url("/fonts/uncut/woff/UncutSans-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -9,7 +16,8 @@
 
 @font-face {
   font-family: "Uncut Sans";
-  src: url("/fonts/uncut/woff2/UncutSans-Medium.woff2") format("woff2");
+  src: url("/fonts/uncut/woff2/UncutSans-Medium.woff2") format("woff2"),
+    url("/fonts/uncut/woff/UncutSans-Medium.woff") format("woff");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -17,7 +25,8 @@
 
 @font-face {
   font-family: "Uncut Sans";
-  src: url("/fonts/uncut/woff2/UncutSans-Semibold.woff2") format("woff2");
+  src: url("/fonts/uncut/woff2/UncutSans-Semibold.woff2") format("woff2"),
+    url("/fonts/uncut/woff/UncutSans-Semibold.woff") format("woff");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
@@ -25,110 +34,191 @@
 
 @font-face {
   font-family: "Uncut Sans";
-  src: url("/fonts/uncut/woff2/UncutSans-Bold.woff2") format("woff2");
+  src: url("/fonts/uncut/woff2/UncutSans-Bold.woff2") format("woff2"),
+    url("/fonts/uncut/woff/UncutSans-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 
-:root,
-html.dark {
-  --bg: #14120B;
-  --surface: #1B1913;
-  --surface-2: #26241E;
-  --text: #F5F3EB;
-  --text-2: #A9A69D;
-  --text-3: #77746C;
-  --line: #302E27;
-  --line-soft: #25231D;
-  --accent: #FF5A00;
-  --accent-dim: rgba(255, 90, 0, 0.4);
-  --accent-soft: #ff7a33;
-  --font-body: "Uncut Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+@layer base {
+  /* ——— portfolio & logbook color scheme (dark by default) ——— */
+  :root,
+  html.dark {
+    --bg: #14120B;
+    --surface: #1B1913;
+    --surface-2: #26241E;
+    --text: #F5F3EB;
+    --text-2: #A9A69D;
+    --text-3: #77746C;
+    --line: #302E27;
+    --line-soft: #25231D;
+    --accent: #FF5A00;
+    --accent-dim: rgba(255, 90, 0, 0.4);
+    --accent-soft: #ff7a33;
+
+    --font-body: "Uncut Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono NF", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+    /* Semantic color mappings */
+    --color-bg: var(--bg);
+    --color-bg-subtle: var(--surface);
+    --color-bg-muted: var(--surface-2);
+
+    --color-text: var(--text);
+    --color-text-secondary: var(--text-2);
+    --color-text-muted: var(--text-3);
+    --color-text-body: var(--text);
+
+    --color-border: var(--line);
+    --color-border-strong: var(--line-soft);
+    --color-accent: var(--accent);
+
+    --shadow-border: 0 0 0 1px var(--line);
+    --shadow-border-hover: 0 0 0 1px var(--accent);
+  }
+
+  html.light {
+    --bg: #F7F7F4;
+    --surface: #F2F1ED;
+    --surface-2: #E6E5E0;
+    --text: #171611;
+    --text-2: #68665F;
+    --text-3: #96938B;
+    --line: #DAD9D4;
+    --line-soft: #edece8;
+    --accent: #FF5A00;
+    --accent-dim: rgba(255, 90, 0, 0.4);
+    --accent-soft: #cc4800;
+
+    --color-bg: var(--bg);
+    --color-bg-subtle: var(--surface);
+    --color-bg-muted: var(--surface-2);
+
+    --color-text: var(--text);
+    --color-text-secondary: var(--text-2);
+    --color-text-muted: var(--text-3);
+    --color-text-body: var(--text);
+
+    --color-border: var(--line);
+    --color-border-strong: var(--line-soft);
+    --color-accent: var(--accent);
+
+    --shadow-border: 0 0 0 1px var(--line);
+    --shadow-border-hover: 0 0 0 1px var(--accent);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    min-width: 320px;
+    font-family: var(--font-body);
+    font-weight: 450;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-underline-position: from-font;
+    text-decoration-thickness: from-font;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    overflow-wrap: break-word;
+    color: var(--text);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    text-underline-offset: 0.22em;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* JetBrains Mono NF strictly for code and monospace elements */
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    text-transform: none;
+  }
 }
 
-html.light {
-  --bg: #F7F7F4;
-  --surface: #F2F1ED;
-  --surface-2: #E6E5E0;
-  --text: #171611;
-  --text-2: #68665F;
-  --text-3: #96938B;
-  --line: #DAD9D4;
-  --line-soft: #edece8;
-  --accent: #FF5A00;
-  --accent-dim: rgba(255, 90, 0, 0.4);
-  --accent-soft: #cc4800;
-}
+@layer components {
+  .type-page-title {
+    font-size: clamp(2.75rem, 7vw, 4.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+    font-weight: 600;
+    color: var(--text);
+  }
 
-* {
-  box-sizing: border-box;
-}
+  .type-section {
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 550;
+    color: var(--text);
+  }
 
-html {
-  scroll-behavior: smooth;
-  overflow-x: clip;
-  background: var(--bg);
-  color: var(--text);
-  -webkit-tap-highlight-color: transparent;
-}
+  .type-lede {
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: var(--text-2);
+    text-wrap: pretty;
+  }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  font-family: var(--font-body);
-  font-weight: 450;
-  color: var(--text);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-underline-position: from-font;
-  text-decoration-thickness: from-font;
-}
-
-p {
-  margin: 0;
-}
-
-h1,
-h2,
-h3 {
-  margin: 0;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  text-wrap: balance;
-  overflow-wrap: break-word;
-  color: var(--text);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  text-underline-offset: 0.22em;
-}
-
-button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-::selection {
-  background: var(--accent);
-  color: var(--bg);
-}
-
-[hidden] {
-  display: none !important;
-}
-
-:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 3px;
+  .type-meta {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
 }
 
 /* ——— Shell ——— */
@@ -192,6 +282,10 @@ button {
   color: var(--text-2);
   white-space: nowrap;
   transition: color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  text-decoration: none;
 }
 
 @media (min-width: 640px) {
@@ -650,6 +744,7 @@ footer {
 .footer-links a {
   color: var(--text-2);
   transition: color 0.15s ease;
+  text-decoration: none;
 }
 
 .footer-links a:hover {
@@ -673,6 +768,257 @@ footer {
 
 .skip-link:focus {
   top: 0;
+}
+
+/* ——— Prose typography & logbook article styles ——— */
+
+.prose {
+  font-size: 1.0625rem !important;
+  line-height: 1.75 !important;
+}
+
+.prose :is(h1, h2, h3, h4, h5, h6),
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-weight: 600 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--text) !important;
+}
+
+html.dark .prose :is(h1, h2, h3, h4, h5, h6),
+html.dark .prose h1,
+html.dark .prose h2,
+html.dark .prose h3,
+html.dark .prose h4,
+html.dark .prose h5,
+html.dark .prose h6 {
+  color: var(--text) !important;
+}
+
+html.light .prose :is(h1, h2, h3, h4, h5, h6),
+html.light .prose h1,
+html.light .prose h2,
+html.light .prose h3,
+html.light .prose h4,
+html.light .prose h5,
+html.light .prose h6 {
+  color: var(--text) !important;
+}
+
+.prose p,
+.prose li,
+.prose strong,
+.prose blockquote {
+  font-size: 1.0625rem !important;
+  line-height: 1.75 !important;
+  color: var(--text) !important;
+}
+
+html.dark .prose p,
+html.dark .prose li,
+html.dark .prose strong,
+html.dark .prose blockquote {
+  color: var(--text) !important;
+}
+
+html.light .prose p,
+html.light .prose li,
+html.light .prose strong,
+html.light .prose blockquote {
+  color: var(--text) !important;
+}
+
+.prose a {
+  color: var(--accent) !important;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  transition: opacity 0.15s ease;
+}
+
+.prose a:hover {
+  opacity: 0.85;
+}
+
+/* Inline code formatting */
+:not(pre) > code,
+code:not(pre code) {
+  font-family: var(--font-mono) !important;
+  font-size: 0.875em !important;
+  font-weight: 500 !important;
+  padding: 0.16em 0.42em !important;
+  border-radius: 0 !important;
+  white-space: break-spaces;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+html.dark :not(pre) > code,
+html.dark code:not(pre code) {
+  color: var(--accent-soft) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--line) !important;
+}
+
+html.light :not(pre) > code,
+html.light code:not(pre code) {
+  color: var(--accent) !important;
+  background: var(--surface-2) !important;
+  border: 1px solid var(--line) !important;
+}
+
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after,
+.prose code:not(pre code)::before,
+.prose code:not(pre code)::after {
+  content: none !important;
+}
+
+/* Image & media elements */
+.prose img,
+article img {
+  max-width: 100%;
+  height: auto;
+  margin: 2rem auto;
+  display: block;
+  border-radius: 0 !important;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: zoom-in;
+}
+
+.mermaid-diagram {
+  border-radius: 0 !important;
+}
+
+.prose figure {
+  margin: 2.25rem 0;
+  text-align: center;
+}
+
+.prose figure img {
+  margin: 0 auto;
+}
+
+.prose figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-2);
+  text-align: center;
+}
+
+/* KaTeX mathematical formula styling */
+.katex-display {
+  display: block !important;
+  margin: 1.5rem 0 !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  padding: 0.5rem 0 !important;
+  color: var(--text) !important;
+  text-align: center !important;
+}
+
+.katex {
+  color: var(--text) !important;
+  font-size: 1.08em;
+  text-rendering: auto;
+}
+
+html.dark .katex,
+html.dark .katex-display {
+  color: #F5F3EB !important;
+}
+
+html.light .katex,
+html.light .katex-display {
+  color: #171611 !important;
+}
+
+/* Code block styling */
+.prose pre.astro-code {
+  position: relative;
+  margin: 1.75rem 0;
+  padding: 24px;
+  padding-top: 36px;
+  overflow-x: auto;
+  border-radius: 0 !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+  font-family: var(--font-mono) !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  -webkit-font-smoothing: antialiased;
+}
+
+.prose pre.astro-code code {
+  font-family: var(--font-mono) !important;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  background: transparent !important;
+}
+
+/* Syntax highlighting for code blocks */
+html.dark .astro-code {
+  color: var(--shiki-dark, var(--text)) !important;
+}
+
+html.dark .astro-code span {
+  color: var(--shiki-dark, inherit) !important;
+  font-style: var(--shiki-dark-font-style, inherit);
+  font-weight: var(--shiki-dark-font-weight, inherit);
+  text-decoration: var(--shiki-dark-text-decoration, inherit);
+}
+
+html.light .astro-code {
+  color: var(--shiki-light, var(--text)) !important;
+}
+
+html.light .astro-code span {
+  color: var(--shiki-light, inherit) !important;
+  font-style: var(--shiki-light-font-style, inherit);
+  font-weight: var(--shiki-light-font-weight, inherit);
+  text-decoration: var(--shiki-light-text-decoration, inherit);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .astro-code {
+    color: var(--shiki-dark, var(--text)) !important;
+  }
+  html:not(.light) .astro-code span {
+    color: var(--shiki-dark, inherit) !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  html:not(.dark) .astro-code {
+    color: var(--shiki-light, var(--text)) !important;
+  }
+  html:not(.dark) .astro-code span {
+    color: var(--shiki-light, inherit) !important;
+  }
+}
+
+.copy-code {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 0.75rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-code:hover {
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 /* ——— Small screens ——— */

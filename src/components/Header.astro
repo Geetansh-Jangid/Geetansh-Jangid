@@ -1,12 +1,21 @@
 ---
+import HeaderLink from "./HeaderLink.astro";
 import ThemeToggle from "./ThemeToggle.astro";
+
+const menuItems = [
+  { label: "geetansh", url: "/" },
+  { label: "logbook", url: "/logbook/" },
+  { label: "observations", url: "/observations/", class: "nav-observations" },
+];
 ---
 
 <header class="site-header">
   <nav aria-label="Main navigation">
-    <a href="/" class="nav-link active" aria-current="page">geetansh</a>
-    <a href="https://logbook.geetansh.tech/" class="nav-link" target="_blank" rel="noopener noreferrer">logbook <span class="arrow" aria-hidden="true">↗</span></a>
-    <a href="https://logbook.geetansh.tech/observations" class="nav-link nav-observations" target="_blank" rel="noopener noreferrer">observations <span class="arrow" aria-hidden="true">↗</span></a>
+    {menuItems.map((item) => (
+      <HeaderLink href={item.url} class={item.class}>
+        {item.label}
+      </HeaderLink>
+    ))}
   </nav>
   <ThemeToggle />
 </header>
