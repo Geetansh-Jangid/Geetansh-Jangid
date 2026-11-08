@@ -6,14 +6,6 @@ const serializedPalettes = JSON.stringify(THEME_PALETTES);
 
 <style id="theme-palette-styles" is:inline></style>
 
-<div
-  id="theme-toast"
-  role="status"
-  aria-live="polite"
-  class="fixed bottom-6 left-1/2 -translate-x-1/2 px-3 py-1.5 text-xs font-mono select-none pointer-events-none opacity-0 transition-opacity duration-200 z-50 rounded-none bg-[var(--surface-2)] text-[var(--text)] border border-[var(--line)] shadow-sm"
->
-</div>
-
 <script is:inline define:vars={{ serializedPalettes }}>
   (function () {
     const palettes = JSON.parse(serializedPalettes);

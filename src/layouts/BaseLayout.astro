@@ -61,20 +61,26 @@ const personSchema = {
     <link rel="alternate" type="application/atom+xml" title="Logbook — Atom" href={withBase('atom.xml')} />
     <link rel="alternate" type="application/feed+json" title="Logbook — JSON Feed" href={withBase('feed.json')} />
 
-    <!-- JetBrains Mono preconnect and font stylesheet for KaTeX / code -->
+    <!-- Preload key self-hosted font files to eliminate layout shift -->
+    <link rel="preload" href="/fonts/uncut/woff2/UncutSans-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/uncut/woff2/UncutSans-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/uncut/woff2/UncutSans-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- JetBrains Mono preconnect and asynchronous font stylesheet for code -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
-
-    <!-- KaTeX stylesheet for mathematical formulas -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
-      crossorigin="anonymous"
-    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
     <ThemeManager />
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
@@ -92,6 +98,13 @@ const personSchema = {
     </div>
 
     <MediaLightbox />
+    <div
+      id="theme-toast"
+      role="status"
+      aria-live="polite"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 px-3 py-1.5 text-xs font-mono select-none pointer-events-none opacity-0 transition-opacity duration-200 z-50 rounded-none bg-[var(--surface-2)] text-[var(--text)] border border-[var(--line)] shadow-sm"
+    >
+    </div>
 
     <!-- Vercel Web Analytics -->
     <script is:inline>

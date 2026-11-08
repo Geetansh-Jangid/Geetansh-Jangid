@@ -24,6 +24,11 @@ const minutes = readingTime(body ?? '');
     <meta property="og:description" content={data.description} />
     <meta property="article:published_time" content={data.date.toISOString()} />
     {data.updated && <meta property="article:modified_time" content={data.updated.toISOString()} />}
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+      crossorigin="anonymous"
+    />
   </Fragment>
   <ReadingProgress />
 
