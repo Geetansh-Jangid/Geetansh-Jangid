@@ -476,8 +476,20 @@ function setupSubtitleAnimation() {
   const container = document.getElementById("site-subtitle");
   if (!container) return;
 
-  const slot = container.querySelector(".subtitle-slot") || container;
-  const words = [
+  const adjSlot = container.querySelector(".subtitle-adj-slot");
+  const roleSlot = container.querySelector(".subtitle-role-slot");
+  if (!adjSlot || !roleSlot) return;
+
+  const adjectives = [
+    "curious",
+    "inquisitive",
+    "exploring",
+    "inventive",
+    "thoughtful",
+    "analytical"
+  ];
+
+  const roles = [
     "developer",
     "hacker",
     "engineer",
@@ -486,40 +498,37 @@ function setupSubtitleAnimation() {
     "builder"
   ];
 
-  let currentIndex = 0;
+  let adjIndex = 0;
+  let roleIndex = 0;
   let isAnimating = false;
   let intervalId = null;
 
-  let currentSpan = slot.querySelector(".subtitle-word");
-  if (!currentSpan) {
-    currentSpan = document.createElement("span");
-    currentSpan.className = "subtitle-word";
-    currentSpan.textContent = words[0];
-    slot.appendChild(currentSpan);
+  let currentAdjSpan = adjSlot.querySelector(".subtitle-word");
+  if (!currentAdjSpan) {
+    currentAdjSpan = document.createElement("span");
+    currentAdjSpan.className = "subtitle-word";
+    currentAdjSpan.textContent = adjectives[0];
+    adjSlot.appendChild(currentAdjSpan);
   }
 
-  function cycleNext() {
-    if (isAnimating) return;
-    if (document.hidden) return;
+  let currentRoleSpan = roleSlot.querySelector(".subtitle-word");
+  if (!currentRoleSpan) {
+    currentRoleSpan = document.createElement("span");
+    currentRoleSpan.className = "subtitle-word";
+    currentRoleSpan.textContent = roles[0];
+    roleSlot.appendChild(currentRoleSpan);
+  }
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      currentIndex = (currentIndex + 1) % words.length;
-      const word = words[currentIndex];
-      currentSpan.textContent = word;
-      container.setAttribute("aria-label", `${word}, enthusiast`);
-      return;
-    }
-
-    isAnimating = true;
-    currentIndex = (currentIndex + 1) % words.length;
-    const nextWord = words[currentIndex];
+  function transitionSlot(slot, nextText) {
+    const currentSpan = slot.querySelector(".subtitle-word:not(.subtitle-incoming)") || slot.querySelector(".subtitle-word");
+    if (!currentSpan) return;
 
     const prevWidth = currentSpan.offsetWidth;
     slot.style.width = `${prevWidth}px`;
 
     const nextSpan = document.createElement("span");
     nextSpan.className = "subtitle-word subtitle-incoming";
-    nextSpan.textContent = nextWord;
+    nextSpan.textContent = nextText;
     slot.appendChild(nextSpan);
 
     const nextWidth = nextSpan.offsetWidth;
@@ -530,8 +539,6 @@ function setupSubtitleAnimation() {
       nextSpan.style.opacity = "1";
     });
 
-    container.setAttribute("aria-label", `${nextWord}, enthusiast`);
-
     setTimeout(() => {
       currentSpan.remove();
       nextSpan.classList.remove("subtitle-incoming");
@@ -540,9 +547,45 @@ function setupSubtitleAnimation() {
       nextSpan.style.left = "";
       nextSpan.style.opacity = "";
       slot.style.width = "auto";
-      currentSpan = nextSpan;
-      isAnimating = false;
     }, 420);
+  }
+
+  function cycleNext() {
+    if (isAnimating) return;
+    if (document.hidden) return;
+
+    const nextRoleIndex = (roleIndex + 1) % roles.length;
+    const shouldRotateAdj = nextRoleIndex === 0;
+    const nextAdjIndex = shouldRotateAdj ? (adjIndex + 1) % adjectives.length : adjIndex;
+
+    const nextRole = roles[nextRoleIndex];
+    const nextAdj = adjectives[nextAdjIndex];
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      roleIndex = nextRoleIndex;
+      adjIndex = nextAdjIndex;
+      const curAdj = adjSlot.querySelector(".subtitle-word");
+      const curRole = roleSlot.querySelector(".subtitle-word");
+      if (curAdj) curAdj.textContent = nextAdj;
+      if (curRole) curRole.textContent = nextRole;
+      container.setAttribute("aria-label", `${nextAdj}, ${nextRole}`);
+      return;
+    }
+
+    isAnimating = true;
+    roleIndex = nextRoleIndex;
+    adjIndex = nextAdjIndex;
+
+    transitionSlot(roleSlot, nextRole);
+    if (shouldRotateAdj) {
+      transitionSlot(adjSlot, nextAdj);
+    }
+
+    container.setAttribute("aria-label", `${nextAdj}, ${nextRole}`);
+
+    setTimeout(() => {
+      isAnimating = false;
+    }, 450);
   }
 
   function start() {
